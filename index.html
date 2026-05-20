@@ -1,0 +1,1563 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZetaGoDB - Database Access & Authorization Portal</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0b1329;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #3b82f6;
+    }
+    /* Glow animations */
+    .glow-cyan {
+      box-shadow: 0 0 15px rgba(6, 182, 212, 0.15);
+    }
+    .glow-btn-cyan:hover {
+      box-shadow: 0 0 20px rgba(6, 182, 212, 0.4);
+    }
+    .glow-btn-purple:hover {
+      box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
+    }
+  </style>
+</head>
+<body class="bg-[#030712] text-slate-100 min-h-screen overflow-x-hidden selection:bg-cyan-500 selection:text-slate-900">
+
+  <!-- NOTIFICATION TOAST SYSTEM (Custom, No Alerts!) -->
+  <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full"></div>
+
+  <!-- INITIAL LOADING SCREEN -->
+  <div id="initial-loader" class="fixed inset-0 bg-[#030712] z-50 flex flex-col items-center justify-center">
+    <div class="relative flex items-center justify-center">
+      <div class="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-cyan-400"></div>
+      <div class="absolute h-10 w-10 rounded-full bg-cyan-500/10 flex items-center justify-center">
+        <i class="fa-solid mt-0.5 fa-shield-halved text-cyan-400 animate-pulse"></i>
+      </div>
+    </div>
+    <h2 class="mt-6 text-xl font-bold tracking-wider text-cyan-400">ZETAGODB AUTHORIZATION</h2>
+    <p class="text-xs text-slate-400 mt-2 animate-pulse">Menghubungkan ke secure database...</p>
+  </div>
+
+  <!-- AUTHENTICATION SCREEN (LOGIN) -->
+  <div id="auth-screen" class="hidden min-h-screen flex items-center justify-center px-4 py-12 relative overflow-hidden bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-cyan-950/20 via-slate-950 to-slate-950">
+    <!-- Decorative background elements -->
+    <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse"></div>
+    <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
+
+    <div class="bg-slate-900/80 backdrop-blur-xl border border-slate-800 p-8 rounded-3xl w-full max-w-md shadow-2xl relative z-10 glow-cyan">
+      <div class="text-center mb-8">
+        <div class="inline-flex p-3 bg-gradient-to-tr from-cyan-500 to-purple-600 rounded-2xl mb-4 shadow-lg shadow-cyan-500/20">
+          <i class="fa-solid fa-shield-halved text-2xl text-slate-900"></i>
+        </div>
+        <h1 class="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">ZETAGODB ACCESS</h1>
+        <p class="text-sm text-slate-400 mt-1">Sistem Izin & Database Nomor WhatsApp Bot</p>
+      </div>
+
+      <!-- Auth Tab System -->
+      <div class="flex p-1 bg-slate-950/80 border border-slate-800 rounded-xl mb-6">
+        <button id="tab-sub" onclick="switchLoginTab('sub')" class="flex-1 py-2.5 text-xs font-semibold rounded-lg transition-all duration-300 text-cyan-400 bg-slate-900 border border-slate-800">
+          <i class="fa-solid fa-users mr-1.5"></i> Owner / Staff / Res
+        </button>
+        <button id="tab-dev" onclick="switchLoginTab('dev')" class="flex-1 py-2.5 text-xs font-semibold rounded-lg transition-all duration-300 text-slate-400 hover:text-slate-200">
+          <i class="fa-solid fa-code mr-1.5"></i> Developer Only
+        </button>
+      </div>
+
+      <!-- DEV LOGIN (GOOGLE) -->
+      <div id="login-dev-form" class="hidden space-y-6">
+        <div class="text-center py-4 bg-slate-950/50 border border-slate-800/60 rounded-2xl">
+          <i class="fa-brands fa-google text-4xl text-cyan-400 mb-3 block animate-bounce"></i>
+          <p class="text-xs text-slate-400 px-4">Gunakan Google Mail khusus Developer yang terdaftar untuk mengakses inti sistem & database.</p>
+        </div>
+        <button id="btn-google-login" class="w-full flex items-center justify-center gap-3 py-3 px-4 bg-white hover:bg-slate-100 text-slate-900 font-bold rounded-xl transition duration-300 shadow-md">
+          <svg class="h-5 w-5" viewBox="0 0 24 24">
+            <path fill="#EA4335" d="M12 5.04c1.66 0 3.2.57 4.38 1.69l3.27-3.27C17.66 1.54 14.98 1 12 1 7.35 1 3.42 3.68 1.58 7.58l3.96 3.07C6.46 7.22 8.98 5.04 12 5.04z"/>
+            <path fill="#4285F4" d="M23.49 12.27c0-.81-.07-1.59-.2-2.36H12v4.51h6.46c-.29 1.48-1.14 2.73-2.4 3.58l3.76 2.91c2.2-2.02 3.67-5 3.67-8.64z"/>
+            <path fill="#FBBC05" d="M5.54 14.51c-.24-.72-.38-1.5-.38-2.31s.14-1.59.38-2.31L1.58 6.82C.57 8.84 0 11.11 0 13.5s.57 4.66 1.58 6.68l3.96-3.67z"/>
+            <path fill="#34A853" d="M12 23c3.24 0 5.97-1.07 7.96-2.91l-3.76-2.91c-1.1.74-2.52 1.18-4.2 1.18-3.02 0-5.54-2.18-6.46-5.61L1.58 16.4C3.42 20.32 7.35 23 12 23z"/>
+          </svg>
+          Masuk dengan Google
+        </button>
+      </div>
+
+      <!-- OWNER/STAFF/PT/RESELLER LOGIN (EMAIL/PASSWORD) -->
+      <div id="login-sub-form" class="space-y-4">
+        <form id="form-login-email" class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Email Address</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-500">
+                <i class="fa-solid fa-envelope text-sm"></i>
+              </span>
+              <input type="email" id="login-email" required class="w-full bg-slate-950/80 border border-slate-800 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 text-slate-100 placeholder:text-slate-600 rounded-xl py-3 pl-10 pr-4 text-sm outline-none transition duration-200" placeholder="nama@domain.com">
+            </div>
+          </div>
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Password</label>
+            </div>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-500">
+                <i class="fa-solid fa-lock text-sm"></i>
+              </span>
+              <input type="password" id="login-password" required class="w-full bg-slate-950/80 border border-slate-800 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 text-slate-100 placeholder:text-slate-600 rounded-xl py-3 pl-10 pr-10 text-sm outline-none transition duration-200" placeholder="••••••••">
+              <button type="button" onclick="togglePasswordVisibility('login-password', this)" class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-500 hover:text-slate-300">
+                <i class="fa-solid fa-eye text-sm"></i>
+              </button>
+            </div>
+          </div>
+          <button type="submit" class="w-full py-3 px-4 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-extrabold rounded-xl transition duration-300 shadow-lg shadow-cyan-500/20 glow-btn-cyan flex justify-center items-center gap-2">
+            Masuk Portal <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </form>
+      </div>
+
+      <div class="mt-8 pt-6 border-t border-slate-800 text-center">
+        <p class="text-xs text-slate-500">Sistem Portal Aman ZetaGo-Aurum &copy; 2026</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN APP PLATFORM (DASHBOARD) -->
+  <div id="main-app" class="hidden min-h-screen flex flex-col lg:flex-row bg-[#030712]">
+    
+    <!-- SIDEBAR NAVIGATION (Collapsible on Mobile) -->
+    <aside id="sidebar" class="w-full lg:w-72 bg-slate-900/60 lg:min-h-screen border-b lg:border-b-0 lg:border-r border-slate-800/80 flex flex-col justify-between p-6 transition-all duration-300 shrink-0 relative z-30 backdrop-blur-xl">
+      <div>
+        <!-- Brand header -->
+        <div class="flex items-center justify-between mb-8">
+          <div class="flex items-center gap-3">
+            <div class="p-2.5 bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 rounded-xl">
+              <i class="fa-solid fa-microchip text-lg"></i>
+            </div>
+            <div>
+              <span class="font-extrabold text-md tracking-wider bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent block">ZETAGO</span>
+              <span class="text-[10px] text-slate-500 font-bold uppercase tracking-widest block -mt-1">Manager V1.0</span>
+            </div>
+          </div>
+          <button class="lg:hidden text-slate-400 hover:text-cyan-400" onclick="toggleMobileMenu()">
+            <i class="fa-solid fa-bars text-xl"></i>
+          </button>
+        </div>
+
+        <!-- User Information Card -->
+        <div class="bg-slate-950/60 border border-slate-800/80 rounded-2xl p-4 mb-6">
+          <div class="flex items-center gap-3">
+            <div class="relative">
+              <div id="user-avatar" class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-400 to-purple-500 flex items-center justify-center text-slate-950 font-bold">
+                U
+              </div>
+              <span class="absolute -bottom-1 -right-1 flex h-3 w-3">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+              </span>
+            </div>
+            <div class="overflow-hidden">
+              <h4 id="user-display-name" class="font-semibold text-sm truncate text-slate-200">User</h4>
+              <span id="user-display-role" class="inline-block mt-0.5 px-2 py-0.5 text-[9px] font-extrabold tracking-wider text-cyan-400 bg-cyan-400/10 border border-cyan-400/20 rounded">LOADING</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Navigation Menus -->
+        <nav class="space-y-1.5" id="sidebar-nav">
+          <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 text-cyan-400 bg-cyan-400/10 border-l-4 border-cyan-400">
+            <i class="fa-solid fa-chart-pie text-md w-5 text-center"></i> Dashboard
+          </button>
+          <button onclick="switchTab('numbers')" id="nav-numbers" class="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 text-slate-400 hover:text-slate-200 hover:bg-slate-800/40">
+            <i class="fa-brands fa-whatsapp text-md w-5 text-center text-emerald-400"></i> Nomor WhatsApp
+          </button>
+          <button onclick="switchTab('accounts')" id="nav-accounts" class="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 text-slate-400 hover:text-slate-200 hover:bg-slate-800/40">
+            <i class="fa-solid fa-sitemap text-md w-5 text-center text-purple-400"></i> Struktur Hirarki
+          </button>
+          <button onclick="switchTab('logs')" id="nav-logs" class="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 text-slate-400 hover:text-slate-200 hover:bg-slate-800/40">
+            <i class="fa-solid fa-list-check text-md w-5 text-center text-yellow-400"></i> Audit Logs
+          </button>
+          <!-- Dev Exclusive Menu -->
+          <button id="nav-dev-console" onclick="switchTab('dev-console')" class="hidden w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 text-rose-400 hover:text-rose-300 hover:bg-rose-500/10">
+            <i class="fa-solid fa-terminal text-md w-5 text-center animate-pulse"></i> Terminal Database (DEV)
+          </button>
+        </nav>
+      </div>
+
+      <!-- Logout & Footer -->
+      <div class="mt-8 pt-6 border-t border-slate-800/80">
+        <button id="btn-logout" class="w-full flex items-center justify-center gap-2 px-4 py-3 text-sm font-bold text-rose-400 hover:text-rose-300 bg-rose-500/5 hover:bg-rose-500/10 border border-rose-500/10 rounded-xl transition duration-200">
+          <i class="fa-solid fa-right-from-bracket"></i> Keluar Portal
+        </button>
+        <p class="text-[10px] text-slate-600 text-center mt-4">Made by ZetaGo-Aurum with ✨💙</p>
+      </div>
+    </aside>
+
+    <!-- MAIN DASHBOARD COMPONENT AREA -->
+    <main class="flex-1 flex flex-col min-w-0 bg-[#030712]">
+      <!-- Header Bar -->
+      <header class="h-16 border-b border-slate-800/80 flex items-center justify-between px-6 bg-slate-900/10 backdrop-blur-md relative z-20">
+        <div class="flex items-center gap-3">
+          <h2 id="current-page-title" class="text-md font-bold text-slate-200 tracking-wide uppercase">Dashboard Overview</h2>
+        </div>
+        <!-- Status Indicator -->
+        <div class="flex items-center gap-3">
+          <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-slate-900/80 border border-slate-800 rounded-lg">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span class="text-xs text-slate-400">Database Connected</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- CONTENT WINDOWS -->
+      <div class="flex-1 p-6 overflow-y-auto max-w-7xl w-full mx-auto space-y-6">
+
+        <!-- ==================== WINDOW: DASHBOARD OVERVIEW ==================== -->
+        <section id="window-dashboard" class="space-y-6">
+          <!-- Welcome Card -->
+          <div class="relative overflow-hidden bg-gradient-to-r from-slate-900 via-indigo-950 to-purple-950 border border-slate-800/80 rounded-3xl p-6 sm:p-8 glow-cyan">
+            <div class="absolute -right-20 -top-20 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl"></div>
+            <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+              <div>
+                <span class="inline-block px-3 py-1 bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-bold rounded-full mb-3 uppercase tracking-wider">PORTAL UTAMA</span>
+                <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mb-2">Selamat Datang Kembali, <span id="welcome-name">User</span>! ✨</h1>
+                <p class="text-slate-400 text-sm max-w-xl">Kelola izin nomor WhatsApp ke bot Anda dengan presisi tinggi. Pastikan nomor yang terdaftar valid agar akses tidak terblokir!</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <button onclick="switchTab('numbers')" class="px-5 py-2.5 bg-cyan-400 hover:bg-cyan-300 text-slate-950 font-bold rounded-xl text-sm transition duration-200 shadow-lg shadow-cyan-500/10">
+                  <i class="fa-solid fa-plus mr-1.5"></i> Tambah Nomor
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Statistics Counters Grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <!-- Stat 1: WHATSAPP NUMBERS -->
+            <div class="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-5 hover:border-slate-700/80 transition duration-300">
+              <div class="flex justify-between items-start">
+                <div>
+                  <p class="text-xs text-slate-400 font-bold uppercase tracking-wider">Total Nomor WA</p>
+                  <h3 id="stat-total-numbers" class="text-3xl font-extrabold text-slate-100 mt-2">0</h3>
+                </div>
+                <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl">
+                  <i class="fa-brands fa-whatsapp text-2xl"></i>
+                </div>
+              </div>
+              <p class="text-xs text-slate-500 mt-3"><i class="fa-solid fa-circle-check text-emerald-400 mr-1"></i> Terotorisasi di Bot</p>
+            </div>
+            <!-- Stat 2: TOTAL STAFF & PT -->
+            <div class="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-5 hover:border-slate-700/80 transition duration-300">
+              <div class="flex justify-between items-start">
+                <div>
+                  <p class="text-xs text-slate-400 font-bold uppercase tracking-wider">Total Partner & Staff</p>
+                  <h3 id="stat-total-subordinates" class="text-3xl font-extrabold text-slate-100 mt-2">0</h3>
+                </div>
+                <div class="p-3 bg-purple-500/10 text-purple-400 rounded-xl">
+                  <i class="fa-solid fa-users-gear text-2xl"></i>
+                </div>
+              </div>
+              <p class="text-xs text-slate-500 mt-3"><i class="fa-solid fa-diagram-next text-purple-400 mr-1"></i> Pengelola Bawahan</p>
+            </div>
+            <!-- Stat 3: TOTAL RESELLER -->
+            <div class="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-5 hover:border-slate-700/80 transition duration-300">
+              <div class="flex justify-between items-start">
+                <div>
+                  <p class="text-xs text-slate-400 font-bold uppercase tracking-wider">Reseller Aktif</p>
+                  <h3 id="stat-total-resellers" class="text-3xl font-extrabold text-slate-100 mt-2">0</h3>
+                </div>
+                <div class="p-3 bg-blue-500/10 text-blue-400 rounded-xl">
+                  <i class="fa-solid fa-tags text-2xl"></i>
+                </div>
+              </div>
+              <p class="text-xs text-slate-500 mt-3"><i class="fa-solid fa-circle-arrow-up text-blue-400 mr-1"></i> Khusus Input Nomor</p>
+            </div>
+            <!-- Stat 4: MY ROLE LEVEL -->
+            <div class="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-5 hover:border-slate-700/80 transition duration-300">
+              <div class="flex justify-between items-start">
+                <div>
+                  <p class="text-xs text-slate-400 font-bold uppercase tracking-wider">Role Otoritas Anda</p>
+                  <h3 id="stat-my-role" class="text-lg font-black text-cyan-400 uppercase tracking-widest mt-3">LOADING</h3>
+                </div>
+                <div class="p-3 bg-cyan-500/10 text-cyan-400 rounded-xl">
+                  <i class="fa-solid fa-fingerprint text-2xl"></i>
+                </div>
+              </div>
+              <p class="text-xs text-slate-500 mt-3" id="stat-my-permissions"><i class="fa-solid fa-shield text-cyan-400 mr-1"></i> Izin Tingkat Tinggi</p>
+            </div>
+          </div>
+
+          <!-- Quick Actions and Info -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Left Side: Role Hierarchy Guidance Map -->
+            <div class="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-6 lg:col-span-2 space-y-4">
+              <h3 class="text-md font-bold text-slate-200 uppercase tracking-wider mb-2 flex items-center gap-2">
+                <i class="fa-solid fa-shield-halved text-cyan-400"></i> Alur Otoritas Sistem Hirarki
+              </h3>
+              <div class="grid grid-cols-1 md:grid-cols-5 gap-3 relative">
+                <div class="p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-center">
+                  <span class="block text-[10px] font-black tracking-widest text-rose-400 uppercase">DEV</span>
+                  <p class="text-[10px] text-slate-400 mt-1">Full DB Access</p>
+                </div>
+                <div class="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-center">
+                  <span class="block text-[10px] font-black tracking-widest text-amber-400 uppercase">OWNER</span>
+                  <p class="text-[10px] text-slate-400 mt-1">Buat All Sub</p>
+                </div>
+                <div class="p-3 bg-purple-500/10 border border-purple-500/20 rounded-xl text-center">
+                  <span class="block text-[10px] font-black tracking-widest text-purple-400 uppercase">STAFF</span>
+                  <p class="text-[10px] text-slate-400 mt-1">Buat PT & Res</p>
+                </div>
+                <div class="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-center">
+                  <span class="block text-[10px] font-black tracking-widest text-emerald-400 uppercase">PT</span>
+                  <p class="text-[10px] text-slate-400 mt-1">Buat Reseller</p>
+                </div>
+                <div class="p-3 bg-blue-500/10 border border-blue-500/20 rounded-xl text-center">
+                  <span class="block text-[10px] font-black tracking-widest text-blue-400 uppercase">RESELLER</span>
+                  <p class="text-[10px] text-slate-400 mt-1">Input Nomor</p>
+                </div>
+              </div>
+              <p class="text-xs text-slate-400 leading-relaxed bg-slate-950/40 p-3.5 border border-slate-800/60 rounded-xl">
+                Setiap role dapat mengelola data miliknya dan membuat tingkatan di bawahnya. Developer memiliki otoritas absolut langsung ke cloud database Firestore.
+              </p>
+            </div>
+
+            <!-- Right Side: Realtime Notification / Activity Log Preview -->
+            <div class="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-6 flex flex-col justify-between">
+              <div>
+                <h3 class="text-md font-bold text-slate-200 uppercase tracking-wider mb-4 flex items-center gap-2">
+                  <i class="fa-solid fa-bolt text-yellow-400"></i> Aktivitas Terkini
+                </h3>
+                <div id="dashboard-recent-logs" class="space-y-3.5 text-xs max-h-[160px] overflow-y-auto pr-1">
+                  <!-- Recent logs dynamically injected -->
+                  <p class="text-slate-500 text-center py-6">Memuat aktivitas terbaru...</p>
+                </div>
+              </div>
+              <button onclick="switchTab('logs')" class="mt-4 text-xs font-bold text-cyan-400 hover:text-cyan-300 hover:underline text-left block">
+                Lihat Semua Logs <i class="fa-solid fa-circle-arrow-right ml-1"></i>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== WINDOW: WHATSAPP NUMBERS MANAGER ==================== -->
+        <section id="window-numbers" class="hidden space-y-6">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/30 p-4 border border-slate-800/80 rounded-2xl">
+            <div>
+              <h1 class="text-lg font-bold text-slate-100">Manajemen Nomor WhatsApp</h1>
+              <p class="text-xs text-slate-400">Kelola izin masuk nomor HP ke sistem Bot.</p>
+            </div>
+            <button onclick="openAddNumberModal()" class="w-full sm:w-auto px-4 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-slate-950 font-bold rounded-xl text-xs transition duration-200 flex items-center justify-center gap-1.5 shadow-lg shadow-cyan-500/10">
+              <i class="fa-solid fa-plus"></i> Daftarkan Nomor WA
+            </button>
+          </div>
+
+          <!-- Filters, Search and Table -->
+          <div class="bg-slate-900/40 border border-slate-800/80 rounded-3xl overflow-hidden">
+            <!-- Search & Filtering header -->
+            <div class="p-6 border-b border-slate-800/80 flex flex-col md:flex-row gap-4 items-center justify-between">
+              <div class="relative w-full md:w-80">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-500">
+                  <i class="fa-solid fa-magnifying-glass text-sm"></i>
+                </span>
+                <input type="text" id="search-number-input" onkeyup="filterNumbers()" class="w-full bg-slate-950/80 border border-slate-800 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 text-slate-100 placeholder:text-slate-600 rounded-xl py-2.5 pl-10 pr-4 text-xs outline-none transition duration-200" placeholder="Cari nomor atau deskripsi...">
+              </div>
+              <div class="flex gap-2 w-full md:w-auto overflow-x-auto pb-1 md:pb-0">
+                <button onclick="setNumberFilter('all')" id="filter-num-all" class="px-3 py-1.5 text-[11px] font-bold rounded-lg transition duration-200 bg-cyan-400/10 text-cyan-400 border border-cyan-400/20 whitespace-nowrap">Semua Nomor</button>
+                <button onclick="setNumberFilter('mine')" id="filter-num-mine" class="px-3 py-1.5 text-[11px] font-bold rounded-lg transition duration-200 text-slate-400 hover:text-slate-200 whitespace-nowrap">Input Saya</button>
+              </div>
+            </div>
+
+            <!-- Table content -->
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="border-b border-slate-800/80 bg-slate-950/40">
+                    <th class="p-4 text-xs font-bold text-slate-400 uppercase tracking-wider">No</th>
+                    <th class="p-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Nomor WhatsApp</th>
+                    <th class="p-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Deskripsi/Nama</th>
+                    <th class="p-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Terdaftar Oleh</th>
+                    <th class="p-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Waktu Terdaftar</th>
+                    <th class="p-4 text-xs font-bold text-slate-400 uppercase tracking-wider text-center">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="numbers-table-body" class="divide-y divide-slate-800/50">
+                  <!-- Dinamis injected -->
+                  <tr>
+                    <td colspan="6" class="p-8 text-center text-slate-500 text-sm">Sedang memproses database nomor...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== WINDOW: STRUCTURAL ACCOUNT HIERARCHY ==================== -->
+        <section id="window-accounts" class="hidden space-y-6">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/30 p-4 border border-slate-800/80 rounded-2xl">
+            <div>
+              <h1 class="text-lg font-bold text-slate-100">Manajemen Pengguna & Hirarki</h1>
+              <p class="text-xs text-slate-400">Buat atau kelola akun bawahan sesuai dengan role limitasi Anda.</p>
+            </div>
+            <button id="btn-open-add-user" onclick="openAddUserModal()" class="w-full sm:w-auto px-4 py-2.5 bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-400 hover:to-indigo-400 text-slate-950 font-bold rounded-xl text-xs transition duration-200 flex items-center justify-center gap-1.5 shadow-lg shadow-purple-500/10">
+              <i class="fa-solid fa-user-plus"></i> Daftarkan Bawahan Baru
+            </button>
+          </div>
+
+          <!-- Accounts Hierarchy List -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Left 2 Cols: Accounts List Table -->
+            <div class="bg-slate-900/40 border border-slate-800/80 rounded-3xl overflow-hidden lg:col-span-2">
+              <div class="p-6 border-b border-slate-800/80">
+                <h3 class="text-sm font-bold text-slate-200 uppercase tracking-wider">Bawahan yang Berada di Bawah Kendali Anda</h3>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                  <thead>
+                    <tr class="border-b border-slate-800/80 bg-slate-950/40">
+                      <th class="p-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Nama Akun</th>
+                      <th class="p-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Email</th>
+                      <th class="p-4 text-xs font-bold text-slate-400 uppercase tracking-wider">Level Role</th>
+                      <th class="p-4 text-xs font-bold text-slate-400 uppercase tracking-wider text-center">Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="accounts-table-body" class="divide-y divide-slate-800/50">
+                    <!-- Dinamis injected -->
+                    <tr>
+                      <td colspan="4" class="p-8 text-center text-slate-500 text-sm">Sedang memproses database akun...</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Right Col: Hierarchical Permissions Rule Card -->
+            <div class="bg-slate-900/40 border border-slate-800/80 rounded-3xl p-6 space-y-4">
+              <h3 class="text-sm font-extrabold text-slate-200 uppercase tracking-wider flex items-center gap-2">
+                <i class="fa-solid fa-triangle-exclamation text-yellow-500"></i> Ketentuan Pembuatan Akun
+              </h3>
+              <ul class="space-y-3.5 text-xs text-slate-300 leading-relaxed">
+                <li class="flex items-start gap-2.5">
+                  <span class="p-1 bg-cyan-400/10 text-cyan-400 rounded mt-0.5"><i class="fa-solid fa-check text-[10px]"></i></span>
+                  <span><strong>Dev</strong> dapat membuat siapapun kecuali Dev lain.</span>
+                </li>
+                <li class="flex items-start gap-2.5">
+                  <span class="p-1 bg-amber-400/10 text-amber-400 rounded mt-0.5"><i class="fa-solid fa-check text-[10px]"></i></span>
+                  <span><strong>Owner</strong> dapat membuat: Staff, PT, dan Reseller.</span>
+                </li>
+                <li class="flex items-start gap-2.5">
+                  <span class="p-1 bg-purple-400/10 text-purple-400 rounded mt-0.5"><i class="fa-solid fa-check text-[10px]"></i></span>
+                  <span><strong>Staff</strong> dapat membuat: PT dan Reseller.</span>
+                </li>
+                <li class="flex items-start gap-2.5">
+                  <span class="p-1 bg-emerald-400/10 text-emerald-400 rounded mt-0.5"><i class="fa-solid fa-check text-[10px]"></i></span>
+                  <span><strong>PT</strong> dapat membuat: Reseller saja.</span>
+                </li>
+                <li class="flex items-start gap-2.5 text-rose-400 bg-rose-500/5 p-3.5 border border-rose-500/10 rounded-xl">
+                  <span class="p-1 bg-rose-400/10 text-rose-400 rounded"><i class="fa-solid fa-lock text-[10px]"></i></span>
+                  <span><strong>Reseller</strong> dilarang keras membuat akun baru (Akses Terbatas!).</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== WINDOW: AUDIT LOGS ==================== -->
+        <section id="window-logs" class="hidden space-y-6">
+          <div class="bg-slate-900/30 p-4 border border-slate-800/80 rounded-2xl">
+            <h1 class="text-lg font-bold text-slate-100">Audit Logs Aktivitas</h1>
+            <p class="text-xs text-slate-400">Seluruh riwayat pembuatan/penghapusan data terekam secara real-time demi keamanan.</p>
+          </div>
+
+          <div class="bg-slate-900/40 border border-slate-800/80 rounded-3xl overflow-hidden">
+            <div class="p-6 border-b border-slate-800/80 flex flex-col sm:flex-row justify-between items-center gap-4">
+              <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Global Activity Streams</span>
+              <button onclick="clearLogsIfDev()" id="btn-clear-logs" class="hidden px-3.5 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 text-xs font-extrabold rounded-lg transition duration-200">
+                <i class="fa-solid fa-trash mr-1"></i> Bersihkan Logs (Dev Only)
+              </button>
+            </div>
+            <div class="divide-y divide-slate-800/50 max-h-[500px] overflow-y-auto" id="global-logs-container">
+              <!-- Logs dynamic -->
+              <div class="p-6 text-center text-slate-500 text-sm">Memuat catatan keamanan...</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== WINDOW: DEVELOPER TERMINAL ==================== -->
+        <section id="window-dev-console" class="hidden space-y-6">
+          <div class="bg-rose-500/10 border border-rose-500/20 p-5 rounded-2xl flex items-center gap-4">
+            <div class="p-3 bg-rose-500/20 text-rose-400 rounded-xl">
+              <i class="fa-solid fa-terminal text-2xl animate-pulse"></i>
+            </div>
+            <div>
+              <h1 class="text-md font-black uppercase text-rose-400 tracking-wider">Developer Direct Database Access</h1>
+              <p class="text-xs text-slate-400">Akses root terdalam ke database Firebase Firestore. Silakan pantau atau lakukan pembersihan darurat.</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Left: DB Health & Quick Purge -->
+            <div class="bg-slate-900/40 border border-slate-800/80 rounded-3xl p-6 space-y-6">
+              <h3 class="text-sm font-bold text-slate-200 uppercase tracking-wider border-b border-slate-800 pb-3">Status Infrastruktur DB</h3>
+              <div class="grid grid-cols-2 gap-4 text-xs">
+                <div class="bg-slate-950/80 border border-slate-800 p-4 rounded-xl">
+                  <span class="text-slate-500 block font-semibold mb-1">PROYEK ID</span>
+                  <span class="font-mono text-cyan-400 font-bold">server-media-75fdc</span>
+                </div>
+                <div class="bg-slate-950/80 border border-slate-800 p-4 rounded-xl">
+                  <span class="text-slate-500 block font-semibold mb-1">AUTH MODE</span>
+                  <span class="font-mono text-emerald-400 font-bold">Google + Custom Email</span>
+                </div>
+              </div>
+
+              <div class="p-4 bg-rose-500/5 border border-rose-500/10 rounded-2xl space-y-4">
+                <span class="text-xs font-bold text-rose-400 uppercase tracking-wider block"><i class="fa-solid fa-triangle-exclamation"></i> Emergency Purge</span>
+                <p class="text-xs text-slate-400 leading-relaxed">Menghapus seluruh database nomor WhatsApp yang tersimpan saat ini secara permanen.</p>
+                <button onclick="emergencyPurgeNumbers()" class="w-full py-2.5 bg-rose-500 hover:bg-rose-400 text-slate-950 font-black text-xs rounded-xl tracking-wider uppercase transition duration-200">
+                  Hapus Seluruh Nomor WA Aktif!
+                </button>
+              </div>
+            </div>
+
+            <!-- Right: Realtime Raw Data Viewer -->
+            <div class="bg-slate-900/40 border border-slate-800/80 rounded-3xl p-6 flex flex-col justify-between">
+              <div>
+                <h3 class="text-sm font-bold text-slate-200 uppercase tracking-wider border-b border-slate-800 pb-3 mb-4">Live JSON Streams (WA Numbers)</h3>
+                <div class="bg-slate-950/80 border border-slate-800 rounded-xl p-4 font-mono text-[10px] text-emerald-400 overflow-y-auto max-h-[220px]">
+                  <pre id="raw-json-viewer">{}</pre>
+                </div>
+              </div>
+              <p class="text-[10px] text-slate-500 mt-4"><i class="fa-solid fa-code"></i> Data real-time diekstrak langsung dari Firestore path.</p>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- MODAL: ADD WHATSAPP NUMBER -->
+  <div id="modal-add-number" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" onclick="closeAddNumberModal()"></div>
+    <!-- Modal Box -->
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-md p-6 relative z-10 glow-cyan">
+      <div class="flex justify-between items-center mb-6 border-b border-slate-800 pb-3">
+        <h3 class="text-md font-bold text-slate-100 flex items-center gap-2"><i class="fa-brands fa-whatsapp text-emerald-400"></i> Daftarkan Nomor WA</h3>
+        <button onclick="closeAddNumberModal()" class="text-slate-500 hover:text-slate-300"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+      <form id="form-add-number" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Nomor WhatsApp (Gunakan Kode Negara)</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500 text-xs font-bold">
+              62
+            </span>
+            <input type="text" id="add-wa-number" required class="w-full bg-slate-950/80 border border-slate-800 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 text-slate-100 placeholder:text-slate-600 rounded-xl py-3 pl-9 pr-4 text-sm outline-none transition duration-200" placeholder="81234567890">
+          </div>
+          <span class="text-[10px] text-slate-500 mt-1.5 block">Pastikan nomor diawali langsung setelah 62 (Contoh: 81234567890)</span>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Nama Pemilik / Deskripsi Nomor</label>
+          <input type="text" id="add-wa-name" required class="w-full bg-slate-950/80 border border-slate-800 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 text-slate-100 placeholder:text-slate-600 rounded-xl py-3 px-4 text-sm outline-none transition duration-200" placeholder="Contoh: Akun Bot Utama / CS Roy">
+        </div>
+        <div class="pt-2">
+          <button type="submit" class="w-full py-3 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-slate-950 font-extrabold rounded-xl transition duration-300 shadow-md">
+            Simpan Nomor ke Database
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD SUBORDINATE ACCOUNT -->
+  <div id="modal-add-user" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <!-- Backdrop -->
+    <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" onclick="closeAddUserModal()"></div>
+    <!-- Modal Box -->
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-md p-6 relative z-10">
+      <div class="flex justify-between items-center mb-6 border-b border-slate-800 pb-3">
+        <h3 class="text-md font-bold text-slate-100 flex items-center gap-2"><i class="fa-solid fa-user-plus text-purple-400"></i> Buat Akun Bawahan Baru</h3>
+        <button onclick="closeAddUserModal()" class="text-slate-500 hover:text-slate-300"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+      <form id="form-add-user" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Nama Lengkap</label>
+          <input type="text" id="new-user-name" required class="w-full bg-slate-950/80 border border-slate-800 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 text-slate-100 placeholder:text-slate-600 rounded-xl py-3 px-4 text-sm outline-none transition duration-200" placeholder="Contoh: Budi Santoso">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Email Akun</label>
+          <input type="email" id="new-user-email" required class="w-full bg-slate-950/80 border border-slate-800 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 text-slate-100 placeholder:text-slate-600 rounded-xl py-3 px-4 text-sm outline-none transition duration-200" placeholder="nama.bawahan@domain.com">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Password Akun</label>
+          <div class="relative">
+            <input type="password" id="new-user-password" required class="w-full bg-slate-950/80 border border-slate-800 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 text-slate-100 placeholder:text-slate-600 rounded-xl py-3 pl-4 pr-10 text-sm outline-none transition duration-200" placeholder="••••••••">
+            <button type="button" onclick="togglePasswordVisibility('new-user-password', this)" class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-500 hover:text-slate-300">
+              <i class="fa-solid fa-eye text-sm"></i>
+            </button>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Tingkatan Level Role</label>
+          <select id="new-user-role" required class="w-full bg-slate-950/80 border border-slate-800 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 text-slate-100 rounded-xl py-3 px-4 text-sm outline-none transition duration-200">
+            <!-- Options dynamically populated based on currentUser power hierarchy -->
+          </select>
+        </div>
+        <div class="pt-2">
+          <button type="submit" class="w-full py-3 bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-400 hover:to-indigo-400 text-slate-950 font-extrabold rounded-xl transition duration-300 shadow-md">
+            Daftarkan Akun
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- CONFIRMATION DIALOG (No window.confirm!) -->
+  <div id="confirm-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"></div>
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-sm p-6 relative z-10">
+      <div class="text-center space-y-4">
+        <div class="inline-flex p-3 bg-rose-500/10 text-rose-400 rounded-2xl">
+          <i id="confirm-icon" class="fa-solid fa-triangle-exclamation text-2xl"></i>
+        </div>
+        <h3 id="confirm-title" class="text-md font-bold text-slate-100">Apakah Anda Yakin?</h3>
+        <p id="confirm-desc" class="text-xs text-slate-400 leading-relaxed">Aksi ini tidak dapat dibatalkan.</p>
+        <div class="flex gap-3 pt-2">
+          <button id="confirm-cancel-btn" class="flex-1 py-2.5 bg-slate-950 hover:bg-slate-800 text-slate-300 font-bold text-xs rounded-xl border border-slate-800 transition duration-200">Batal</button>
+          <button id="confirm-ok-btn" class="flex-1 py-2.5 bg-rose-500 hover:bg-rose-400 text-slate-950 font-bold text-xs rounded-xl transition duration-200">Lanjutkan</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- FIREBASE SCRIPTS (Compat v11 modules) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { 
+      getAuth, 
+      onAuthStateChanged, 
+      signInWithEmailAndPassword, 
+      signInWithCustomToken, 
+      signInAnonymously,
+      GoogleAuthProvider, 
+      signInWithPopup, 
+      signOut
+    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { 
+      getFirestore, 
+      doc, 
+      setDoc, 
+      getDoc, 
+      getDocs, 
+      collection, 
+      onSnapshot, 
+      addDoc, 
+      updateDoc, 
+      deleteDoc,
+      query,
+      where
+    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    // Setup configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDAwpCQK0LewRRFydvz9ZH4INeaNRmNlqU",
+      authDomain: "server-media-75fdc.firebaseapp.com",
+      projectId: "server-media-75fdc",
+      storageBucket: "server-media-75fdc.firebasestorage.app",
+      messagingSenderId: "846086849982",
+      appId: "1:846086849982:web:0c8b00676f9f297a7b25ef",
+      measurementId: "G-1H1YDVB81T"
+    };
+
+    // Global variables
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'server-media-75fdc';
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let currentUser = null;
+    let currentUserRole = null; // 'dev', 'owner', 'staff', 'pt', 'res'
+    let currentNumberFilter = 'all'; // 'all' or 'mine'
+
+    let globalWAData = [];
+    let globalAccountsData = [];
+
+    // Role hierarchies
+    const rolePower = {
+      'dev': 5,
+      'owner': 4,
+      'staff': 3,
+      'pt': 2,
+      'res': 1
+    };
+
+    const roleLabels = {
+      'dev': 'DEVELOPER',
+      'owner': 'OWNER',
+      'staff': 'STAFF',
+      'pt': 'PARTNER (PT)',
+      'res': 'RESELLER'
+    };
+
+    // ----------------------------------------------------
+    // INITIALIZATION & AUTH LISTENER (Rule 3)
+    // ----------------------------------------------------
+    const initAuth = async () => {
+      try {
+        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+          await signInWithCustomToken(auth, __initial_auth_token);
+        }
+      } catch (err) {
+        console.warn("Custom token auth failed, awaiting standard or anonymous", err);
+      }
+    };
+    initAuth();
+
+    // Observe changes
+    onAuthStateChanged(auth, async (user) => {
+      document.getElementById('initial-loader').style.display = 'none';
+      if (user) {
+        currentUser = user;
+        await checkUserRole(user);
+      } else {
+        currentUser = null;
+        currentUserRole = null;
+        showLoginScreen();
+      }
+    });
+
+    // Determine roles & initialize data streams
+    async function checkUserRole(user) {
+      const email = user.email;
+
+      // Hardcoded Dev Verification (Rule & requirements check)
+      if (email === "deltaastra24@gmail.com") {
+        currentUserRole = 'dev';
+        setupSession(user, "Rayhan (DeltaAstra)", "dev");
+        return;
+      }
+
+      // Check sub-user Firestore database
+      try {
+        const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'accounts', user.uid);
+        const docSnap = await getDoc(docRef);
+        
+        if (docSnap.exists()) {
+          const userData = docSnap.data();
+          currentUserRole = userData.role;
+          setupSession(user, userData.name, userData.role);
+        } else {
+          // If logged in but profile doesn't exist, sign out to prevent limbo state
+          showToast('error', 'Akses ditolak! Akun Anda tidak terdaftar di database.');
+          signOut(auth);
+        }
+      } catch (e) {
+        console.error("Kesalahan sinkronisasi role: ", e);
+        showToast('error', 'Gagal memverifikasi tingkat akses akun.');
+        signOut(auth);
+      }
+    }
+
+    function setupSession(user, name, role) {
+      document.getElementById('auth-screen').style.display = 'none';
+      document.getElementById('main-app').style.display = 'flex';
+
+      // Welcome UI
+      document.getElementById('welcome-name').innerText = name;
+      document.getElementById('user-display-name').innerText = name;
+      
+      const roleBadge = document.getElementById('user-display-role');
+      roleBadge.innerText = roleLabels[role] || 'UNKNOWN';
+      roleBadge.className = `inline-block mt-0.5 px-2 py-0.5 text-[9px] font-extrabold tracking-wider rounded ${getRoleBadgeClass(role)}`;
+
+      // Setup Dashboard Perms Text
+      document.getElementById('stat-my-role').innerText = roleLabels[role];
+      document.getElementById('stat-my-permissions').innerHTML = `<i class="fa-solid fa-shield text-cyan-400 mr-1"></i> Izin Tingkat: ${role.toUpperCase()}`;
+
+      // Show/Hide Developer console link
+      const devConsoleBtn = document.getElementById('nav-dev-console');
+      const clearLogsBtn = document.getElementById('btn-clear-logs');
+      if (role === 'dev') {
+        devConsoleBtn.classList.remove('hidden');
+        clearLogsBtn.classList.remove('hidden');
+      } else {
+        devConsoleBtn.classList.add('hidden');
+        clearLogsBtn.classList.add('hidden');
+      }
+
+      // Hide add-user action for Reseller
+      const btnAddUser = document.getElementById('btn-open-add-user');
+      if (role === 'res') {
+        btnAddUser.classList.add('hidden');
+      } else {
+        btnAddUser.classList.remove('hidden');
+      }
+
+      // Start Realtime Database Streams (Rule 3)
+      startRealtimeStreams();
+      showToast('success', `Berhasil masuk sebagai ${roleLabels[role]}! 🎉`);
+    }
+
+    function showLoginScreen() {
+      document.getElementById('main-app').style.display = 'none';
+      document.getElementById('auth-screen').style.display = 'flex';
+    }
+
+    // ----------------------------------------------------
+    // REALTIME DATABASE SNAPSHOTS (Strict Path Rule 1 & Simple Queries Rule 2)
+    // ----------------------------------------------------
+    let numbersUnsubscribe = null;
+    let accountsUnsubscribe = null;
+    let logsUnsubscribe = null;
+
+    function startRealtimeStreams() {
+      // Unsubscribe existing first
+      if (numbersUnsubscribe) numbersUnsubscribe();
+      if (accountsUnsubscribe) accountsUnsubscribe();
+      if (logsUnsubscribe) logsUnsubscribe();
+
+      // Stream WhatsApp Numbers
+      const numbersRef = collection(db, 'artifacts', appId, 'public', 'data', 'whatsapp_numbers');
+      numbersUnsubscribe = onSnapshot(numbersRef, (snapshot) => {
+        const numbers = [];
+        snapshot.forEach((doc) => {
+          numbers.push({ id: doc.id, ...doc.data() });
+        });
+        globalWAData = numbers;
+        renderWhatsAppNumbers();
+        updateDashboardStats();
+        
+        // Populate raw JSON console for Dev
+        if (currentUserRole === 'dev') {
+          document.getElementById('raw-json-viewer').innerText = JSON.stringify(numbers, null, 2);
+        }
+      }, (error) => {
+        showToast('error', `Gagal membaca database nomor: ${error.message}`);
+      });
+
+      // Stream Accounts (Subordinates list)
+      const accountsRef = collection(db, 'artifacts', appId, 'public', 'data', 'accounts');
+      accountsUnsubscribe = onSnapshot(accountsRef, (snapshot) => {
+        const accounts = [];
+        snapshot.forEach((doc) => {
+          accounts.push({ id: doc.id, ...doc.data() });
+        });
+        globalAccountsData = accounts;
+        renderAccounts();
+        updateDashboardStats();
+      }, (error) => {
+        showToast('error', `Gagal membaca database akun: ${error.message}`);
+      });
+
+      // Stream Log Activities
+      const logsRef = collection(db, 'artifacts', appId, 'public', 'data', 'activity_logs');
+      logsUnsubscribe = onSnapshot(logsRef, (snapshot) => {
+        const logs = [];
+        snapshot.forEach((doc) => {
+          logs.push({ id: doc.id, ...doc.data() });
+        });
+        
+        // Sort logs in memory securely (Rule 2: no complex query orderBys)
+        logs.sort((a, b) => b.timestamp - a.timestamp);
+        
+        renderLogs(logs);
+      }, (error) => {
+        showToast('error', `Gagal memantau audit logs: ${error.message}`);
+      });
+    }
+
+    // ----------------------------------------------------
+    // STATS COUNTER UPDATES
+    // ----------------------------------------------------
+    function updateDashboardStats() {
+      // Total WhatsApp Numbers
+      document.getElementById('stat-total-numbers').innerText = globalWAData.length;
+
+      // Filter counts of Subordinate accounts (Staff & Partner) vs Reseller
+      const countSub = globalAccountsData.filter(acc => acc.role === 'staff' || acc.role === 'pt').length;
+      const countRes = globalAccountsData.filter(acc => acc.role === 'res').length;
+
+      document.getElementById('stat-total-subordinates').innerText = countSub;
+      document.getElementById('stat-total-resellers').innerText = countRes;
+    }
+
+    // ----------------------------------------------------
+    // RENDERING LOGIC
+    // ----------------------------------------------------
+    function getRoleBadgeClass(role) {
+      switch (role) {
+        case 'dev': return 'bg-rose-500/10 text-rose-400 border border-rose-500/20';
+        case 'owner': return 'bg-amber-500/10 text-amber-400 border border-amber-500/20';
+        case 'staff': return 'bg-purple-500/10 text-purple-400 border border-purple-500/20';
+        case 'pt': return 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
+        case 'res': return 'bg-blue-500/10 text-blue-400 border border-blue-500/20';
+        default: return 'bg-slate-500/10 text-slate-400 border border-slate-500/20';
+      }
+    }
+
+    // Render WhatsApp Numbers Table
+    function renderWhatsAppNumbers() {
+      const tbody = document.getElementById('numbers-table-body');
+      tbody.innerHTML = '';
+
+      let dataToRender = [...globalWAData];
+
+      // Rule 2 filter in-memory
+      if (currentNumberFilter === 'mine') {
+        dataToRender = dataToRender.filter(num => num.addedByUid === currentUser.uid);
+      }
+
+      if (dataToRender.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-slate-500 text-xs">Tidak ada data nomor WhatsApp terdaftar.</td></tr>`;
+        return;
+      }
+
+      dataToRender.forEach((item, index) => {
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-slate-900/40 transition duration-150";
+
+        // Access Controls: can this logged-in user delete this number?
+        // Everyone can delete their OWN numbers, or people higher up can delete.
+        // Let's implement standard deletion rights: Dev & Owner can delete all. 
+        // Others can only delete their own unless they are hierarchical parent (handled simply here).
+        const canDelete = (currentUserRole === 'dev' || currentUserRole === 'owner') || (item.addedByUid === currentUser.uid);
+
+        const deleteButton = canDelete 
+          ? `<button onclick="confirmDeleteNumber('${item.id}', '${item.phoneNumber}')" class="px-2.5 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-lg text-xs transition duration-200"><i class="fa-solid fa-trash-can"></i> Hapus</button>`
+          : `<span class="text-slate-600 text-[10px]"><i class="fa-solid fa-lock"></i> No Access</span>`;
+
+        tr.innerHTML = `
+          <td class="p-4 text-xs font-bold text-slate-500">${index + 1}</td>
+          <td class="p-4 text-xs font-mono font-bold text-emerald-400"><i class="fa-brands fa-whatsapp text-sm mr-1"></i>+62 ${item.phoneNumber}</td>
+          <td class="p-4 text-xs text-slate-300 font-semibold">${escapeHTML(item.name)}</td>
+          <td class="p-4 text-xs">
+            <span class="block text-slate-200 font-medium">${escapeHTML(item.addedByName)}</span>
+            <span class="inline-block mt-0.5 px-1.5 py-0.5 text-[8px] font-extrabold uppercase tracking-wide rounded ${getRoleBadgeClass(item.addedByRole)}">${item.addedByRole}</span>
+          </td>
+          <td class="p-4 text-xs text-slate-500">${formatDate(item.timestamp)}</td>
+          <td class="p-4 text-center">${deleteButton}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Render Subordinate Accounts Table
+    function renderAccounts() {
+      const tbody = document.getElementById('accounts-table-body');
+      tbody.innerHTML = '';
+
+      // Filter in-memory to only show subordinates that the current user is authorized to manage
+      // Dev -> sees everyone. Owner -> sees staff, pt, reseller. Staff -> sees pt, reseller. PT -> reseller.
+      const loggedPower = rolePower[currentUserRole] || 0;
+      let displayableAccounts = globalAccountsData.filter(acc => {
+        const targetPower = rolePower[acc.role] || 0;
+        return targetPower < loggedPower;
+      });
+
+      if (displayableAccounts.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" class="p-8 text-center text-slate-500 text-xs">Anda belum mendaftarkan atau memiliki akses bawahan saat ini.</td></tr>`;
+        return;
+      }
+
+      displayableAccounts.forEach((acc) => {
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-slate-900/40 transition duration-150";
+
+        // Deletion actions
+        const deleteBtn = `<button onclick="confirmDeleteAccount('${acc.id}', '${acc.name}')" class="px-2.5 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-lg text-xs transition duration-200"><i class="fa-solid fa-user-minus"></i> Pecat</button>`;
+
+        tr.innerHTML = `
+          <td class="p-4 text-xs font-bold text-slate-200 flex items-center gap-2">
+            <div class="w-7 h-7 bg-slate-800 text-slate-300 flex items-center justify-center font-bold text-xs rounded-lg">${acc.name.charAt(0).toUpperCase()}</div>
+            ${escapeHTML(acc.name)}
+          </td>
+          <td class="p-4 text-xs text-slate-400 font-mono">${escapeHTML(acc.email)}</td>
+          <td class="p-4 text-xs">
+            <span class="inline-block px-2 py-0.5 text-[9px] font-extrabold tracking-wider rounded ${getRoleBadgeClass(acc.role)}">${roleLabels[acc.role]}</span>
+          </td>
+          <td class="p-4 text-center">${deleteBtn}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Render Logs (Dashboard activity preview + logs screen)
+    function renderLogs(logs) {
+      const dashboardContainer = document.getElementById('dashboard-recent-logs');
+      const fullLogsContainer = document.getElementById('global-logs-container');
+
+      dashboardContainer.innerHTML = '';
+      fullLogsContainer.innerHTML = '';
+
+      if (logs.length === 0) {
+        dashboardContainer.innerHTML = `<p class="text-slate-600 text-center py-4">Belum ada rekaman log.</p>`;
+        fullLogsContainer.innerHTML = `<div class="p-6 text-center text-slate-500 text-xs">Belum ada rekaman log aktivitas.</div>`;
+        return;
+      }
+
+      // Populate dashboard logs preview (Max 4 logs)
+      const previewLogs = logs.slice(0, 4);
+      previewLogs.forEach(log => {
+        const div = document.createElement('div');
+        div.className = "flex gap-2 items-start border-l-2 border-slate-700 pl-3.5 py-0.5";
+        div.innerHTML = `
+          <div>
+            <p class="text-slate-300"><span class="font-bold text-slate-100">${escapeHTML(log.userName)}</span> ${escapeHTML(log.action)}</p>
+            <span class="text-[9px] text-slate-500 block mt-0.5">${formatDate(log.timestamp)}</span>
+          </div>
+        `;
+        dashboardContainer.appendChild(div);
+      });
+
+      // Populate full logs page
+      logs.forEach(log => {
+        const div = document.createElement('div');
+        div.className = "p-4 sm:p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 hover:bg-slate-900/20 transition duration-150";
+        div.innerHTML = `
+          <div class="flex items-start gap-3">
+            <div class="p-2 bg-slate-950/60 rounded-lg text-slate-400 mt-0.5 border border-slate-800">
+              <i class="fa-solid fa-history text-xs"></i>
+            </div>
+            <div>
+              <p class="text-xs text-slate-200 font-semibold"><span class="text-cyan-400 font-extrabold">${escapeHTML(log.userName)}</span> (${log.userRole.toUpperCase()}) ${escapeHTML(log.action)}</p>
+              <p class="text-[10px] text-slate-500 font-mono mt-1">UID: ${log.userUid}</p>
+            </div>
+          </div>
+          <span class="text-[10px] text-slate-500 shrink-0 font-medium bg-slate-950/40 px-2 py-1 rounded-lg border border-slate-800">${formatDate(log.timestamp)}</span>
+        `;
+        fullLogsContainer.appendChild(div);
+      });
+    }
+
+    // ----------------------------------------------------
+    // IN-MEMORY FILTERING & HELPER FUNCTIONS
+    // ----------------------------------------------------
+    window.filterNumbers = function() {
+      const q = document.getElementById('search-number-input').value.toLowerCase();
+      const rows = document.getElementById('numbers-table-body').getElementsByTagName('tr');
+
+      for (let i = 0; i < rows.length; i++) {
+        const numText = rows[i].innerText.toLowerCase();
+        if (numText.includes('tidak ada data') || numText.includes('sedang memproses')) continue;
+        if (numText.includes(q)) {
+          rows[i].style.display = "";
+        } else {
+          rows[i].style.display = "none";
+        }
+      }
+    };
+
+    window.setNumberFilter = function(filter) {
+      currentNumberFilter = filter;
+      document.getElementById('filter-num-all').className = filter === 'all' 
+        ? "px-3 py-1.5 text-[11px] font-bold rounded-lg transition duration-200 bg-cyan-400/10 text-cyan-400 border border-cyan-400/20 whitespace-nowrap" 
+        : "px-3 py-1.5 text-[11px] font-bold rounded-lg transition duration-200 text-slate-400 hover:text-slate-200 whitespace-nowrap";
+
+      document.getElementById('filter-num-mine').className = filter === 'mine' 
+        ? "px-3 py-1.5 text-[11px] font-bold rounded-lg transition duration-200 bg-cyan-400/10 text-cyan-400 border border-cyan-400/20 whitespace-nowrap" 
+        : "px-3 py-1.5 text-[11px] font-bold rounded-lg transition duration-200 text-slate-400 hover:text-slate-200 whitespace-nowrap";
+
+      renderWhatsAppNumbers();
+    };
+
+    // ----------------------------------------------------
+    // TAB SYSTEM & MULTI-PAGE VIEW (Standard switch cases)
+    // ----------------------------------------------------
+    window.switchTab = function(tabName) {
+      // Hide all windows
+      const tabs = ['dashboard', 'numbers', 'accounts', 'logs', 'dev-console'];
+      tabs.forEach(t => {
+        const element = document.getElementById(`window-${t}`);
+        if (element) element.classList.add('hidden');
+
+        const navBtn = document.getElementById(`nav-${t}`);
+        if (navBtn) {
+          navBtn.className = "w-full flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 text-slate-400 hover:text-slate-200 hover:bg-slate-800/40";
+        }
+      });
+
+      // Show targeted window
+      document.getElementById(`window-${tabName}`).classList.remove('hidden');
+
+      // Update sidebar active design
+      const activeNav = document.getElementById(`nav-${tabName}`);
+      if (activeNav) {
+        if (tabName === 'dev-console') {
+          activeNav.className = "w-full flex items-center gap-3 px-4 py-3 text-sm font-bold rounded-xl transition-all duration-200 text-rose-400 bg-rose-500/10 border-l-4 border-rose-500";
+        } else {
+          activeNav.className = "w-full flex items-center gap-3 px-4 py-3 text-sm font-bold rounded-xl transition-all duration-200 text-cyan-400 bg-cyan-400/10 border-l-4 border-cyan-400";
+        }
+      }
+
+      // Update Page title in header
+      const titles = {
+        'dashboard': 'Dashboard Overview',
+        'numbers': 'Manajemen Nomor WhatsApp',
+        'accounts': 'Manajemen Pengguna & Hirarki',
+        'logs': 'Audit Logs Keamanan',
+        'dev-console': 'Terminal Core Database'
+      };
+      document.getElementById('current-page-title').innerText = titles[tabName] || 'Access Portal';
+
+      // Close mobile menu sidebar if open
+      const sidebar = document.getElementById('sidebar');
+      if (window.innerWidth < 1024) {
+        sidebar.classList.add('hidden');
+      }
+    };
+
+    window.toggleMobileMenu = function() {
+      const sidebar = document.getElementById('sidebar');
+      sidebar.classList.toggle('hidden');
+    };
+
+    // Ensure responsive layout resizing
+    window.addEventListener('resize', () => {
+      const sidebar = document.getElementById('sidebar');
+      if (window.innerWidth >= 1024) {
+        sidebar.classList.remove('hidden');
+      } else {
+        sidebar.classList.add('hidden');
+      }
+    });
+
+    // ----------------------------------------------------
+    // AUTH LOGIC (GOOGLE & EMAIL)
+    // ----------------------------------------------------
+    window.switchLoginTab = function(type) {
+      const tabSub = document.getElementById('tab-sub');
+      const tabDev = document.getElementById('tab-dev');
+      const formSub = document.getElementById('login-sub-form');
+      const formDev = document.getElementById('login-dev-form');
+
+      if (type === 'dev') {
+        tabDev.className = "flex-1 py-2.5 text-xs font-semibold rounded-lg transition-all duration-300 text-cyan-400 bg-slate-900 border border-slate-800";
+        tabSub.className = "flex-1 py-2.5 text-xs font-semibold rounded-lg transition-all duration-300 text-slate-400 hover:text-slate-200";
+        formDev.classList.remove('hidden');
+        formSub.classList.add('hidden');
+      } else {
+        tabSub.className = "flex-1 py-2.5 text-xs font-semibold rounded-lg transition-all duration-300 text-cyan-400 bg-slate-900 border border-slate-800";
+        tabDev.className = "flex-1 py-2.5 text-xs font-semibold rounded-lg transition-all duration-300 text-slate-400 hover:text-slate-200";
+        formSub.classList.remove('hidden');
+        formDev.classList.add('hidden');
+      }
+    };
+
+    // Sign in sub-users with email and password
+    document.getElementById('form-login-email').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value.trim();
+      const pass = document.getElementById('login-password').value;
+
+      try {
+        await signInWithEmailAndPassword(auth, email, pass);
+      } catch (err) {
+        showToast('error', `Login gagal: Email atau Password salah!`);
+      }
+    });
+
+    // Sign in Developer using Google Sign In
+    document.getElementById('btn-google-login').addEventListener('click', async () => {
+      const provider = new GoogleAuthProvider();
+      try {
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+        
+        // Strict system safety constraint
+        if (user.email !== "deltaastra24@gmail.com") {
+          showToast('error', 'Akses Pengembang Ditolak! Akun ini bukan Developer utama.');
+          await signOut(auth);
+        }
+      } catch (err) {
+        showToast('error', `Gagal masuk dengan Google: ${err.message}`);
+      }
+    });
+
+    // Logout
+    document.getElementById('btn-logout').addEventListener('click', () => {
+      signOut(auth).then(() => {
+        showToast('success', 'Berhasil keluar dari portal keamanan.');
+      });
+    });
+
+    // ----------------------------------------------------
+    // DATABASE WRITE OPERATIONS & AUDIT TRAIL LOGGING
+    // ----------------------------------------------------
+    async function writeAuditLog(action) {
+      try {
+        const logsRef = collection(db, 'artifacts', appId, 'public', 'data', 'activity_logs');
+        await addDoc(logsRef, {
+          timestamp: Date.now(),
+          userUid: currentUser.uid,
+          userName: currentUser.email === 'deltaastra24@gmail.com' ? 'Rayhan (DeltaAstra)' : currentUser.email,
+          userRole: currentUserRole,
+          action: action
+        });
+      } catch (err) {
+        console.error("Gagal menulis log audit", err);
+      }
+    }
+
+    // Modal Add WhatsApp Number
+    window.openAddNumberModal = function() {
+      document.getElementById('modal-add-number').classList.remove('hidden');
+    };
+
+    window.closeAddNumberModal = function() {
+      document.getElementById('modal-add-number').classList.add('hidden');
+      document.getElementById('form-add-number').reset();
+    };
+
+    // Form Submit add number
+    document.getElementById('form-add-number').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      let phone = document.getElementById('add-wa-number').value.trim();
+      const name = document.getElementById('add-wa-name').value.trim();
+
+      // Clean prefix representation if users write it manually
+      phone = phone.replace(/[^0-9]/g, '');
+      if (phone.startsWith('62')) {
+        phone = phone.substring(2);
+      } else if (phone.startsWith('0')) {
+        phone = phone.substring(1);
+      }
+
+      if (phone.length < 9 || phone.length > 14) {
+        showToast('error', 'Format nomor WhatsApp tidak valid!');
+        return;
+      }
+
+      try {
+        const numbersRef = collection(db, 'artifacts', appId, 'public', 'data', 'whatsapp_numbers');
+        
+        // Check if number already whitelisted in-memory
+        const exists = globalWAData.some(n => n.phoneNumber === phone);
+        if (exists) {
+          showToast('error', `Nomor +62 ${phone} sudah terdaftar sebelumnya!`);
+          return;
+        }
+
+        const authorName = currentUser.email === 'deltaastra24@gmail.com' ? 'Rayhan (DeltaAstra)' : (globalAccountsData.find(a => a.id === currentUser.uid)?.name || currentUser.email);
+
+        await addDoc(numbersRef, {
+          phoneNumber: phone,
+          name: name,
+          timestamp: Date.now(),
+          addedByUid: currentUser.uid,
+          addedByName: authorName,
+          addedByRole: currentUserRole
+        });
+
+        await writeAuditLog(`mendaftarkan nomor izin WhatsApp baru (+62 ${phone})`);
+        showToast('success', 'Nomor WhatsApp berhasil diizinkan!');
+        closeAddNumberModal();
+      } catch (err) {
+        showToast('error', `Gagal mendaftarkan nomor: ${err.message}`);
+      }
+    });
+
+    // Confirm deletion of WhatsApp Number
+    window.confirmDeleteNumber = function(id, phone) {
+      showConfirmationModal(
+        'fa-trash-can',
+        'Hapus Izin Nomor?',
+        `Apakah Anda yakin ingin menghapus akses izin untuk nomor +62 ${phone}? Nomor ini tidak akan bisa menggunakan bot lagi.`,
+        async () => {
+          try {
+            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'whatsapp_numbers', id);
+            await deleteDoc(docRef);
+            await writeAuditLog(`menghapus izin akses nomor WhatsApp (+62 ${phone})`);
+            showToast('success', 'Akses nomor WhatsApp berhasil dinonaktifkan.');
+          } catch (err) {
+            showToast('error', `Gagal menghapus nomor: ${err.message}`);
+          }
+        }
+      );
+    };
+
+    // ----------------------------------------------------
+    // SECURE CREATION OF SUB-USER (Using Secondary App trick!)
+    // ----------------------------------------------------
+    window.openAddUserModal = function() {
+      const select = document.getElementById('new-user-role');
+      select.innerHTML = '';
+
+      // Check current logged role power
+      const loggedPower = rolePower[currentUserRole] || 0;
+
+      // Filter roles current user is allowed to create
+      const rolesToOptions = [];
+      for (const [r, label] of Object.entries(roleLabels)) {
+        if (r === 'dev') continue; // Nobody can create Dev
+        const targetPower = rolePower[r];
+        if (targetPower < loggedPower) {
+          rolesToOptions.push({ value: r, text: label });
+        }
+      }
+
+      rolesToOptions.forEach(opt => {
+        const o = document.createElement('option');
+        o.value = opt.value;
+        o.text = opt.text;
+        select.appendChild(o);
+      });
+
+      document.getElementById('modal-add-user').classList.remove('hidden');
+    };
+
+    window.closeAddUserModal = function() {
+      document.getElementById('modal-add-user').classList.add('hidden');
+      document.getElementById('form-add-user').reset();
+    };
+
+    // Create custom user email logic safely (Preventing secondary app session hijack!)
+    document.getElementById('form-add-user').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('new-user-name').value.trim();
+      const email = document.getElementById('new-user-email').value.trim();
+      const pass = document.getElementById('new-user-password').value;
+      const role = document.getElementById('new-user-role').value;
+
+      try {
+        // Show loading toast state
+        showToast('info', 'Sedang memproses pendaftaran user baru...');
+
+        // ----------------------------------------------------
+        // THE LEGENDARY SECONDARY APP CREATION METHOD
+        // Since we are running in a client-side sandbox, we establish a secondary 
+        // Firebase Auth instance temporarily to register the user without 
+        // logging out the current main administrator session!
+        // ----------------------------------------------------
+        const secondaryApp = initializeApp(firebaseConfig, "TempRegistrationApp");
+        const secondaryAuth = getAuth(secondaryApp);
+        
+        // Import dynamic functions for secondary creation
+        const { createUserWithEmailAndPassword, signOut: tempSignOut } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js");
+
+        // Create secondary account credentials
+        const tempCreds = await createUserWithEmailAndPassword(secondaryAuth, email, pass);
+        const newUid = tempCreds.user.uid;
+
+        // Disconnect secondary instance quickly to prevent session collision
+        await tempSignOut(secondaryAuth);
+
+        // Store role mappings to Firestore artifacts list (Rule 1: Path Structure)
+        const userDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'accounts', newUid);
+        await setDoc(userDocRef, {
+          name: name,
+          email: email,
+          role: role,
+          createdByUid: currentUser.uid,
+          createdByName: currentUser.email === 'deltaastra24@gmail.com' ? 'Rayhan (DeltaAstra)' : currentUser.email,
+          timestamp: Date.now()
+        });
+
+        await writeAuditLog(`membuat akun baru dengan level ${role.toUpperCase()} (${name})`);
+        showToast('success', `Akun bawahan baru (${name}) berhasil dibuat! 👤`);
+        closeAddUserModal();
+      } catch (err) {
+        showToast('error', `Gagal mendaftarkan akun bawahan: ${err.message}`);
+      }
+    });
+
+    // Confirm Deletion of Subordinate Account
+    window.confirmDeleteAccount = function(id, name) {
+      showConfirmationModal(
+        'fa-user-slash',
+        'Pecat Bawahan?',
+        `Apakah Anda yakin ingin mematikan akses & menghapus akun bawahan atas nama "${name}"? Seluruh kredensialnya akan dinonaktifkan.`,
+        async () => {
+          try {
+            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'accounts', id);
+            await deleteDoc(docRef);
+            await writeAuditLog(`menghapus akses akun bawahan (${name})`);
+            showToast('success', `Akses akun "${name}" berhasil dinonaktifkan.`);
+          } catch (err) {
+            showToast('error', `Gagal menonaktifkan akun: ${err.message}`);
+          }
+        }
+      );
+    };
+
+    // ----------------------------------------------------
+    // EMERGENCY PURGE & DEV COMMANDS
+    // ----------------------------------------------------
+    window.emergencyPurgeNumbers = function() {
+      if (currentUserRole !== 'dev') {
+        showToast('error', 'Hanya pengembang inti (Dev) yang diizinkan menggunakan fungsi ini.');
+        return;
+      }
+
+      showConfirmationModal(
+        'fa-radiation',
+        'BERBAHAYA: Purge Database?',
+        'PERINGATAN KERAS! Anda akan menghapus seluruh data nomor WhatsApp dari database server secara permanen. Lanjutkan aksi ekstrim ini?',
+        async () => {
+          try {
+            showToast('info', 'Pembersihan massal dimulai...');
+            
+            // Loop and delete each whitelisted document (Rule 2 conform: fetch all simply first)
+            const promises = globalWAData.map(async (num) => {
+              const dRef = doc(db, 'artifacts', appId, 'public', 'data', 'whatsapp_numbers', num.id);
+              return deleteDoc(dRef);
+            });
+
+            await Promise.all(promises);
+            await writeAuditLog(`melakukan EMERGENCY PURGE massal menghapus seluruh database nomor WA!`);
+            showToast('success', 'Pembersihan database massal berhasil dirampungkan!');
+          } catch (err) {
+            showToast('error', `Gagal melakukan pembersihan: ${err.message}`);
+          }
+        }
+      );
+    };
+
+    window.clearLogsIfDev = function() {
+      if (currentUserRole !== 'dev') return;
+      
+      showConfirmationModal(
+        'fa-trash',
+        'Hapus Semua Catatan Logs?',
+        'Anda akan menghapus seluruh rekaman log aktivitas. Lanjutkan?',
+        async () => {
+          try {
+            // Get all logs in memory first
+            const logsRef = collection(db, 'artifacts', appId, 'public', 'data', 'activity_logs');
+            const snap = await getDocs(logsRef);
+            
+            const promises = [];
+            snap.forEach((doc) => {
+              promises.push(deleteDoc(doc.ref));
+            });
+
+            await Promise.all(promises);
+            showToast('success', 'Semua riwayat audit log dibersihkan!');
+          } catch (err) {
+            showToast('error', `Gagal membersihkan logs: ${err.message}`);
+          }
+        }
+      );
+    };
+
+    // ----------------------------------------------------
+    // UI UTILITY FUNCTIONS (Toasts, Modals, Formatters)
+    // ----------------------------------------------------
+    window.togglePasswordVisibility = function(inputId, button) {
+      const input = document.getElementById(inputId);
+      const icon = button.querySelector('i');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'fa-solid fa-eye-slash text-sm';
+      } else {
+        input.type = 'password';
+        icon.className = 'fa-solid fa-eye text-sm';
+      }
+    };
+
+    window.showToast = function(type, message) {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      
+      let bg = 'bg-slate-900 border-slate-800';
+      let icon = '<i class="fa-solid fa-circle-info text-cyan-400"></i>';
+
+      if (type === 'success') {
+        bg = 'bg-slate-900 border-emerald-500/30';
+        icon = '<i class="fa-solid fa-circle-check text-emerald-400"></i>';
+      } else if (type === 'error') {
+        bg = 'bg-slate-900 border-rose-500/30';
+        icon = '<i class="fa-solid fa-circle-exclamation text-rose-400"></i>';
+      } else if (type === 'info') {
+        bg = 'bg-slate-900 border-blue-500/30';
+        icon = '<i class="fa-solid fa-circle-nodes text-blue-400"></i>';
+      }
+
+      toast.className = `flex items-center gap-3 p-4 rounded-2xl border ${bg} shadow-xl backdrop-blur-md animate-slide-in text-xs text-slate-200 transition duration-300`;
+      toast.innerHTML = `
+        ${icon}
+        <span class="flex-1 font-semibold leading-relaxed">${message}</span>
+        <button onclick="this.parentElement.remove()" class="text-slate-500 hover:text-slate-300"><i class="fa-solid fa-xmark"></i></button>
+      `;
+
+      container.appendChild(toast);
+      
+      // Auto dismiss after 4.5 seconds
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(-10px)';
+        setTimeout(() => toast.remove(), 300);
+      }, 4500);
+    };
+
+    // Responsive Modal Dialog System
+    let confirmCallback = null;
+    window.showConfirmationModal = function(iconClass, title, desc, onOk) {
+      document.getElementById('confirm-icon').className = `fa-solid ${iconClass} text-2xl`;
+      document.getElementById('confirm-title').innerText = title;
+      document.getElementById('confirm-desc').innerText = desc;
+      
+      const modal = document.getElementById('confirm-modal');
+      modal.classList.remove('hidden');
+      
+      confirmCallback = onOk;
+    };
+
+    document.getElementById('confirm-cancel-btn').addEventListener('click', () => {
+      document.getElementById('confirm-modal').classList.add('hidden');
+      confirmCallback = null;
+    });
+
+    document.getElementById('confirm-ok-btn').addEventListener('click', async () => {
+      document.getElementById('confirm-modal').classList.add('hidden');
+      if (confirmCallback) {
+        await confirmCallback();
+      }
+      confirmCallback = null;
+    });
+
+    // Formatting Helpers
+    function formatDate(timestamp) {
+      if (!timestamp) return '-';
+      const d = new Date(timestamp);
+      return d.toLocaleString('id-ID', { 
+        day: '2-digit', 
+        month: 'short', 
+        year: 'numeric', 
+        hour: '2-digit', 
+        minute: '2-digit'
+      }) + ' WIB';
+    }
+
+    function escapeHTML(str) {
+      if (!str) return '';
+      return str.replace(/[&<>'"]/g, 
+        tag => ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          "'": '&#39;',
+          '"': '&quot;'
+        }[tag] || tag)
+      );
+    }
+
+  </script>
+</body>
+</html>
