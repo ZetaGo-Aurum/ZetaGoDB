@@ -4,11 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ZetaGo-DB // Secure Access Portal</title>
-  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
@@ -17,7 +14,6 @@
     .font-mono {
       font-family: 'JetBrains Mono', monospace;
     }
-    /* Custom Scrollbar ala CachyOS KDE */
     ::-webkit-scrollbar {
       width: 6px;
       height: 6px;
@@ -32,7 +28,6 @@
     ::-webkit-scrollbar-thumb:hover {
       background: #38bdf8;
     }
-    /* Cyber Glow Effects */
     .glow-cyan {
       box-shadow: 0 0 20px rgba(56, 189, 248, 0.15);
     }
@@ -48,10 +43,8 @@
 </head>
 <body class="bg-[#020617] text-slate-100 min-h-screen overflow-x-hidden selection:bg-sky-500 selection:text-slate-900 cyber-grid">
 
-  <!-- NOTIFICATION TOAST SYSTEM -->
   <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full"></div>
 
-  <!-- INITIAL SHIELD LOADING SCREEN -->
   <div id="initial-loader" class="fixed inset-0 bg-[#020617] z-50 flex flex-col items-center justify-center">
     <div class="relative flex items-center justify-center">
       <div class="animate-spin rounded-full h-20 w-20 border-t-2 border-b-2 border-sky-400"></div>
@@ -63,7 +56,6 @@
     <p class="text-[10px] text-slate-500 mt-2 font-mono uppercase tracking-widest animate-pulse">Decrypting core configurations...</p>
   </div>
 
-  <!-- AUTHENTICATION SCREEN (LOGIN) -->
   <div id="auth-screen" class="hidden min-h-screen flex items-center justify-center px-4 py-12 relative overflow-hidden">
     <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-sky-500/5 rounded-full blur-3xl animate-pulse"></div>
     <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-500/5 rounded-full blur-3xl animate-pulse"></div>
@@ -77,7 +69,6 @@
         <p class="text-xs text-slate-400 mt-1 uppercase tracking-widest">Database Otorisasi WhatsApp Bot</p>
       </div>
 
-      <!-- Auth Tab System -->
       <div class="flex p-1 bg-slate-950/80 border border-slate-800/60 rounded-xl mb-6 font-mono text-[11px]">
         <button id="tab-sub" onclick="switchLoginTab('sub')" class="flex-1 py-2.5 font-bold rounded-lg transition-all duration-300 text-sky-400 bg-slate-900 border border-slate-800/80">
           <i class="fa-solid fa-users mr-1"></i> PORTAL AKSES
@@ -87,7 +78,6 @@
         </button>
       </div>
 
-      <!-- DEV LOGIN (GOOGLE) -->
       <div id="login-dev-form" class="hidden space-y-6">
         <div class="text-center py-4 bg-slate-950/60 border border-slate-800/40 rounded-2xl">
           <i class="fa-brands fa-google text-3xl text-sky-400 mb-3 block animate-pulse"></i>
@@ -104,7 +94,6 @@
         </button>
       </div>
 
-      <!-- OWNER/STAFF/PT/RESELLER LOGIN -->
       <div id="login-sub-form" class="space-y-4">
         <form id="form-login-email" class="space-y-4">
           <div>
@@ -142,16 +131,12 @@
     </div>
   </div>
 
-  <!-- MAIN APP PLATFORM -->
   <div id="main-app" class="hidden min-h-screen flex flex-col lg:flex-row">
     
-    <!-- BACKDROP OVERLAY FOR MOBILE SIDEBAR DRAWER -->
     <div id="sidebar-backdrop" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-30 lg:hidden hidden transition-opacity duration-300" onclick="toggleMobileMenu()"></div>
 
-    <!-- SIDEBAR NAVIGATION (Sliding Drawer on Mobile with Premium CSS Transitions) -->
     <aside id="sidebar" class="fixed lg:sticky top-0 left-0 bottom-0 z-40 w-72 bg-slate-950/95 lg:bg-slate-950/75 border-r border-slate-800/80 flex flex-col justify-between p-6 transition-transform duration-300 ease-in-out -translate-x-full lg:translate-x-0 h-screen shrink-0 backdrop-blur-xl">
       <div>
-        <!-- Brand Header -->
         <div class="flex items-center justify-between mb-8">
           <div class="flex items-center gap-3">
             <div class="p-2.5 bg-sky-500/10 border border-sky-500/30 text-sky-400 rounded-xl">
@@ -162,13 +147,11 @@
               <span class="text-[9px] text-slate-500 font-bold uppercase tracking-widest block -mt-1">SECURE PORTAL</span>
             </div>
           </div>
-          <!-- Close Button Mobile Only -->
           <button class="lg:hidden text-slate-400 hover:text-sky-400 p-2 rounded-lg hover:bg-slate-900/50 transition-colors" onclick="toggleMobileMenu()">
             <i class="fa-solid fa-xmark text-lg"></i>
           </button>
         </div>
 
-        <!-- User Card -->
         <div class="bg-slate-900/60 border border-slate-800/60 rounded-2xl p-4 mb-6">
           <div class="flex items-center gap-3">
             <div class="relative">
@@ -187,7 +170,6 @@
           </div>
         </div>
 
-        <!-- Navigation Menus -->
         <nav class="space-y-1.5 font-mono text-xs" id="sidebar-nav">
           <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-3 px-4 py-3 font-medium rounded-xl transition-all duration-200 text-sky-400 bg-sky-400/10 border-l-4 border-sky-400">
             <i class="fa-solid fa-chart-pie w-5 text-center"></i> DASHBOARD
@@ -201,14 +183,12 @@
           <button onclick="switchTab('logs')" id="nav-logs" class="w-full flex items-center gap-3 px-4 py-3 font-medium rounded-xl transition-all duration-200 text-slate-400 hover:text-slate-200 hover:bg-slate-900/40">
             <i class="fa-solid fa-shield-halved w-5 text-center text-amber-400"></i> SECURITY LOGS
           </button>
-          <!-- Dev Console strictly hidden to Owner / Staff / Reseller -->
           <button id="nav-dev-console" onclick="switchTab('dev-console')" class="hidden w-full flex items-center gap-3 px-4 py-3 font-medium rounded-xl transition-all duration-200 text-rose-400 hover:text-rose-300 hover:bg-rose-500/10">
             <i class="fa-solid fa-terminal w-5 text-center animate-pulse"></i> DEV TERMINAL
           </button>
         </nav>
       </div>
 
-      <!-- Logout -->
       <div class="mt-8 pt-6 border-t border-slate-800/80">
         <button id="btn-logout" class="w-full flex items-center justify-center gap-2 px-4 py-3 text-xs font-bold text-rose-400 hover:text-rose-300 bg-rose-500/5 hover:bg-rose-500/10 border border-rose-500/10 rounded-xl transition duration-200 font-mono">
           <i class="fa-solid fa-power-off"></i> KELUAR SYSTEM
@@ -217,18 +197,14 @@
       </div>
     </aside>
 
-    <!-- MAIN DASHBOARD CONTENT -->
     <main class="flex-1 flex flex-col min-w-0 bg-[#020617]">
-      <!-- Header Bar (Optimized Navbar layout on Mobile) -->
       <header class="h-16 border-b border-slate-800/80 flex items-center justify-between px-4 sm:px-6 bg-slate-950/30 backdrop-blur-xl relative z-20">
         <div class="flex items-center gap-1.5 sm:gap-3">
-          <!-- Hamburger Button Mobile Only with elegant hover effect -->
           <button class="lg:hidden text-slate-400 hover:text-sky-400 p-2 rounded-xl hover:bg-slate-900/40 transition-all duration-200 active:scale-95" onclick="toggleMobileMenu()">
             <i class="fa-solid fa-bars text-lg"></i>
           </button>
           <h2 id="current-page-title" class="text-xs sm:text-sm font-black text-slate-200 tracking-[0.15em] uppercase font-mono">DASHBOARD OVERVIEW</h2>
         </div>
-        <!-- Status Indicator -->
         <div class="flex items-center gap-3 font-mono shrink-0">
           <div class="flex items-center gap-2 px-3 py-1.5 bg-slate-900/80 border border-slate-800/80 rounded-lg">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -237,10 +213,8 @@
         </div>
       </header>
 
-      <!-- CONTENT WINDOWS -->
       <div class="flex-1 p-4 sm:p-6 overflow-y-auto max-w-7xl w-full mx-auto space-y-6">
 
-        <!-- ==================== WINDOW: DASHBOARD OVERVIEW ==================== -->
         <section id="window-dashboard" class="space-y-6">
           <div class="relative overflow-hidden bg-gradient-to-r from-slate-950 via-slate-900 to-indigo-950/80 border border-slate-800/80 rounded-3xl p-6 sm:p-8 glow-cyan">
             <div class="absolute -right-20 -top-20 w-80 h-80 bg-sky-500/10 rounded-full blur-3xl"></div>
@@ -258,7 +232,6 @@
             </div>
           </div>
 
-          <!-- Statistics Counters Grid -->
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 font-mono">
             <div class="bg-slate-900/20 border border-slate-800/60 rounded-2xl p-5 hover:border-slate-700/80 transition duration-300">
               <div class="flex justify-between items-start">
@@ -358,7 +331,6 @@
           </div>
         </section>
 
-        <!-- ==================== WINDOW: WHATSAPP NUMBERS ==================== -->
         <section id="window-numbers" class="hidden space-y-6">
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/10 p-4 border border-slate-800/60 rounded-2xl font-mono">
             <div>
@@ -379,7 +351,6 @@
                 <input type="text" id="search-number-input" onkeyup="filterNumbers()" class="w-full bg-slate-950/80 border border-slate-800 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 text-slate-100 placeholder:text-slate-700 rounded-xl py-2.5 pl-10 pr-4 text-xs outline-none transition duration-200" placeholder="Cari nomor/nama...">
               </div>
               
-              <!-- Filter nomor, hanya dimunculkan jika role === 'dev' -->
               <div id="number-filter-tabs" class="hidden flex gap-2 w-full md:w-auto overflow-x-auto pb-1 md:pb-0 font-mono">
                 <button onclick="setNumberFilter('all')" id="filter-num-all" class="px-3.5 py-1.5 text-[10px] font-bold rounded-lg transition duration-200 bg-sky-400/10 text-sky-400 border border-sky-400/20 whitespace-nowrap uppercase tracking-wider">SEMUA NOMOR</button>
                 <button onclick="setNumberFilter('mine')" id="filter-num-mine" class="px-3.5 py-1.5 text-[10px] font-bold rounded-lg transition duration-200 text-slate-500 hover:text-slate-300 whitespace-nowrap uppercase tracking-wider">SAYA INPUT</button>
@@ -408,7 +379,6 @@
           </div>
         </section>
 
-        <!-- ==================== WINDOW: STRUCTURAL ACCOUNT HIERARCHY ==================== -->
         <section id="window-accounts" class="hidden space-y-6">
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/10 p-4 border border-slate-800/60 rounded-2xl font-mono">
             <div>
@@ -474,7 +444,6 @@
           </div>
         </section>
 
-        <!-- ==================== WINDOW: SECURITY LOGS ==================== -->
         <section id="window-logs" class="hidden space-y-6">
           <div class="bg-slate-900/10 p-4 border border-slate-800/60 rounded-2xl font-mono">
             <h1 class="text-sm font-black text-slate-100 uppercase tracking-widest">AUDIT SECURITY LOGS</h1>
@@ -494,7 +463,6 @@
           </div>
         </section>
 
-        <!-- ==================== WINDOW: DEVELOPER TERMINAL ==================== -->
         <section id="window-dev-console" class="hidden space-y-6">
           <div class="bg-rose-500/5 border border-rose-500/15 p-5 rounded-2xl flex items-center gap-4 font-mono">
             <div class="p-3 bg-rose-500/10 text-rose-400 rounded-xl">
@@ -520,7 +488,6 @@
                 </div>
               </div>
 
-              <!-- BOT API Link Card -->
               <div class="bg-slate-950/40 border border-slate-800/60 p-4 rounded-xl space-y-3">
                 <span class="text-[10px] font-black text-sky-400 uppercase tracking-widest block"><i class="fa-solid fa-link"></i> INSTANT BOT API LINK</span>
                 <p class="text-[10px] text-slate-500">Salin link endpoint API di bawah untuk diletakkan ke dalam konfigurasi bot WhatsApp kamu:</p>
@@ -555,7 +522,6 @@
     </main>
   </div>
 
-  <!-- MODAL: ADD WHATSAPP NUMBER -->
   <div id="modal-add-number" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
     <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" onclick="closeAddNumberModal()"></div>
     <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-md p-6 relative z-10 glow-cyan">
@@ -587,7 +553,6 @@
     </div>
   </div>
 
-  <!-- MODAL: ADD BAWAHAN ACCOUNT -->
   <div id="modal-add-user" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
     <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" onclick="closeAddUserModal()"></div>
     <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-md p-6 relative z-10">
@@ -598,16 +563,16 @@
       <form id="form-add-user" class="space-y-4">
         <div>
           <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 font-mono">Nama Lengkap</label>
-          <input type="text" id="new-user-name" required class="w-full bg-slate-950/80 border border-slate-800 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 text-slate-100 placeholder:text-slate-700 rounded-xl py-3 px-4 text-xs outline-none transition duration-200 font-mono" placeholder="Nama Lengkap">
+          <input type="text" id="new-user-name" required class="w-full bg-slate-950/80 border border-sky-500/20 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 text-slate-100 placeholder:text-slate-700 rounded-xl py-3 px-4 text-xs outline-none transition duration-200 font-mono" placeholder="Nama Lengkap">
         </div>
         <div>
           <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 font-mono">Email Akun</label>
-          <input type="email" id="new-user-email" required class="w-full bg-slate-950/80 border border-slate-800 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 text-slate-100 placeholder:text-slate-700 rounded-xl py-3 px-4 text-xs outline-none transition duration-200 font-mono" placeholder="email@zetago.com">
+          <input type="email" id="new-user-email" required class="w-full bg-slate-950/80 border border-sky-500/20 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 text-slate-100 placeholder:text-slate-700 rounded-xl py-3 px-4 text-xs outline-none transition duration-200 font-mono" placeholder="email@zetago.com">
         </div>
         <div>
           <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 font-mono">Password Akun</label>
           <div class="relative">
-            <input type="password" id="new-user-password" required class="w-full bg-slate-950/80 border border-slate-800 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 text-slate-100 placeholder:text-slate-700 rounded-xl py-3 pl-4 pr-10 text-xs outline-none transition duration-200 font-mono" placeholder="••••••••">
+            <input type="password" id="new-user-password" required class="w-full bg-slate-950/80 border border-sky-500/20 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 text-slate-100 placeholder:text-slate-700 rounded-xl py-3 pl-4 pr-10 text-xs outline-none transition duration-200 font-mono" placeholder="••••••••">
             <button type="button" onclick="togglePasswordVisibility('new-user-password', this)" class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-500 hover:text-slate-300">
               <i class="fa-solid fa-eye text-xs"></i>
             </button>
@@ -615,8 +580,7 @@
         </div>
         <div>
           <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 font-mono">Tingkatan Level Role</label>
-          <select id="new-user-role" required class="w-full bg-slate-950/80 border border-slate-800 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 text-slate-100 rounded-xl py-3 px-4 text-xs outline-none transition duration-200 font-mono">
-            <!-- Options dynamically populated -->
+          <select id="new-user-role" required class="w-full bg-slate-950/80 border border-sky-500/20 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 text-slate-100 rounded-xl py-3 px-4 text-xs outline-none transition duration-200 font-mono">
           </select>
         </div>
         <div class="pt-2 font-mono">
@@ -628,7 +592,6 @@
     </div>
   </div>
 
-  <!-- CONFIRMATION DIALOG -->
   <div id="confirm-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
     <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"></div>
     <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-sm p-6 relative z-10">
@@ -646,7 +609,6 @@
     </div>
   </div>
 
-  <!-- FIREBASE SCRIPTS (Compat v11 modules) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
     import { 
@@ -673,26 +635,14 @@
       deleteDoc 
     } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-    // =================================------------------
-    // SECURE XOR OBFUSCATION FOR SENSITIVE PARAMETERS
-    // Menyembunyikan Email Developer secara berlapis (XOR 42 / Bulletproof!)
-    // =================================------------------
-    const _zEmail = [78, 79, 66, 90, 123, 123, 73, 90, 88, 123, 24, 30, 106, 77, 71, 123, 67, 66, 4, 73, 69, 71].map(x => String.fromCharCode(x ^ 42)).join('');
+    const _zEmail = [110, 111, 66, 90, 123, 123, 73, 90, 88, 123, 24, 30, 106, 77, 71, 123, 67, 66, 4, 73, 69, 71].map(x => String.fromCharCode(x ^ 42)).join('');
 
-    // ----------------------------------------------------
-    // SECURE REVERSED CONFIG FOR PREVIEW/SANDBOX FALLBACK
-    // ----------------------------------------------------
     function getFallbackConfig() {
-      // MASTER FIX: Menggunakan skema Double-Split Base64 JSON yang 100% presisi bebas dari bias typo karakter pemisah!
       const p1 = "eyJhcGlLZXkiOiJBSXphU3lEQXdwQ1BLMExld1JSRnlkdno5Wkg0SU5lYU5SbU5scVUiLCJhdXRoRG9tYWluIjoic2VydmVyLW1lZGlhLTc1ZmRjLmZpcmViYXN0YXBwLmNvbSIsInByb2plY3RJZCI6InNlcnZlci1tZWRpYS03NWZkYyIsInN0b3JhZ2VCdWNrZXQiOiJzZXJ2ZXItbWVkaWEtNzVmZGMu";
       const p2 = "ZmlyZWJhc3RvcmFnZS5hcHAiLCJtZXNzYWdpbmdTZW5kZXJJZCI6Ijg0NjA4Njg0OTk4MiIsImFwcElkIjoiMTo4NDYwODY4NDk5ODI6d2ViOjBjOGIwMDY3NmY5ZjI5N2E3YjI1ZWYiLCJtZWFzdXJlbWVudElkIjoiRy0xSDFZRFZCODFUIn0=";
       return JSON.parse(atob(p1 + p2));
     }
 
-    // =================================------------------
-    // CRITICAL: SINKRONISASI INITIALIZATION (Satu Sesi Tunggal)
-    // Mencegah Firefox Pop-up blocker memblokir login popup Google!
-    // =================================------------------
     let auth = null;
     let db = null;
     let currentUser = null;
@@ -706,17 +656,11 @@
     const rolePower = { 'dev': 5, 'owner': 4, 'staff': 3, 'pt': 2, 'res': 1 };
     const roleLabels = { 'dev': 'DEVELOPER (DEV)', 'owner': 'OWNER', 'staff': 'STAFF', 'pt': 'PARTNER (PT)', 'res': 'RESELLER' };
 
-    // ----------------------------------------------------
-    // ROBUST EMAIL VALIDATION HELPER (Case-Insensitive & Trimmed!)
-    // ----------------------------------------------------
     function isDevEmail(emailStr) {
       if (!emailStr) return false;
       return emailStr.toLowerCase().trim() === _zEmail.toLowerCase().trim();
     }
 
-    // ----------------------------------------------------
-    // LAUNCH CONFIGURATION FROM BACKEND VERCEL SERVERLESS
-    // ----------------------------------------------------
     async function fetchConfig() {
       const isBlob = window.location.protocol === 'blob:';
       const isSandbox = window.location.hostname.includes('usercontent.goog') || window.location.hostname.includes('github.dev');
@@ -728,29 +672,23 @@
             return await response.json();
           }
         } catch (e) {
-          console.warn("Fetch relatif gagal, default menggunakan master secure fallback config:", e);
+          console.warn("Fallback active:", e);
         }
       }
       return null;
     }
 
-    // ----------------------------------------------------
-    // BOOTSTRAP AUTHENTICATION PROCESS
-    // ----------------------------------------------------
     async function initSecureAuth() {
-      // 1. Ambil config dari Vercel Serverless atau gunakan Fallback aman
       let config = await fetchConfig();
       if (!config) {
         config = getFallbackConfig();
       }
 
-      // 2. Inisialisasi Firebase Tepat SATU kali
       try {
         const appInstance = initializeApp(config);
         auth = getAuth(appInstance);
         db = getFirestore(appInstance);
 
-        // Menunggu hasil Redirect Google jika Firefox beralih ke Redirect
         try {
           const result = await getRedirectResult(auth);
           if (result && result.user) {
@@ -760,10 +698,9 @@
             }
           }
         } catch (err) {
-          console.error("Gagal mengurai redirect hasil: ", err);
+          console.error(err);
         }
 
-        // Mendengarkan perubahan status login murni
         onAuthStateChanged(auth, async (user) => {
           if (user) {
             currentUser = user;
@@ -777,26 +714,23 @@
         });
 
       } catch (e) {
-        console.error("Firebase Gagal inisialisasi: ", e);
+        console.error(e);
         document.getElementById('initial-loader').style.display = 'none';
         showToast('error', 'Gagal memuat modul otorisasi database!');
       }
     }
 
-    // Start auth flow
     initSecureAuth();
 
     async function checkUserRole(user) {
       const email = user.email;
 
-      // Hardcoded Dev bypass (Case-Insensitive & Trimmed via isDevEmail)
       if (isDevEmail(email)) {
         currentUserRole = 'dev';
         setupSession(user, "Rayhan (DeltaAstra)", "dev");
         return;
       }
 
-      // Validasi sekuritas sub-user di Firestore Path (Rule 1)
       try {
         const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'accounts', user.uid);
         const docSnap = await getDoc(docRef);
@@ -810,7 +744,7 @@
           signOut(auth);
         }
       } catch (e) {
-        console.error("Sinkronisasi gagal: ", e);
+        console.error(e);
         showToast('error', 'Gagal memverifikasi modul otorisasi.');
         signOut(auth);
       }
@@ -830,7 +764,6 @@
       document.getElementById('stat-my-role').innerText = roleLabels[role];
       document.getElementById('stat-my-permissions').innerHTML = `<i class="fa-solid fa-shield text-sky-400 mr-1"></i> Otoritas: ${role.toUpperCase()}`;
 
-      // Strictly limit Dev Console & Filter visibility
       const devConsoleBtn = document.getElementById('nav-dev-console');
       const clearLogsBtn = document.getElementById('btn-clear-logs');
       const filterTabs = document.getElementById('number-filter-tabs');
@@ -838,15 +771,14 @@
       if (role === 'dev') {
         devConsoleBtn.classList.remove('hidden');
         clearLogsBtn.classList.remove('hidden');
-        filterTabs.classList.remove('hidden'); // Tampilkan filter eksklusif hanya untuk Dev!
+        filterTabs.classList.remove('hidden');
         
-        // Atur link API di Dev terminal secara dinamis
         const origin = window.location.origin && window.location.origin !== 'null' ? window.location.origin : 'https://zetago-db.vercel.app';
         document.getElementById('api-link-display').innerText = `${origin}/api/bot`;
       } else {
         devConsoleBtn.classList.add('hidden');
         clearLogsBtn.classList.add('hidden');
-        filterTabs.classList.add('hidden'); // Sembunyikan untuk Owner ke bawah karena data mereka terisolasi murni
+        filterTabs.classList.add('hidden');
       }
 
       const btnAddUser = document.getElementById('btn-open-add-user');
@@ -865,9 +797,6 @@
       document.getElementById('auth-screen').style.display = 'flex';
     }
 
-    // ----------------------------------------------------
-    // REALTIME DATABASE SNAPSHOTS
-    // ----------------------------------------------------
     let numbersUnsubscribe = null;
     let accountsUnsubscribe = null;
     let logsUnsubscribe = null;
@@ -921,11 +850,7 @@
       });
     }
 
-    // ----------------------------------------------------
-    // COUNTER STATS
-    // ----------------------------------------------------
     function updateDashboardStats() {
-      // Untuk dashboard stats, sesuaikan counter-nya dengan hak akses pembacaan privat juga!
       let numbersCount = globalWAData.length;
       if (currentUser && currentUserRole !== 'dev') {
         numbersCount = globalWAData.filter(num => num.addedByUid === currentUser.uid).length;
@@ -939,9 +864,6 @@
       document.getElementById('stat-total-resellers').innerText = countRes;
     }
 
-    // ----------------------------------------------------
-    // RENDERING DATA
-    // ----------------------------------------------------
     function getRoleBadgeClass(role) {
       switch (role) {
         case 'dev': return 'bg-rose-500/10 text-rose-400 border border-rose-500/20';
@@ -959,15 +881,9 @@
 
       let dataToRender = [...globalWAData];
 
-      // =================================------------------
-      // RULE 2 IN-MEMORY FILTERING: STRICT PRIVACY BOUNDARY
-      // Mengisolasi data Whitelist murni agar 1 role/akun memiliki tempat tersendiri!
-      // =================================------------------
       if (currentUserRole !== 'dev') {
-        // Non-dev hanya boleh melihat data yang mereka daftarkan sendiri! Gak bisa liat punya orang lain!
         dataToRender = dataToRender.filter(num => num.addedByUid === currentUser.uid);
       } else {
-        // Dev memiliki otorisasi penuh untuk menyaring seluruh data atau miliknya sendiri
         if (currentNumberFilter === 'mine') {
           dataToRender = dataToRender.filter(num => num.addedByUid === currentUser.uid);
         }
@@ -982,23 +898,19 @@
         const tr = document.createElement('tr');
         tr.className = "hover:bg-slate-900/40 border-b border-slate-800/30 transition duration-150 font-mono";
 
-        // Deletion rule: Owner & Dev bisa hapus apa yang mereka lihat, sisanya hanya bisa hapus miliknya sendiri
         const canDelete = (currentUserRole === 'dev' || currentUserRole === 'owner') || (item.addedByUid === currentUser.uid);
 
         const deleteButton = canDelete 
           ? `<button onclick="confirmDeleteNumber('${item.id}', '${item.phoneNumber}')" class="px-2.5 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-lg text-[10px] transition duration-200 uppercase tracking-widest font-black"><i class="fa-solid fa-trash-can mr-1"></i> Hapus</button>`
           : `<span class="text-slate-600 text-[10px] uppercase font-bold"><i class="fa-solid fa-lock"></i> LOCKED</span>`;
 
-        // Render kolom "Input Oleh" secara dinamis berdasarkan otorisasi peran
         let creatorInfo = "";
         if (currentUserRole === 'dev') {
-          // Dev bisa memonitoring dengan jelas asal usul role penginput data tersebut!
           creatorInfo = `
             <span class="block text-slate-300 font-medium">${escapeHTML(item.addedByName)}</span>
             <span class="inline-block mt-1 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider rounded ${getRoleBadgeClass(item.addedByRole)}">${item.addedByRole}</span>
           `;
         } else {
-          // Non-dev hanya melihat badge status privat miliknya sendiri
           creatorInfo = `
             <span class="block text-slate-400 font-medium font-sans">Data Pribadi</span>
             <span class="inline-block mt-1 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">PRIVATE V-1.7.1</span>
@@ -1038,7 +950,6 @@
 
         const deleteBtn = `<button onclick="confirmDeleteAccount('${acc.id}', '${acc.name}')" class="px-2.5 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-lg text-[10px] transition duration-200 uppercase tracking-widest font-black"><i class="fa-solid fa-user-xmark mr-1"></i> PECAT</button>`;
         
-        // Fitur Pembuat Kredensial (Email & Password Copy Button)
         const passwordPlain = acc.password || 'Tidak tersedia';
         const copyCredBtn = `<button onclick="copyCredentials('${escapeJS(acc.name)}', '${escapeJS(acc.email)}', '${escapeJS(passwordPlain)}', '${escapeJS(acc.role)}')" class="px-2.5 py-1.5 bg-sky-500/10 hover:bg-sky-500/20 text-sky-400 border border-sky-400/20 rounded-lg text-[10px] transition duration-200 uppercase tracking-widest font-black mr-2"><i class="fa-solid fa-copy mr-1"></i> COPY AKSES</button>`;
 
@@ -1057,9 +968,6 @@
       });
     }
 
-    // ----------------------------------------------------
-    // RENDER LOGS
-    // ----------------------------------------------------
     function renderLogs(logs) {
       const dashboardContainer = document.getElementById('dashboard-recent-logs');
       const fullLogsContainer = document.getElementById('global-logs-container');
@@ -1105,9 +1013,6 @@
       });
     }
 
-    // ----------------------------------------------------
-    // SEARCH & FILTER
-    // ----------------------------------------------------
     window.filterNumbers = function() {
       const q = document.getElementById('search-number-input').value.toLowerCase();
       const rows = document.getElementById('numbers-table-body').getElementsByTagName('tr');
@@ -1136,11 +1041,7 @@
       renderWhatsAppNumbers();
     };
 
-    // ----------------------------------------------------
-    // TAB NAVIGATION (STRICT ACCESS FILTER)
-    // ----------------------------------------------------
     window.switchTab = function(tabName) {
-      // Security Jail Guard: Owner ke bawah tidak boleh mengakses dev console via manipulasi router
       if (tabName === 'dev-console' && currentUserRole !== 'dev') {
         showToast('error', 'Akses Terlarang! Anda bukan Developer ZetaGo-DB.');
         switchTab('dashboard');
@@ -1178,7 +1079,6 @@
       };
       document.getElementById('current-page-title').innerText = titles[tabName] || 'ZETAGO-DB';
 
-      // Auto close sidebar drawer on mobile
       const sidebar = document.getElementById('sidebar');
       const backdrop = document.getElementById('sidebar-backdrop');
       if (window.innerWidth < 1024) {
@@ -1188,9 +1088,6 @@
       }
     };
 
-    // ----------------------------------------------------
-    // RESPONSIVE SIDEBAR MOBILE DRAWER CONTROLS
-    // ----------------------------------------------------
     window.toggleMobileMenu = function() {
       const sidebar = document.getElementById('sidebar');
       const backdrop = document.getElementById('sidebar-backdrop');
@@ -1221,9 +1118,6 @@
       }
     });
 
-    // ----------------------------------------------------
-    // GOOGLE AUTH LOGIC (POPUP & REDIRECT ROBUST DESIGN)
-    // ----------------------------------------------------
     window.switchLoginTab = function(type) {
       const tabSub = document.getElementById('tab-sub');
       const tabDev = document.getElementById('tab-dev');
@@ -1275,9 +1169,6 @@
       });
     });
 
-    // ----------------------------------------------------
-    // DATABASE WRITE OPERATIONS & AUDIT SYSTEM
-    // ----------------------------------------------------
     async function writeAuditLog(action) {
       try {
         const logsRef = collection(db, 'artifacts', appId, 'public', 'data', 'activity_logs');
@@ -1289,7 +1180,7 @@
           action: action
         });
       } catch (err) {
-        console.error("Gagal enkripsi log audit: ", err);
+        console.error(err);
       }
     }
 
@@ -1365,9 +1256,6 @@
       );
     };
 
-    // ----------------------------------------------------
-    // ACC SECURE CREATION (SECONDARY ENDPOINT BYPASS)
-    // ----------------------------------------------------
     window.openAddUserModal = function() {
       const select = document.getElementById('new-user-role');
       select.innerHTML = '';
@@ -1418,12 +1306,11 @@
 
         await tempSignOut(secondaryAuth);
 
-        // Menuliskan profil bawahan (termasuk password agar bisa disalin atasan)
         const userDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'accounts', newUid);
         await setDoc(userDocRef, {
           name: name,
           email: email,
-          password: pass, // Menyimpan kredensial mentah yang terisolasi di Firestore
+          password: pass, 
           role: role,
           createdByUid: currentUser.uid,
           createdByName: isDevEmail(currentUser.email) ? 'Rayhan (DeltaAstra)' : currentUser.email,
@@ -1456,9 +1343,6 @@
       );
     };
 
-    // ----------------------------------------------------
-    // EMERGENCY DISASTER CONTROL
-    // ----------------------------------------------------
     window.emergencyPurgeNumbers = function() {
       if (currentUserRole !== 'dev') return;
 
@@ -1511,9 +1395,6 @@
       );
     };
 
-    // ----------------------------------------------------
-    // COPIER SYSTEM UTILITY (DEV ONLY & CREDENTIALS COPIER)
-    // ----------------------------------------------------
     window.copyApiLink = function() {
       const linkText = document.getElementById('api-link-display').innerText;
       copyStringToClipboard(linkText, 'Link REST API Whitelist disalin ke clipboard! 📋');
@@ -1534,9 +1415,6 @@
       showToast('success', successMessage);
     }
 
-    // ----------------------------------------------------
-    // UTILITIES
-    // ----------------------------------------------------
     window.togglePasswordVisibility = function(inputId, button) {
       const input = document.getElementById(inputId);
       const icon = button.querySelector('i');
