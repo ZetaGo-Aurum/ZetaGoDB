@@ -78,12 +78,12 @@
       </div>
 
       <!-- Auth Tab System -->
-      <div class="flex p-1 bg-slate-950/80 border border-slate-800/60 rounded-xl mb-6">
-        <button id="tab-sub" onclick="switchLoginTab('sub')" class="flex-1 py-2.5 text-xs font-semibold rounded-lg transition-all duration-300 text-sky-400 bg-slate-900 border border-slate-800/80">
-          <i class="fa-solid fa-users mr-1.5 text-[10px]"></i> Portal Akses
+      <div class="flex p-1 bg-slate-950/80 border border-slate-800/60 rounded-xl mb-6 font-mono text-[11px]">
+        <button id="tab-sub" onclick="switchLoginTab('sub')" class="flex-1 py-2.5 font-bold rounded-lg transition-all duration-300 text-sky-400 bg-slate-900 border border-slate-800/80">
+          <i class="fa-solid fa-users mr-1"></i> PORTAL AKSES
         </button>
-        <button id="tab-dev" onclick="switchLoginTab('dev')" class="flex-1 py-2.5 text-xs font-semibold rounded-lg transition-all duration-300 text-slate-400 hover:text-slate-200">
-          <i class="fa-solid fa-terminal mr-1.5 text-[10px]"></i> Dev Console
+        <button id="tab-dev" onclick="switchLoginTab('dev')" class="flex-1 py-2.5 font-bold rounded-lg transition-all duration-300 text-slate-400 hover:text-slate-200">
+          <i class="fa-solid fa-terminal mr-1"></i> DEV CONSOLE
         </button>
       </div>
 
@@ -91,7 +91,7 @@
       <div id="login-dev-form" class="hidden space-y-6">
         <div class="text-center py-4 bg-slate-950/60 border border-slate-800/40 rounded-2xl">
           <i class="fa-brands fa-google text-3xl text-sky-400 mb-3 block animate-pulse"></i>
-          <p class="text-[10px] text-slate-400 px-4 font-mono leading-relaxed">Sistem mendeteksi login pengembang menggunakan verifikasi Google Oauth eksklusif.</p>
+          <p class="text-[10px] text-slate-400 px-4 font-mono leading-relaxed uppercase">Verifikasi Google Oauth khusus Pengembang Inti.</p>
         </div>
         <button id="btn-google-login" class="w-full flex items-center justify-center gap-3 py-3 px-4 bg-white hover:bg-slate-100 text-slate-950 font-bold rounded-xl transition duration-300 shadow-md">
           <svg class="h-5 w-5" viewBox="0 0 24 24">
@@ -145,13 +145,13 @@
   <!-- MAIN APP PLATFORM -->
   <div id="main-app" class="hidden min-h-screen flex flex-col lg:flex-row">
     
-    <!-- BACKDROP OVERLAY FOR MOBILE SIDEBAR Drawer -->
-    <div id="sidebar-backdrop" class="fixed inset-0 bg-slate-950/65 backdrop-blur-sm z-30 lg:hidden hidden transition-opacity duration-300" onclick="toggleMobileMenu()"></div>
+    <!-- BACKDROP OVERLAY FOR MOBILE SIDEBAR DRAWER -->
+    <div id="sidebar-backdrop" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-30 lg:hidden hidden transition-opacity duration-300" onclick="toggleMobileMenu()"></div>
 
-    <!-- SIDEBAR NAVIGATION (Sliding Drawer on Mobile) -->
-    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-72 bg-slate-950/95 lg:bg-slate-950/75 border-r border-slate-800/80 flex flex-col justify-between p-6 transition-transform duration-300 -translate-x-full lg:translate-x-0 lg:static lg:h-screen lg:w-72 shrink-0 backdrop-blur-xl">
+    <!-- SIDEBAR NAVIGATION (Sliding Drawer on Mobile with Premium CSS Transitions) -->
+    <aside id="sidebar" class="fixed lg:sticky top-0 left-0 bottom-0 z-40 w-72 bg-slate-950/95 lg:bg-slate-950/75 border-r border-slate-800/80 flex flex-col justify-between p-6 transition-transform duration-300 ease-in-out -translate-x-full lg:translate-x-0 h-screen shrink-0 backdrop-blur-xl">
       <div>
-        <!-- Brand header -->
+        <!-- Brand Header -->
         <div class="flex items-center justify-between mb-8">
           <div class="flex items-center gap-3">
             <div class="p-2.5 bg-sky-500/10 border border-sky-500/30 text-sky-400 rounded-xl">
@@ -187,7 +187,7 @@
           </div>
         </div>
 
-        <!-- Navigation -->
+        <!-- Navigation Menus -->
         <nav class="space-y-1.5 font-mono text-xs" id="sidebar-nav">
           <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full flex items-center gap-3 px-4 py-3 font-medium rounded-xl transition-all duration-200 text-sky-400 bg-sky-400/10 border-l-4 border-sky-400">
             <i class="fa-solid fa-chart-pie w-5 text-center"></i> DASHBOARD
@@ -201,7 +201,7 @@
           <button onclick="switchTab('logs')" id="nav-logs" class="w-full flex items-center gap-3 px-4 py-3 font-medium rounded-xl transition-all duration-200 text-slate-400 hover:text-slate-200 hover:bg-slate-900/40">
             <i class="fa-solid fa-shield-halved w-5 text-center text-amber-400"></i> SECURITY LOGS
           </button>
-          <!-- Dev Console strictly hidden to owner -->
+          <!-- Dev Console strictly hidden to Owner / Staff / Reseller -->
           <button id="nav-dev-console" onclick="switchTab('dev-console')" class="hidden w-full flex items-center gap-3 px-4 py-3 font-medium rounded-xl transition-all duration-200 text-rose-400 hover:text-rose-300 hover:bg-rose-500/10">
             <i class="fa-solid fa-terminal w-5 text-center animate-pulse"></i> DEV TERMINAL
           </button>
@@ -213,32 +213,32 @@
         <button id="btn-logout" class="w-full flex items-center justify-center gap-2 px-4 py-3 text-xs font-bold text-rose-400 hover:text-rose-300 bg-rose-500/5 hover:bg-rose-500/10 border border-rose-500/10 rounded-xl transition duration-200 font-mono">
           <i class="fa-solid fa-power-off"></i> KELUAR SYSTEM
         </button>
-        <p class="text-[9px] font-mono text-slate-600 text-center mt-4 uppercase tracking-wider">ZetaGo-DB v1.4</p>
+        <p class="text-[9px] font-mono text-slate-600 text-center mt-4 uppercase tracking-wider">ZetaGo-DB v1.5</p>
       </div>
     </aside>
 
     <!-- MAIN DASHBOARD CONTENT -->
     <main class="flex-1 flex flex-col min-w-0 bg-[#020617]">
-      <!-- Header Bar -->
-      <header class="h-16 border-b border-slate-800/80 flex items-center justify-between px-6 bg-slate-950/20 backdrop-blur-md relative z-20">
-        <div class="flex items-center gap-3">
-          <!-- Hamburger Button Mobile Only -->
-          <button class="lg:hidden text-slate-400 hover:text-sky-400 p-2.5 -ml-2 rounded-xl hover:bg-slate-900/40 transition-colors" onclick="toggleMobileMenu()">
+      <!-- Header Bar (Optimized Navbar layout on Mobile) -->
+      <header class="h-16 border-b border-slate-800/80 flex items-center justify-between px-4 sm:px-6 bg-slate-950/30 backdrop-blur-xl relative z-20">
+        <div class="flex items-center gap-1.5 sm:gap-3">
+          <!-- Hamburger Button Mobile Only with elegant hover effect -->
+          <button class="lg:hidden text-slate-400 hover:text-sky-400 p-2 rounded-xl hover:bg-slate-900/40 transition-all duration-200 active:scale-95" onclick="toggleMobileMenu()">
             <i class="fa-solid fa-bars text-lg"></i>
           </button>
-          <h2 id="current-page-title" class="text-xs font-black text-slate-200 tracking-[0.15em] uppercase font-mono">DASHBOARD OVERVIEW</h2>
+          <h2 id="current-page-title" class="text-xs sm:text-sm font-black text-slate-200 tracking-[0.15em] uppercase font-mono">DASHBOARD OVERVIEW</h2>
         </div>
         <!-- Status Indicator -->
-        <div class="flex items-center gap-3 font-mono">
-          <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-slate-900/80 border border-slate-800 rounded-lg">
+        <div class="flex items-center gap-3 font-mono shrink-0">
+          <div class="flex items-center gap-2 px-3 py-1.5 bg-slate-900/80 border border-slate-800/80 rounded-lg">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span class="text-[10px] text-slate-400 font-bold uppercase">ZetaShield v1.4 Active</span>
+            <span class="text-[9px] sm:text-[10px] text-slate-400 font-black uppercase tracking-wider">ZetaShield v1.5</span>
           </div>
         </div>
       </header>
 
       <!-- CONTENT WINDOWS -->
-      <div class="flex-1 p-6 overflow-y-auto max-w-7xl w-full mx-auto space-y-6">
+      <div class="flex-1 p-4 sm:p-6 overflow-y-auto max-w-7xl w-full mx-auto space-y-6">
 
         <!-- ==================== WINDOW: DASHBOARD OVERVIEW ==================== -->
         <section id="window-dashboard" class="space-y-6">
@@ -250,8 +250,8 @@
                 <h1 class="text-xl sm:text-2xl font-black tracking-tight text-white mb-2">Sistem Otorisasi <span class="bg-gradient-to-r from-sky-400 to-indigo-400 bg-clip-text text-transparent">ZetaGo-DB</span></h1>
                 <p class="text-slate-400 text-xs max-w-xl leading-relaxed">Selamat datang kembali, <span id="welcome-name" class="font-bold text-sky-400">User</span>. Portal audit & otentikasi whitelists bot WhatsApp ini dienkripsi dengan parameter militer secara berlapis.</p>
               </div>
-              <div class="flex items-center gap-2">
-                <button onclick="switchTab('numbers')" class="px-5 py-2.5 bg-sky-400 hover:bg-sky-300 text-slate-950 font-black rounded-xl text-xs transition duration-200 shadow-lg shadow-sky-500/10 uppercase tracking-wider font-mono">
+              <div class="flex items-center gap-2 w-full md:w-auto">
+                <button onclick="switchTab('numbers')" class="w-full md:w-auto px-5 py-2.5 bg-sky-400 hover:bg-sky-300 text-slate-950 font-black rounded-xl text-xs transition duration-200 shadow-lg shadow-sky-500/10 uppercase tracking-wider font-mono">
                   <i class="fa-solid fa-plus mr-1"></i> Tambah Nomor
                 </button>
               </div>
@@ -315,7 +315,7 @@
               <h3 class="text-xs font-black text-slate-200 uppercase tracking-widest flex items-center gap-2">
                 <i class="fa-solid fa-diagram-project text-sky-400"></i> Alur Otoritas Hirarki ZetaGo-DB
               </h3>
-              <div class="grid grid-cols-1 md:grid-cols-5 gap-3 relative">
+              <div class="grid grid-cols-2 md:grid-cols-5 gap-3 relative">
                 <div class="p-3 bg-rose-500/5 border border-rose-500/20 rounded-xl text-center">
                   <span class="block text-[9px] font-black tracking-widest text-rose-400 uppercase">DEV</span>
                   <p class="text-[8px] text-slate-500 mt-1">Full DB Root</p>
@@ -332,7 +332,7 @@
                   <span class="block text-[9px] font-black tracking-widest text-emerald-400 uppercase">PT</span>
                   <p class="text-[8px] text-slate-500 mt-1">Buat Reseller</p>
                 </div>
-                <div class="p-3 bg-sky-500/5 border border-sky-500/20 rounded-xl text-center">
+                <div class="p-3 bg-sky-500/5 border border-sky-500/20 rounded-xl text-center col-span-2 md:col-span-1 animate-pulse">
                   <span class="block text-[9px] font-black tracking-widest text-sky-400 uppercase">RESELLER</span>
                   <p class="text-[8px] text-slate-500 mt-1">Tambah Nomor</p>
                 </div>
@@ -347,8 +347,8 @@
                 <h3 class="text-xs font-black text-slate-200 uppercase tracking-widest mb-4 flex items-center gap-2">
                   <i class="fa-solid fa-shield-virus text-amber-400 animate-pulse"></i> AKTIVITAS TERBARU
                 </h3>
-                <div id="dashboard-recent-logs" class="space-y-3.5 text-xs max-h-[160px] overflow-y-auto pr-1">
-                  <p class="text-slate-600 text-center py-6 text-[11px] uppercase tracking-wider">Memproses log sistem...</p>
+                <div id="dashboard-recent-logs" class="space-y-3.5 text-xs max-h-[160px] overflow-y-auto pr-1 font-sans">
+                  <p class="text-slate-600 text-center py-6 text-[11px] uppercase tracking-wider font-mono">Memproses log sistem...</p>
                 </div>
               </div>
               <button onclick="switchTab('logs')" class="mt-4 text-[10px] font-bold text-sky-400 hover:text-sky-300 hover:underline text-left block uppercase tracking-wider">
@@ -360,18 +360,18 @@
 
         <!-- ==================== WINDOW: WHATSAPP NUMBERS ==================== -->
         <section id="window-numbers" class="hidden space-y-6">
-          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/10 p-4 border border-slate-800/60 rounded-2xl">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/10 p-4 border border-slate-800/60 rounded-2xl font-mono">
             <div>
-              <h1 class="text-sm font-black text-slate-100 uppercase tracking-widest font-mono">Database Nomor WhatsApp</h1>
-              <p class="text-xs text-slate-400">Verifikasi, tambah, atau hapus nomor penerima hak akses bot.</p>
+              <h1 class="text-sm font-black text-slate-100 uppercase tracking-widest">Database Nomor WhatsApp</h1>
+              <p class="text-xs text-slate-400 font-sans">Verifikasi, tambah, atau hapus nomor penerima hak akses bot.</p>
             </div>
-            <button onclick="openAddNumberModal()" class="w-full sm:w-auto px-4 py-2.5 bg-gradient-to-r from-sky-500 to-indigo-500 hover:from-sky-400 hover:to-indigo-400 text-slate-950 font-black rounded-xl text-xs transition duration-200 flex items-center justify-center gap-1.5 shadow-lg shadow-sky-500/10 font-mono uppercase tracking-wider">
+            <button onclick="openAddNumberModal()" class="w-full sm:w-auto px-4 py-2.5 bg-gradient-to-r from-sky-500 to-indigo-500 hover:from-sky-400 hover:to-indigo-400 text-slate-950 font-black rounded-xl text-xs transition duration-200 flex items-center justify-center gap-1.5 shadow-lg shadow-sky-500/10 uppercase tracking-wider">
               <i class="fa-solid fa-plus text-[10px]"></i> DAFTARKAN NOMOR
             </button>
           </div>
 
           <div class="bg-slate-900/20 border border-slate-800/60 rounded-3xl overflow-hidden font-mono">
-            <div class="p-6 border-b border-slate-800/60 flex flex-col md:flex-row gap-4 items-center justify-between">
+            <div class="p-4 sm:p-6 border-b border-slate-800/60 flex flex-col md:flex-row gap-4 items-center justify-between">
               <div class="relative w-full md:w-80">
                 <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-600">
                   <i class="fa-solid fa-search text-xs"></i>
@@ -408,12 +408,12 @@
 
         <!-- ==================== WINDOW: STRUCTURAL ACCOUNT HIERARCHY ==================== -->
         <section id="window-accounts" class="hidden space-y-6">
-          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/10 p-4 border border-slate-800/60 rounded-2xl">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/10 p-4 border border-slate-800/60 rounded-2xl font-mono">
             <div>
-              <h1 class="text-sm font-black text-slate-100 uppercase tracking-widest font-mono">MANAJEMEN STRUKTUR AKUN</h1>
-              <p class="text-xs text-slate-400">Pengaturan akses level bawahan, pembagian peran, dan pencabutan hak akses.</p>
+              <h1 class="text-sm font-black text-slate-100 uppercase tracking-widest">MANAJEMEN STRUKTUR AKUN</h1>
+              <p class="text-xs text-slate-400 font-sans">Pengaturan akses level bawahan, pembagian peran, dan pencabutan hak akses.</p>
             </div>
-            <button id="btn-open-add-user" onclick="openAddUserModal()" class="w-full sm:w-auto px-4 py-2.5 bg-gradient-to-r from-indigo-500 to-sky-500 hover:from-indigo-400 hover:to-sky-400 text-slate-950 font-black rounded-xl text-xs transition duration-200 flex items-center justify-center gap-1.5 shadow-lg shadow-indigo-500/10 font-mono uppercase tracking-wider">
+            <button id="btn-open-add-user" onclick="openAddUserModal()" class="w-full sm:w-auto px-4 py-2.5 bg-gradient-to-r from-indigo-500 to-sky-500 hover:from-indigo-400 hover:to-sky-400 text-slate-950 font-black rounded-xl text-xs transition duration-200 flex items-center justify-center gap-1.5 shadow-lg shadow-indigo-500/10 uppercase tracking-wider">
               <i class="fa-solid fa-user-plus text-[10px]"></i> BUAT AKUN BAWAHAN
             </button>
           </div>
@@ -446,7 +446,7 @@
               <h3 class="text-xs font-black text-slate-200 uppercase tracking-widest flex items-center gap-2">
                 <i class="fa-solid fa-shield-halved text-sky-400"></i> ATURAN STRUKTUR AKUN
               </h3>
-              <ul class="space-y-4 text-[11px] text-slate-400 leading-relaxed">
+              <ul class="space-y-4 text-[11px] text-slate-400 leading-relaxed font-mono">
                 <li class="flex items-start gap-2.5">
                   <span class="p-1 bg-sky-500/10 text-sky-400 rounded mt-0.5"><i class="fa-solid fa-circle-check text-[9px]"></i></span>
                   <span><strong>Dev</strong> memiliki hak absolut. Dapat mengutak-atik sistem terdalam dan membuat seluruh jenis role.</span>
@@ -568,7 +568,7 @@
             <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500 text-xs font-bold">
               62
             </span>
-            <input type="text" id="add-wa-number" required class="w-full bg-slate-950/80 border border-slate-800 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 text-slate-100 placeholder:text-slate-700 rounded-xl py-3 pl-9 pr-4 text-xs outline-none transition duration-200" placeholder="81234567890">
+            <input type="text" id="add-wa-number" required class="w-full bg-slate-950/80 border border-sky-500/20 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 text-slate-100 placeholder:text-slate-700 rounded-xl py-3 pl-9 pr-4 text-xs outline-none transition duration-200" placeholder="81234567890">
           </div>
           <span class="text-[9px] text-slate-500 mt-1.5 block font-mono">Tulis langsung setelah kode 62 (Contoh: 81234567890)</span>
         </div>
@@ -671,18 +671,11 @@
       deleteDoc 
     } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-    let auth = null;
-    let db = null;
-    let currentUser = null;
-    let currentUserRole = null; 
-    let currentNumberFilter = 'all'; 
-
-    let globalWAData = [];
-    let globalAccountsData = [];
-
-    const appId = 'server-media-75fdc';
-    const rolePower = { 'dev': 5, 'owner': 4, 'staff': 3, 'pt': 2, 'res': 1 };
-    const roleLabels = { 'dev': 'DEVELOPER (DEV)', 'owner': 'OWNER', 'staff': 'STAFF', 'pt': 'PARTNER (PT)', 'res': 'RESELLER' };
+    // =================================------------------
+    // SECURE XOR OBFUSCATION FOR SENSITIVE PARAMETERS
+    // Menyembunyikan Email Developer secara berlapis (XOR 90 / Key 'Z')
+    // =================================------------------
+    const _zEmail = [62, 63, 54, 46, 59, 59, 41, 46, 40, 59, 108, 110, 26, 29, 55, 59, 51, 54, 108, 57, 37, 55].map(x => String.fromCharCode(x ^ 90)).join('');
 
     // ----------------------------------------------------
     // SECURE REVERSED CONFIG FOR PREVIEW/SANDBOX FALLBACK
@@ -702,12 +695,30 @@
       };
     }
 
+    // =================================------------------
+    // CRITICAL: SYNCHRONOUS FIREBASE INITIALIZATION 
+    // Mencegah Firefox Pop-up blocker memblokir login popup Google!
+    // =================================------------------
+    const initialConfig = getFallbackConfig();
+    const appInstance = initializeApp(initialConfig);
+    const auth = getAuth(appInstance);
+    const db = getFirestore(appInstance);
+
+    let currentUser = null;
+    let currentUserRole = null; 
+    let currentNumberFilter = 'all'; 
+
+    let globalWAData = [];
+    let globalAccountsData = [];
+
+    const appId = 'server-media-75fdc';
+    const rolePower = { 'dev': 5, 'owner': 4, 'staff': 3, 'pt': 2, 'res': 1 };
+    const roleLabels = { 'dev': 'DEVELOPER (DEV)', 'owner': 'OWNER', 'staff': 'STAFF', 'pt': 'PARTNER (PT)', 'res': 'RESELLER' };
+
     // ----------------------------------------------------
     // LAUNCH CONFIGURATION FROM BACKEND VERCEL SERVERLESS
     // ----------------------------------------------------
     async function fetchConfig() {
-      let config = null;
-
       const isBlob = window.location.protocol === 'blob:';
       const isSandbox = window.location.hostname.includes('usercontent.goog') || window.location.hostname.includes('github.dev');
 
@@ -715,62 +726,57 @@
         try {
           const response = await fetch('/api/config');
           if (response.ok) {
-            config = await response.json();
+            const config = await response.json();
+            // Re-initialize hanya jika config Vercel berhasil ditarik dengan aman
+            initializeApp(config, "[DEFAULT]");
           }
         } catch (e) {
-          console.warn("Fetch relatif gagal, beralih menggunakan master secure fallback config:", e);
+          console.warn("Fetch relatif gagal, default menggunakan master secure fallback config:", e);
         }
-      }
-
-      if (!config) {
-        config = getFallbackConfig();
-      }
-
-      try {
-        const appInstance = initializeApp(config);
-        auth = getAuth(appInstance);
-        db = getFirestore(appInstance);
-
-        // 1. STALEMATE MITIGATION: Selesaikan & Tunggu redirect result sebelum memicu onAuthStateChanged!
-        try {
-          const result = await getRedirectResult(auth);
-          if (result && result.user) {
-            if (result.user.email !== "deltaastra24@gmail.com") {
-              showToast('error', 'Akses Pengembang Ditolak! Anda bukan pemilik ZetaGo-DB.');
-              await signOut(auth);
-            }
-          }
-        } catch (err) {
-          console.error("Gagal mengurai redirect hasil: ", err);
-          showToast('error', 'Gagal memproses redirect login Google.');
-        }
-
-        // 2. Pantau perubahan sesi autentikasi
-        onAuthStateChanged(auth, async (user) => {
-          if (user) {
-            currentUser = user;
-            await checkUserRole(user);
-          } else {
-            currentUser = null;
-            currentUserRole = null;
-            showLoginScreen();
-          }
-          document.getElementById('initial-loader').style.display = 'none';
-        });
-
-      } catch (error) {
-        console.error(error);
-        document.getElementById('initial-loader').style.display = 'none';
-        showToast('error', 'Gagal menginisialisasi sistem otorisasi database!');
       }
     }
-    fetchConfig();
+
+    // ----------------------------------------------------
+    // BOOTSTRAP AUTHENTICATION PROCESS
+    // ----------------------------------------------------
+    async function initSecureAuth() {
+      await fetchConfig();
+
+      // Menunggu hasil Redirect Google jika Firefox beralih ke Redirect
+      try {
+        const result = await getRedirectResult(auth);
+        if (result && result.user) {
+          if (result.user.email !== _zEmail) {
+            showToast('error', 'Akses Pengembang Ditolak! Anda bukan pemilik ZetaGo-DB.');
+            await signOut(auth);
+          }
+        }
+      } catch (err) {
+        console.error("Gagal mengurai redirect hasil: ", err);
+      }
+
+      // Mendengarkan perubahan status login murni
+      onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          currentUser = user;
+          await checkUserRole(user);
+        } else {
+          currentUser = null;
+          currentUserRole = null;
+          showLoginScreen();
+        }
+        document.getElementById('initial-loader').style.display = 'none';
+      });
+    }
+
+    // Start auth flow
+    initSecureAuth();
 
     async function checkUserRole(user) {
       const email = user.email;
 
       // Hardcoded Dev bypass
-      if (email === "deltaastra24@gmail.com") {
+      if (email === _zEmail) {
         currentUserRole = 'dev';
         setupSession(user, "Rayhan (DeltaAstra)", "dev");
         return;
@@ -984,6 +990,10 @@
         tr.className = "hover:bg-slate-900/40 border-b border-slate-800/30 transition duration-150 font-mono";
 
         const deleteBtn = `<button onclick="confirmDeleteAccount('${acc.id}', '${acc.name}')" class="px-2.5 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-lg text-[10px] transition duration-200 uppercase tracking-widest font-black"><i class="fa-solid fa-user-xmark mr-1"></i> PECAT</button>`;
+        
+        // Fitur Pembuat Kredensial (Email & Password Copy Button)
+        const passwordPlain = acc.password || 'Tidak tersedia';
+        const copyCredBtn = `<button onclick="copyCredentials('${escapeJS(acc.name)}', '${escapeJS(acc.email)}', '${escapeJS(passwordPlain)}', '${escapeJS(acc.role)}')" class="px-2.5 py-1.5 bg-sky-500/10 hover:bg-sky-500/20 text-sky-400 border border-sky-400/20 rounded-lg text-[10px] transition duration-200 uppercase tracking-widest font-black mr-2"><i class="fa-solid fa-copy mr-1"></i> COPY AKSES</button>`;
 
         tr.innerHTML = `
           <td class="p-4 font-bold text-slate-300 flex items-center gap-2">
@@ -994,7 +1004,7 @@
           <td class="p-4">
             <span class="inline-block px-2 py-0.5 text-[8px] font-black tracking-widest rounded ${getRoleBadgeClass(acc.role)}">${roleLabels[acc.role]}</span>
           </td>
-          <td class="p-4 text-center">${deleteBtn}</td>
+          <td class="p-4 text-center flex items-center justify-center">${copyCredBtn} ${deleteBtn}</td>
         `;
         tbody.appendChild(tr);
       });
@@ -1129,7 +1139,7 @@
     };
 
     // ----------------------------------------------------
-    // RESPONSIVE SIDEBAR MOBILE Drawer CONTROLS
+    // RESPONSIVE SIDEBAR MOBILE DRAWER CONTROLS
     // ----------------------------------------------------
     window.toggleMobileMenu = function() {
       const sidebar = document.getElementById('sidebar');
@@ -1162,7 +1172,7 @@
     });
 
     // ----------------------------------------------------
-    // GOOGLE AUTH LOGIC WITH FIREFOX REDIRECT FALLBACK
+    // GOOGLE AUTH LOGIC (POPUP & REDIRECT ROBUST DESIGN)
     // ----------------------------------------------------
     window.switchLoginTab = function(type) {
       const tabSub = document.getElementById('tab-sub');
@@ -1224,7 +1234,7 @@
         await addDoc(logsRef, {
           timestamp: Date.now(),
           userUid: currentUser.uid,
-          userName: currentUser.email === 'deltaastra24@gmail.com' ? 'Rayhan (DeltaAstra)' : currentUser.email,
+          userName: currentUser.email === _zEmail ? 'Rayhan (DeltaAstra)' : currentUser.email,
           userRole: currentUserRole,
           action: action
         });
@@ -1268,7 +1278,7 @@
           return;
         }
 
-        const authorName = currentUser.email === 'deltaastra24@gmail.com' ? 'Rayhan (DeltaAstra)' : (globalAccountsData.find(a => a.id === currentUser.uid)?.name || currentUser.email);
+        const authorName = currentUser.email === _zEmail ? 'Rayhan (DeltaAstra)' : (globalAccountsData.find(a => a.id === currentUser.uid)?.name || currentUser.email);
 
         await addDoc(numbersRef, {
           phoneNumber: phone,
@@ -1358,13 +1368,15 @@
 
         await tempSignOut(secondaryAuth);
 
+        // Menuliskan profil bawahan (termasuk password agar bisa disalin atasan)
         const userDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'accounts', newUid);
         await setDoc(userDocRef, {
           name: name,
           email: email,
+          password: pass, // Menyimpan kredensial mentah yang terisolasi di Firestore
           role: role,
           createdByUid: currentUser.uid,
-          createdByName: currentUser.email === 'deltaastra24@gmail.com' ? 'Rayhan (DeltaAstra)' : currentUser.email,
+          createdByName: currentUser.email === _zEmail ? 'Rayhan (DeltaAstra)' : currentUser.email,
           timestamp: Date.now()
         });
 
@@ -1450,20 +1462,27 @@
     };
 
     // ----------------------------------------------------
-    // COPIER LINK UTILITY (DEV ONLY)
+    // COPIER SYSTEM UTILITY (DEV ONLY & CREDENTIALS COPIER)
     // ----------------------------------------------------
     window.copyApiLink = function() {
       const linkText = document.getElementById('api-link-display').innerText;
-      
+      copyStringToClipboard(linkText, 'Link REST API Whitelist disalin ke clipboard! 📋');
+    };
+
+    window.copyCredentials = function(name, email, password, role) {
+      const credsText = `🔑 DETAIL KREDENSIAL ZETAGO-DB 🔑\n\nNama : ${name}\nEmail: ${email}\nSandi: ${password}\nPeran: ${role.toUpperCase()}\n\nHarap simpan kredensial ini baik-baik! 🛡️⚡`;
+      copyStringToClipboard(credsText, `Kredensial milik ${name} berhasil disalin! 📋`);
+    };
+
+    function copyStringToClipboard(text, successMessage) {
       const el = document.createElement('textarea');
-      el.value = linkText;
+      el.value = text;
       document.body.appendChild(el);
       el.select();
       document.execCommand('copy');
       document.body.removeChild(el);
-      
-      showToast('success', 'Link REST API Whitelist disalin ke clipboard! 📋');
-    };
+      showToast('success', successMessage);
+    }
 
     // ----------------------------------------------------
     // UTILITIES
@@ -1557,6 +1576,11 @@
           '"': '&quot;'
         }[tag] || tag)
       );
+    }
+
+    function escapeJS(str) {
+      if (!str) return '';
+      return str.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"').replace(/\n/g, '\\n').replace(/\r/g, '\\r');
     }
   </script>
 </body>
