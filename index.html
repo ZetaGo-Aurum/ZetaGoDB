@@ -43,7 +43,7 @@
 </head>
 <body class="bg-[#020617] text-slate-100 min-h-screen overflow-x-hidden selection:bg-sky-500 selection:text-slate-900 cyber-grid">
 
-  <div id="toast-container" class="fixed top-5 right-5 z-[9999] flex flex-col gap-2 max-w-sm w-full"></div>
+  <div id="toast-container" class="fixed top-5 right-5 z-[99999] flex flex-col gap-2 w-[calc(100%-2.5rem)] sm:w-80 md:w-96"></div>
 
   <div id="initial-loader" class="fixed inset-0 bg-[#020617] z-50 flex flex-col items-center justify-center">
     <div class="relative flex items-center justify-center">
@@ -474,8 +474,8 @@
             </div>
           </div>
 
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 font-mono">
-            <div class="bg-slate-900/20 border border-slate-800/60 rounded-3xl p-6 space-y-6">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 font-mono">
+            <div class="bg-slate-900/20 border border-slate-800/60 rounded-3xl p-6 space-y-6 lg:col-span-1">
               <h3 class="text-xs font-black text-slate-200 uppercase tracking-widest border-b border-slate-800/80 pb-3">SISTEM KONEKSI</h3>
               <div class="grid grid-cols-2 gap-4 text-[10px]">
                 <div class="bg-slate-950/80 border border-slate-800/80 p-4 rounded-xl">
@@ -510,10 +510,23 @@
               </div>
             </div>
 
-            <div class="bg-slate-900/20 border border-slate-800/60 rounded-3xl p-6 flex flex-col justify-between">
+            <div class="bg-slate-900/20 border border-slate-800/60 rounded-3xl p-6 space-y-4 lg:col-span-1">
+              <span class="text-[10px] font-black text-rose-400 uppercase tracking-widest block"><i class="fa-solid fa-users-slash"></i> SUBACCOUNT MASTER DESTRUCTION PANEL</span>
+              <p class="text-[10px] text-slate-500">Hapus secara permanen dan bersih akun bawahan tertentu langsung dari konsol root.</p>
+              <div class="relative">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-600">
+                  <i class="fa-solid fa-search text-xs"></i>
+                </span>
+                <input type="text" id="dev-account-search" onkeyup="filterDevAccounts()" class="w-full bg-slate-950/80 border border-slate-800 focus:border-rose-500 focus:ring-1 focus:ring-rose-500 text-slate-100 placeholder:text-slate-700 rounded-xl py-2 pl-9 text-xs outline-none transition duration-200" placeholder="Cari akun bawahan...">
+              </div>
+              <div class="max-h-96 overflow-y-auto space-y-2 pr-1" id="dev-accounts-list">
+              </div>
+            </div>
+
+            <div class="bg-slate-900/20 border border-slate-800/60 rounded-3xl p-6 flex flex-col justify-between lg:col-span-1">
               <div>
                 <h3 class="text-xs font-black text-slate-200 uppercase tracking-widest border-b border-slate-800/80 pb-3 mb-4">RAW STREAM MONITOR (FIREBASE OUT)</h3>
-                <div class="bg-slate-950/80 border border-slate-800/80 rounded-xl p-4 text-[10px] text-emerald-400 overflow-y-auto max-h-[220px]">
+                <div class="bg-slate-950/80 border border-slate-800/80 rounded-xl p-4 text-[10px] text-emerald-400 overflow-y-auto max-h-[340px]">
                   <pre id="raw-json-viewer">{}</pre>
                 </div>
               </div>
@@ -738,7 +751,7 @@
 
       if (isDevEmail(email)) {
         currentUserRole = 'dev';
-        setupSession(user, "Rayhan (DeltaAstra)", "dev");
+        setupSession(user, "ZetaGo-Aurum", "dev");
         return;
       }
 
@@ -871,6 +884,7 @@
         });
         globalAccountsData = accounts;
         renderAccounts();
+        renderDevAccounts();
         updateDashboardStats();
       }, (error) => {
         showToast('error', `Gagal membaca list user: ${error.message}`);
@@ -1017,6 +1031,43 @@
       });
     }
 
+    function renderDevAccounts() {
+      const list = document.getElementById('dev-accounts-list');
+      if (!list) return;
+      list.innerHTML = '';
+      if (globalAccountsData.length === 0) {
+        list.innerHTML = '<div class="text-slate-600 text-center py-4 text-xs uppercase font-mono">Tidak ada akun bawahan.</div>';
+        return;
+      }
+      globalAccountsData.forEach(acc => {
+        if (acc.disabled === true) return;
+        const div = document.createElement('div');
+        div.className = "dev-account-item flex items-center justify-between p-2.5 bg-slate-950/60 border border-slate-800/80 rounded-xl text-[11px] font-mono";
+        div.innerHTML = `
+          <div class="truncate mr-2">
+            <span class="font-bold text-slate-300 block truncate">${escapeHTML(acc.name)}</span>
+            <span class="text-slate-500 block truncate text-[9px]">${escapeHTML(acc.email)}</span>
+            <span class="inline-block mt-0.5 px-1 py-0.2 text-[8px] font-black uppercase rounded ${getRoleBadgeClass(acc.role)}">${acc.role}</span>
+          </div>
+          <button onclick="confirmHardDeleteAccount('${acc.id}', '${acc.name}')" class="px-2.5 py-1 bg-red-600 hover:bg-red-500 text-slate-950 font-black rounded uppercase text-[9px] shrink-0"><i class="fa-solid fa-trash-can"></i></button>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    window.filterDevAccounts = function() {
+      const q = document.getElementById('dev-account-search').value.toLowerCase();
+      const items = document.getElementById('dev-accounts-list').getElementsByClassName('dev-account-item');
+      for (let i = 0; i < items.length; i++) {
+        const txt = items[i].innerText.toLowerCase();
+        if (txt.includes(q)) {
+          items[i].style.display = "";
+        } else {
+          items[i].style.display = "none";
+        }
+      }
+    };
+
     function renderLogs(logs) {
       const dashboardContainer = document.getElementById('dashboard-recent-logs');
       const fullLogsContainer = document.getElementById('global-logs-container');
@@ -1092,7 +1143,7 @@
 
     window.switchTab = function(tabName) {
       if (tabName === 'dev-console' && currentUserRole !== 'dev') {
-        showToast('error', 'Akses Terlarang! Anda bukan Developer ZetaGo-DB.');
+        showToast('error', 'Akses Terlarang! Hanya Developer yang memiliki otoritas mengakses Dev Terminal.');
         switchTab('dashboard');
         return;
       }
@@ -1236,7 +1287,7 @@
         await addDoc(logsRef, {
           timestamp: Date.now(),
           userUid: currentUser.uid,
-          userName: isDevEmail(currentUser.email) ? 'Rayhan (DeltaAstra)' : currentUser.email,
+          userName: isDevEmail(currentUser.email) ? 'ZetaGo-Aurum' : currentUser.email,
           userRole: currentUserRole,
           action: action
         });
@@ -1280,7 +1331,7 @@
           return;
         }
 
-        const authorName = isDevEmail(currentUser.email) ? 'Rayhan (DeltaAstra)' : (globalAccountsData.find(a => a.id === currentUser.uid)?.name || currentUser.email);
+        const authorName = isDevEmail(currentUser.email) ? 'ZetaGo-Aurum' : (globalAccountsData.find(a => a.id === currentUser.uid)?.name || currentUser.email);
 
         await addDoc(numbersRef, {
           phoneNumber: phone,
@@ -1373,7 +1424,7 @@
             role: role,
             disabled: false,
             createdByUid: currentUser.uid,
-            createdByName: isDevEmail(currentUser.email) ? 'Rayhan (DeltaAstra)' : currentUser.email,
+            createdByName: isDevEmail(currentUser.email) ? 'ZetaGo-Aurum' : currentUser.email,
             timestamp: Date.now()
           });
           await writeAuditLog(`memulihkan & memperbarui akun bawahan level ${role.toUpperCase()} (${name})`);
@@ -1400,7 +1451,7 @@
           role: role,
           disabled: false,
           createdByUid: currentUser.uid,
-          createdByName: isDevEmail(currentUser.email) ? 'Rayhan (DeltaAstra)' : currentUser.email,
+          createdByName: isDevEmail(currentUser.email) ? 'ZetaGo-Aurum' : currentUser.email,
           timestamp: Date.now()
         });
 
@@ -1539,7 +1590,8 @@
     };
 
     window.copyCredentials = function(name, email, password, role) {
-      const credsText = `🔑 DETAIL KREDENSIAL ZETAGO-DB 🔑\n\nNama : ${name}\nEmail: ${email}\nSandi: ${password}\nPeran: ${role.toUpperCase()}\n\nHarap simpan kredensial ini baik-baik! 🛡️⚡`;
+      const loginUrl = window.location.origin;
+      const credsText = `🔑 DETAIL KREDENSIAL ZETAGO-DB 🔑\n\nNama : ${name}\nEmail: ${email}\nSandi: ${password}\nPeran: ${role.toUpperCase()}\nLink : ${loginUrl}\n\nHarap simpan kredensial ini baik-baik! 🛡️⚡`;
       copyStringToClipboard(credsText, `Kredensial milik ${name} berhasil disalin! 📋`);
     };
 
