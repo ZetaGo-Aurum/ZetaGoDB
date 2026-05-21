@@ -43,7 +43,7 @@
 </head>
 <body class="bg-[#020617] text-slate-100 min-h-screen overflow-x-hidden selection:bg-sky-500 selection:text-slate-900 cyber-grid">
 
-  <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full"></div>
+  <div id="toast-container" class="fixed top-5 right-5 z-[9999] flex flex-col gap-2 max-w-sm w-full"></div>
 
   <div id="initial-loader" class="fixed inset-0 bg-[#020617] z-50 flex flex-col items-center justify-center">
     <div class="relative flex items-center justify-center">
@@ -781,7 +781,7 @@
         filterTabs.classList.remove('hidden');
         
         const origin = window.location.origin && window.location.origin !== 'null' ? window.location.origin : 'https://zetago-db.vercel.app';
-        document.getElementById('api-link-display').innerText = `${origin}/api/whitelist?token=ZetaShield_Super_Secure_Complex_System_Token_AlphaX99_2026_GatewayKey`;
+        document.getElementById('api-link-display').innerText = `${origin}/api/whitelist?token=ZetaShield_ZTGrYHRdR424248484_9f8b2c7a1e0d3f4b5a6c7d8e9f0a1b2c_SecureGatewaySystemToken_df849302948201948201948201948202_AlphaX99_VercelProd_2026_dB_Auth_Key_Encrypt_CEEOCS_Complex_u83jdxn829103948_ZTGrYHRdR424248484_SecureAccessGatewayAuthenticationSystemKey_v928fks9201mshd82019shdbf639shdbfn`;
       } else {
         devConsoleBtn.classList.add('hidden');
         clearLogsBtn.classList.add('hidden');
@@ -884,8 +884,8 @@
       }
       document.getElementById('stat-total-numbers').innerText = numbersCount;
 
-      const countSub = globalAccountsData.filter(acc => acc.role === 'staff' || acc.role === 'pt').length;
-      const countRes = globalAccountsData.filter(acc => acc.role === 'res').length;
+      const countSub = globalAccountsData.filter(acc => (acc.role === 'staff' || acc.role === 'pt') && acc.disabled !== true).length;
+      const countRes = globalAccountsData.filter(acc => acc.role === 'res' && acc.disabled !== true).length;
 
       document.getElementById('stat-total-subordinates').innerText = countSub;
       document.getElementById('stat-total-resellers').innerText = countRes;
@@ -962,6 +962,7 @@
 
       const loggedPower = rolePower[currentUserRole] || 0;
       let displayableAccounts = globalAccountsData.filter(acc => {
+        if (acc.disabled === true) return false;
         const targetPower = rolePower[acc.role] || 0;
         return targetPower < loggedPower;
       });
@@ -1328,12 +1329,37 @@
     document.getElementById('form-add-user').addEventListener('submit', async (e) => {
       e.preventDefault();
       const name = document.getElementById('new-user-name').value.trim();
-      const email = document.getElementById('new-user-email').value.trim();
+      const email = document.getElementById('new-user-email').value.trim().toLowerCase();
       const pass = document.getElementById('new-user-password').value;
       const role = document.getElementById('new-user-role').value;
 
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showToast('error', 'Format email tidak valid!');
+        return;
+      }
+
       try {
         showToast('info', 'Mengamankan kredensial...');
+
+        const existingUser = globalAccountsData.find(acc => acc.email.toLowerCase() === email);
+
+        if (existingUser) {
+          const userDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'accounts', existingUser.id);
+          await setDoc(userDocRef, {
+            name: name,
+            email: email,
+            password: pass,
+            role: role,
+            disabled: false,
+            createdByUid: currentUser.uid,
+            createdByName: isDevEmail(currentUser.email) ? 'Rayhan (DeltaAstra)' : currentUser.email,
+            timestamp: Date.now()
+          });
+          await writeAuditLog(`memulihkan & memperbarui akun bawahan level ${role.toUpperCase()} (${name})`);
+          showToast('success', `Akun ${name} berhasil didaftarkan ulang.`);
+          closeAddUserModal();
+          return;
+        }
 
         const secondaryApp = initializeApp(auth.app.options, "ZetaGoSecureAppReg");
         const secondaryAuth = getAuth(secondaryApp);
@@ -1351,6 +1377,7 @@
           email: email,
           password: pass, 
           role: role,
+          disabled: false,
           createdByUid: currentUser.uid,
           createdByName: isDevEmail(currentUser.email) ? 'Rayhan (DeltaAstra)' : currentUser.email,
           timestamp: Date.now()
@@ -1368,15 +1395,22 @@
       showConfirmationModal(
         'fa-user-slash',
         'REVOKE AKSES BAWAHAN?',
-        `Apakah Anda yakin menghapus semua kredensial atas nama "${name}" dari sistem ZetaGo-DB?`,
+        `Apakah Anda yakin menonaktifkan kredensial atas nama "${name}"?`,
         async () => {
           try {
             const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'accounts', id);
-            await deleteDoc(docRef);
-            await writeAuditLog(`menghapus akses akun bawahan (${name})`);
-            showToast('success', 'Kredensial dinonaktifkan.');
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+              const data = docSnap.data();
+              await setDoc(docRef, {
+                ...data,
+                disabled: true
+              });
+              await writeAuditLog(`menonaktifkan akses akun bawahan (${name})`);
+              showToast('success', 'Kredensial dinonaktifkan.');
+            }
           } catch (err) {
-            showToast('error', `Gagal menghapus: ${err.message}`);
+            showToast('error', `Gagal menonaktifkan: ${err.message}`);
           }
         }
       );
