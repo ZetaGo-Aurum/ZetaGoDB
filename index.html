@@ -177,13 +177,13 @@
           <button onclick="switchTab('numbers')" id="nav-numbers" class="w-full flex items-center gap-3 px-4 py-3 font-medium rounded-xl transition-all duration-200 text-slate-400 hover:text-slate-200 hover:bg-slate-900/40">
             <i class="fa-brands fa-whatsapp w-5 text-center text-emerald-400"></i> LIST WHATSAPP
           </button>
-          <button onclick="switchTab('accounts')" id="nav-accounts" class="hidden w-full flex items-center gap-3 px-4 py-3 font-medium rounded-xl transition-all duration-200 text-slate-400 hover:text-slate-200 hover:bg-slate-900/40">
+          <button id="nav-accounts" onclick="handleAccountsClick()" class="w-full flex items-center gap-3 px-4 py-3 font-medium rounded-xl transition-all duration-200 text-slate-400 hover:text-slate-200 hover:bg-slate-900/40">
             <i class="fa-solid fa-sitemap w-5 text-center text-indigo-400"></i> STRUKTUR AKUN
           </button>
           <button onclick="switchTab('logs')" id="nav-logs" class="w-full flex items-center gap-3 px-4 py-3 font-medium rounded-xl transition-all duration-200 text-slate-400 hover:text-slate-200 hover:bg-slate-900/40">
             <i class="fa-solid fa-shield-halved w-5 text-center text-amber-400"></i> SECURITY LOGS
           </button>
-          <button id="nav-dev-console" class="hidden w-full flex items-center gap-3 px-4 py-3 font-medium rounded-xl transition-all duration-200 text-rose-400 hover:text-rose-300 hover:bg-rose-500/10">
+          <button id="nav-dev-console" onclick="handleDevConsoleClick()" class="w-full flex items-center gap-3 px-4 py-3 font-medium rounded-xl transition-all duration-200 text-rose-400 hover:bg-rose-500/10">
             <i class="fa-solid fa-terminal w-5 text-center animate-pulse"></i> DEV TERMINAL
           </button>
         </nav>
@@ -498,10 +498,14 @@
               </div>
 
               <div class="p-4 bg-rose-500/5 border border-rose-500/10 rounded-2xl space-y-4">
-                <span class="text-[10px] font-black text-rose-400 uppercase tracking-widest block"><i class="fa-solid fa-radiation"></i> FIREWALL PURGE COMMAND</span>
-                <p class="text-[11px] text-slate-500 leading-relaxed uppercase">Menghapus seluruh list nomor WhatsApp whitelisted dari database Firestore secara permanen.</p>
+                <span class="text-[10px] font-black text-rose-400 uppercase tracking-widest block"><i class="fa-solid fa-radiation"></i> SYSTEMS EMERGENCY DISASTER CONTROLS</span>
+                <p class="text-[11px] text-slate-500 leading-relaxed uppercase">Hapus massal seluruh data nomor WhatsApp whitelisted dari database Firestore.</p>
                 <button onclick="emergencyPurgeNumbers()" class="w-full py-3 bg-rose-500 hover:bg-rose-400 text-slate-950 font-black text-[10px] rounded-xl tracking-wider uppercase transition duration-200">
-                  EXTREME EMERGENCY PURGE DATA!
+                  EXTREME EMERGENCY PURGE NUMBERS!
+                </button>
+                <p class="text-[11px] text-slate-500 leading-relaxed uppercase mt-4">Hapus massal seluruh akun bawahan dari database Firestore secara permanen.</p>
+                <button onclick="emergencyPurgeAccounts()" class="w-full py-3 bg-red-600 hover:bg-red-500 text-slate-950 font-black text-[10px] rounded-xl tracking-wider uppercase transition duration-200">
+                  PURGE ALL ACCOUNTS PERMANENTLY!
                 </button>
               </div>
             </div>
@@ -776,32 +780,41 @@
       const filterTabs = document.getElementById('number-filter-tabs');
 
       if (role === 'dev') {
-        devConsoleBtn.classList.remove('hidden');
+        devConsoleBtn.classList.remove('opacity-40', 'grayscale', 'cursor-not-allowed');
+        devConsoleBtn.classList.add('text-rose-400', 'hover:text-rose-300');
         clearLogsBtn.classList.remove('hidden');
         filterTabs.classList.remove('hidden');
         
         const origin = window.location.origin && window.location.origin !== 'null' ? window.location.origin : 'https://zetago-db.vercel.app';
         document.getElementById('api-link-display').innerText = `${origin}/api/whitelist?token=ZetaShield_ZTGrYHRdR424248484_9f8b2c7a1e0d3f4b5a6c7d8e9f0a1b2c_SecureGatewaySystemToken_df849302948201948201948201948202_AlphaX99_VercelProd_2026_dB_Auth_Key_Encrypt_CEEOCS_Complex_u83jdxn829103948_ZTGrYHRdR424248484_SecureAccessGatewayAuthenticationSystemKey_v928fks9201mshd82019shdbf639shdbfn`;
       } else {
-        devConsoleBtn.classList.add('hidden');
+        devConsoleBtn.classList.add('opacity-40', 'grayscale', 'cursor-not-allowed');
+        devConsoleBtn.classList.remove('text-rose-400', 'hover:text-rose-300');
         clearLogsBtn.classList.add('hidden');
         filterTabs.classList.add('hidden');
       }
 
       const accountsBtn = document.getElementById('nav-accounts');
       if (role === 'res') {
-        accountsBtn.classList.add('hidden');
+        accountsBtn.classList.add('opacity-40', 'grayscale', 'cursor-not-allowed');
+        accountsBtn.classList.remove('text-slate-400', 'hover:text-slate-200', 'hover:bg-slate-900/40');
       } else {
-        accountsBtn.classList.remove('hidden');
+        accountsBtn.classList.remove('opacity-40', 'grayscale', 'cursor-not-allowed');
+        accountsBtn.classList.add('text-slate-400', 'hover:text-slate-200', 'hover:bg-slate-900/40');
       }
 
       const statSubordinates = document.getElementById('stat-card-subordinates');
       const statResellers = document.getElementById('stat-card-resellers');
       const statsGridContainer = document.getElementById('stats-grid');
-      if (role === 'res') {
+      if (role === 'res' || role === 'pt') {
         statSubordinates.classList.add('hidden');
-        statResellers.classList.add('hidden');
-        statsGridContainer.className = "grid grid-cols-1 sm:grid-cols-2 gap-4 font-mono";
+        if (role === 'res') {
+          statResellers.classList.add('hidden');
+          statsGridContainer.className = "grid grid-cols-1 sm:grid-cols-2 gap-4 font-mono";
+        } else {
+          statResellers.classList.remove('hidden');
+          statsGridContainer.className = "grid grid-cols-1 sm:grid-cols-3 gap-4 font-mono";
+        }
       } else {
         statSubordinates.classList.remove('hidden');
         statResellers.classList.remove('hidden');
@@ -978,6 +991,14 @@
 
         const deleteBtn = `<button onclick="confirmDeleteAccount('${acc.id}', '${acc.name}')" class="px-2.5 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-lg text-[10px] transition duration-200 uppercase tracking-widest font-black"><i class="fa-solid fa-user-xmark mr-1"></i> PECAT</button>`;
         
+        let actionHtml = '';
+        if (currentUserRole === 'dev') {
+          const hardDeleteBtn = `<button onclick="confirmHardDeleteAccount('${acc.id}', '${acc.name}')" class="px-2.5 py-1.5 bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-500/30 rounded-lg text-[10px] transition duration-200 uppercase tracking-widest font-black mr-2"><i class="fa-solid fa-trash-can mr-1"></i> HAPUS BERSIH</button>`;
+          actionHtml = `${hardDeleteBtn} ${deleteBtn}`;
+        } else {
+          actionHtml = deleteBtn;
+        }
+
         const passwordPlain = acc.password || 'Tidak tersedia';
         const copyCredBtn = `<button onclick="copyCredentials('${escapeJS(acc.name)}', '${escapeJS(acc.email)}', '${escapeJS(passwordPlain)}', '${escapeJS(acc.role)}')" class="px-2.5 py-1.5 bg-sky-500/10 hover:bg-sky-500/20 text-sky-400 border border-sky-400/20 rounded-lg text-[10px] transition duration-200 uppercase tracking-widest font-black mr-2"><i class="fa-solid fa-copy mr-1"></i> COPY AKSES</button>`;
 
@@ -990,7 +1011,7 @@
           <td class="p-4">
             <span class="inline-block px-2 py-0.5 text-[8px] font-black tracking-widest rounded ${getRoleBadgeClass(acc.role)}">${roleLabels[acc.role]}</span>
           </td>
-          <td class="p-4 text-center flex items-center justify-center">${copyCredBtn} ${deleteBtn}</td>
+          <td class="p-4 text-center flex items-center justify-center">${copyCredBtn} ${actionHtml}</td>
         `;
         tbody.appendChild(tr);
       });
@@ -1416,6 +1437,50 @@
       );
     };
 
+    window.confirmHardDeleteAccount = function(id, name) {
+      showConfirmationModal(
+        'fa-trash-can',
+        'HAPUS AKUN TOTAL & BERSIH?',
+        `Apakah Anda yakin menghapus total akun "${name}" secara permanen dari database? Akun tidak akan bisa login lagi.`,
+        async () => {
+          try {
+            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'accounts', id);
+            await deleteDoc(docRef);
+            await writeAuditLog(`menghapus total akun bawahan secara bersih (${name})`);
+            showToast('success', 'Akun berhasil dihapus total dari database.');
+          } catch (err) {
+            showToast('error', `Gagal menghapus total: ${err.message}`);
+          }
+        }
+      );
+    };
+
+    window.emergencyPurgeAccounts = function() {
+      if (currentUserRole !== 'dev') return;
+
+      showConfirmationModal(
+        'fa-users-slash',
+        'PURGE SEMUA AKUN TOTAL?',
+        'PERINGATAN KERAS! Seluruh akun bawahan akan dihapus secara total dan permanen dari database. Eksekusi?',
+        async () => {
+          try {
+            showToast('info', 'Melakukan pembersihan akun massal...');
+            const promises = globalAccountsData.map(async (acc) => {
+              if (acc.id !== currentUser.uid && acc.email !== _zEmail) {
+                const dRef = doc(db, 'artifacts', appId, 'public', 'data', 'accounts', acc.id);
+                return deleteDoc(dRef);
+              }
+            });
+            await Promise.all(promises);
+            await writeAuditLog(`MELAKUKAN PURGE MASSAL SELURUH AKUN BAWAHAN SECARA BERSIH!`);
+            showToast('success', 'Seluruh akun bawahan berhasil dibersihkan total!');
+          } catch (err) {
+            showToast('error', `Purge akun gagal: ${err.message}`);
+          }
+        }
+      );
+    };
+
     window.emergencyPurgeNumbers = function() {
       if (currentUserRole !== 'dev') return;
 
@@ -1497,6 +1562,22 @@
       } else {
         input.type = 'password';
         icon.className = 'fa-solid fa-eye text-xs';
+      }
+    };
+
+    window.handleDevConsoleClick = function() {
+      if (currentUserRole === 'dev') {
+        switchTab('dev-console');
+      } else {
+        showToast('error', 'Akses Terlarang! Hanya Developer yang memiliki otoritas mengakses Dev Terminal.');
+      }
+    };
+
+    window.handleAccountsClick = function() {
+      if (currentUserRole !== 'res') {
+        switchTab('accounts');
+      } else {
+        showToast('error', 'Akses Terlarang! Reseller tidak memiliki otoritas melihat atau mengelola Struktur Akun.');
       }
     };
 
