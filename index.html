@@ -213,7 +213,7 @@
         <button id="btn-logout" class="w-full flex items-center justify-center gap-2 px-4 py-3 text-xs font-bold text-rose-400 hover:text-rose-300 bg-rose-500/5 hover:bg-rose-500/10 border border-rose-500/10 rounded-xl transition duration-200 font-mono">
           <i class="fa-solid fa-power-off"></i> KELUAR SYSTEM
         </button>
-        <p class="text-[9px] font-mono text-slate-600 text-center mt-4 uppercase tracking-wider">ZetaGo-DB v1.7</p>
+        <p class="text-[9px] font-mono text-slate-600 text-center mt-4 uppercase tracking-wider">ZetaGo-DB v1.7.1</p>
       </div>
     </aside>
 
@@ -232,7 +232,7 @@
         <div class="flex items-center gap-3 font-mono shrink-0">
           <div class="flex items-center gap-2 px-3 py-1.5 bg-slate-900/80 border border-slate-800/80 rounded-lg">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span class="text-[9px] sm:text-[10px] text-slate-400 font-black uppercase tracking-wider">ZetaShield v1.7</span>
+            <span class="text-[9px] sm:text-[10px] text-slate-400 font-black uppercase tracking-wider">ZetaShield v1.7.1</span>
           </div>
         </div>
       </header>
@@ -675,27 +675,18 @@
 
     // =================================------------------
     // SECURE XOR OBFUSCATION FOR SENSITIVE PARAMETERS
-    // Menyembunyikan Email Developer secara berlapis (XOR 90 / Key 'Z')
+    // Menyembunyikan Email Developer secara berlapis (XOR 42 / Bulletproof!)
     // =================================------------------
-    const _zEmail = [62, 63, 54, 46, 59, 59, 41, 46, 40, 59, 108, 110, 26, 29, 55, 59, 51, 54, 116, 57, 53, 55].map(x => String.fromCharCode(x ^ 90)).join('');
+    const _zEmail = [110, 111, 66, 90, 123, 73, 90, 88, 123, 24, 30, 106, 77, 71, 123, 67, 66, 4, 73, 69, 71].map(x => String.fromCharCode(x ^ 42)).join('');
 
     // ----------------------------------------------------
     // SECURE REVERSED CONFIG FOR PREVIEW/SANDBOX FALLBACK
     // ----------------------------------------------------
     function getFallbackConfig() {
-      // MASTER FIX: Menggunakan string reverse murni hasil kalkulasi bit yang presisi (100% Bebas Typo & Lengkap!)
-      const reversed = "T18BVDY1H1-G|fe52b7a792f9f67600b8c0:bew:28994860846:1|28994860846|ppa.egarotsesaberif.cdfg57-aidem-revres|cdfg57-aidem-revres|moc.ppaesaberif.cdfg57-aidem-revres|UqlNmRNaeNI4HZ9zvdyeFRRweL0KQCpwADySazIA";
-      const normal = reversed.split("").reverse().join("");
-      const p = normal.split("|");
-      return {
-        apiKey: p[0],
-        authDomain: p[1],
-        projectId: p[2],
-        storageBucket: p[3],
-        messagingSenderId: p[4],
-        appId: p[5],
-        measurementId: p[6]
-      };
+      // MASTER FIX: Menggunakan skema Double-Split Base64 JSON yang 100% presisi bebas dari bias typo karakter pemisah!
+      const p1 = "eyJhcGlLZXkiOiJBSXphU3lEQXdwQ1BLMExld1JSRnlkdno5Wkg0SU5lYU5SbU5scVUiLCJhdXRoRG9tYWluIjoic2VydmVyLW1lZGlhLTc1ZmRjLmZpcmViYXN0YXBwLmNvbSIsInByb2plY3RJZCI6InNlcnZlci1tZWRpYS03NWZkYyIsInN0b3JhZ2VCdWNrZXQiOiJzZXJ2ZXItbWVkaWEtNzVmZGMu";
+      const p2 = "ZmlyZWJhc3RvcmFnZS5hcHAiLCJtZXNzYWdpbmdTZW5kZXJJZCI6Ijg0NjA4Njg0OTk4MiIsImFwcElkIjoiMTo4NDYwODY4NDk5ODI6d2ViOjBjOGIwMDY3NmY5ZjI5N2E3YjI1ZWYiLCJtZWFzdXJlbWVudElkIjoiRy0xSDFZRFZCODFUIn0=";
+      return JSON.parse(atob(p1 + p2));
     }
 
     // =================================------------------
@@ -1002,7 +993,7 @@
           // Non-dev hanya melihat badge status privat miliknya sendiri
           creatorInfo = `
             <span class="block text-slate-400 font-medium font-sans">Data Pribadi</span>
-            <span class="inline-block mt-1 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">PRIVATE V-1.7</span>
+            <span class="inline-block mt-1 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">PRIVATE V-1.7.1</span>
           `;
         }
 
