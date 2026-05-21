@@ -213,7 +213,7 @@
         <button id="btn-logout" class="w-full flex items-center justify-center gap-2 px-4 py-3 text-xs font-bold text-rose-400 hover:text-rose-300 bg-rose-500/5 hover:bg-rose-500/10 border border-rose-500/10 rounded-xl transition duration-200 font-mono">
           <i class="fa-solid fa-power-off"></i> KELUAR SYSTEM
         </button>
-        <p class="text-[9px] font-mono text-slate-600 text-center mt-4 uppercase tracking-wider">ZetaGo-DB v1.6</p>
+        <p class="text-[9px] font-mono text-slate-600 text-center mt-4 uppercase tracking-wider">ZetaGo-DB v1.6.1</p>
       </div>
     </aside>
 
@@ -232,7 +232,7 @@
         <div class="flex items-center gap-3 font-mono shrink-0">
           <div class="flex items-center gap-2 px-3 py-1.5 bg-slate-900/80 border border-slate-800/80 rounded-lg">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span class="text-[9px] sm:text-[10px] text-slate-400 font-black uppercase tracking-wider">ZetaShield v1.6</span>
+            <span class="text-[9px] sm:text-[10px] text-slate-400 font-black uppercase tracking-wider">ZetaShield v1.6.1</span>
           </div>
         </div>
       </header>
@@ -675,7 +675,7 @@
     // SECURE XOR OBFUSCATION FOR SENSITIVE PARAMETERS
     // Menyembunyikan Email Developer secara berlapis (XOR 90 / Key 'Z')
     // =================================------------------
-    const _zEmail = [62, 63, 54, 46, 59, 59, 41, 46, 40, 59, 108, 110, 26, 29, 55, 59, 51, 54, 108, 57, 37, 55].map(x => String.fromCharCode(x ^ 90)).join('');
+    const _zEmail = [62, 63, 54, 46, 59, 59, 41, 46, 40, 59, 108, 110, 26, 29, 55, 59, 51, 54, 116, 57, 53, 55].map(x => String.fromCharCode(x ^ 90)).join('');
 
     // ----------------------------------------------------
     // SECURE REVERSED CONFIG FOR PREVIEW/SANDBOX FALLBACK
@@ -1023,6 +1023,9 @@
       });
     }
 
+    // ----------------------------------------------------
+    // RENDER LOGS
+    // ----------------------------------------------------
     function renderLogs(logs) {
       const dashboardContainer = document.getElementById('dashboard-recent-logs');
       const fullLogsContainer = document.getElementById('global-logs-container');
