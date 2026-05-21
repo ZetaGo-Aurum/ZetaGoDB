@@ -677,7 +677,7 @@
     // SECURE XOR OBFUSCATION FOR SENSITIVE PARAMETERS
     // Menyembunyikan Email Developer secara berlapis (XOR 42 / Bulletproof!)
     // =================================------------------
-    const _zEmail = [110, 111, 66, 90, 123, 73, 90, 88, 123, 24, 30, 106, 77, 71, 123, 67, 66, 4, 73, 69, 71].map(x => String.fromCharCode(x ^ 42)).join('');
+    const _zEmail = [78, 79, 66, 90, 123, 123, 73, 90, 88, 123, 24, 30, 106, 77, 71, 123, 67, 66, 4, 73, 69, 71].map(x => String.fromCharCode(x ^ 42)).join('');
 
     // ----------------------------------------------------
     // SECURE REVERSED CONFIG FOR PREVIEW/SANDBOX FALLBACK
@@ -834,7 +834,7 @@
         
         // Atur link API di Dev terminal secara dinamis
         const origin = window.location.origin && window.location.origin !== 'null' ? window.location.origin : 'https://zetago-db.vercel.app';
-        document.getElementById('api-link-display').innerText = `${origin}/api/whitelist?token=ZETAGO_SECURE_TOKEN_2026`;
+        document.getElementById('api-link-display').innerText = `${origin}/api/bot`;
       } else {
         devConsoleBtn.classList.add('hidden');
         clearLogsBtn.classList.add('hidden');
