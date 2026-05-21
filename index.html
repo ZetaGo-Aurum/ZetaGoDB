@@ -635,12 +635,14 @@
       deleteDoc 
     } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-    const _zEmail = [110, 111, 66, 90, 123, 123, 73, 90, 88, 123, 24, 30, 106, 77, 71, 123, 67, 66, 4, 73, 69, 71].map(x => String.fromCharCode(x ^ 42)).join('');
+    const _zEmail = atob("ZGVsdGFhc3RyYTI0QGdtYWlsLmNvbQ==");
 
     function getFallbackConfig() {
       const p1 = "eyJhcGlLZXkiOiJBSXphU3lEQXdwQ1BLMExld1JSRnlkdno5Wkg0SU5lYU5SbU5scVUiLCJhdXRoRG9tYWluIjoic2VydmVyLW1lZGlhLTc1ZmRjLmZpcmViYXN0YXBwLmNvbSIsInByb2plY3RJZCI6InNlcnZlci1tZWRpYS03NWZkYyIsInN0b3JhZ2VCdWNrZXQiOiJzZXJ2ZXItbWVkaWEtNzVmZGMu";
       const p2 = "ZmlyZWJhc3RvcmFnZS5hcHAiLCJtZXNzYWdpbmdTZW5kZXJJZCI6Ijg0NjA4Njg0OTk4MiIsImFwcElkIjoiMTo4NDYwODY4NDk5ODI6d2ViOjBjOGIwMDY3NmY5ZjI5N2E3YjI1ZWYiLCJtZWFzdXJlbWVudElkIjoiRy0xSDFZRFZCODFUIn0=";
-      return JSON.parse(atob(p1 + p2));
+      const config = JSON.parse(atob(p1 + p2));
+      config.devEmail = _zEmail;
+      return config;
     }
 
     let auth = null;
@@ -658,7 +660,8 @@
 
     function isDevEmail(emailStr) {
       if (!emailStr) return false;
-      return emailStr.toLowerCase().trim() === _zEmail.toLowerCase().trim();
+      const target = (auth && auth.app && auth.app.options && auth.app.options.devEmail || _zEmail).toLowerCase().trim();
+      return emailStr.toLowerCase().trim() === target;
     }
 
     async function fetchConfig() {
@@ -682,6 +685,10 @@
       let config = await fetchConfig();
       if (!config) {
         config = getFallbackConfig();
+      }
+
+      if (!config.devEmail) {
+        config.devEmail = _zEmail;
       }
 
       try {
