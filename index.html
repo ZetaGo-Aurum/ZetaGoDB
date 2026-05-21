@@ -177,13 +177,13 @@
           <button onclick="switchTab('numbers')" id="nav-numbers" class="w-full flex items-center gap-3 px-4 py-3 font-medium rounded-xl transition-all duration-200 text-slate-400 hover:text-slate-200 hover:bg-slate-900/40">
             <i class="fa-brands fa-whatsapp w-5 text-center text-emerald-400"></i> LIST WHATSAPP
           </button>
-          <button onclick="switchTab('accounts')" id="nav-accounts" class="w-full flex items-center gap-3 px-4 py-3 font-medium rounded-xl transition-all duration-200 text-slate-400 hover:text-slate-200 hover:bg-slate-900/40">
+          <button onclick="switchTab('accounts')" id="nav-accounts" class="hidden w-full flex items-center gap-3 px-4 py-3 font-medium rounded-xl transition-all duration-200 text-slate-400 hover:text-slate-200 hover:bg-slate-900/40">
             <i class="fa-solid fa-sitemap w-5 text-center text-indigo-400"></i> STRUKTUR AKUN
           </button>
           <button onclick="switchTab('logs')" id="nav-logs" class="w-full flex items-center gap-3 px-4 py-3 font-medium rounded-xl transition-all duration-200 text-slate-400 hover:text-slate-200 hover:bg-slate-900/40">
             <i class="fa-solid fa-shield-halved w-5 text-center text-amber-400"></i> SECURITY LOGS
           </button>
-          <button id="nav-dev-console" onclick="switchTab('dev-console')" class="hidden w-full flex items-center gap-3 px-4 py-3 font-medium rounded-xl transition-all duration-200 text-rose-400 hover:text-rose-300 hover:bg-rose-500/10">
+          <button id="nav-dev-console" class="hidden w-full flex items-center gap-3 px-4 py-3 font-medium rounded-xl transition-all duration-200 text-rose-400 hover:text-rose-300 hover:bg-rose-500/10">
             <i class="fa-solid fa-terminal w-5 text-center animate-pulse"></i> DEV TERMINAL
           </button>
         </nav>
@@ -232,8 +232,8 @@
             </div>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 font-mono">
-            <div class="bg-slate-900/20 border border-slate-800/60 rounded-2xl p-5 hover:border-slate-700/80 transition duration-300">
+          <div id="stats-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 font-mono">
+            <div id="stat-card-numbers" class="bg-slate-900/20 border border-slate-800/60 rounded-2xl p-5 hover:border-slate-700/80 transition duration-300">
               <div class="flex justify-between items-start">
                 <div>
                   <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">TOTAL WHitelist</p>
@@ -245,7 +245,7 @@
               </div>
               <p class="text-[9px] text-slate-500 mt-3"><i class="fa-solid fa-shield-check text-emerald-400 mr-1"></i> Terotorisasi di Bot</p>
             </div>
-            <div class="bg-slate-900/20 border border-slate-800/60 rounded-2xl p-5 hover:border-slate-700/80 transition duration-300">
+            <div id="stat-card-subordinates" class="bg-slate-900/20 border border-slate-800/60 rounded-2xl p-5 hover:border-slate-700/80 transition duration-300">
               <div class="flex justify-between items-start">
                 <div>
                   <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">PENGELOLA AKTIF</p>
@@ -257,7 +257,7 @@
               </div>
               <p class="text-[9px] text-slate-500 mt-3"><i class="fa-solid fa-network-wired text-indigo-400 mr-1"></i> Staff & Partner</p>
             </div>
-            <div class="bg-slate-900/20 border border-slate-800/60 rounded-2xl p-5 hover:border-slate-700/80 transition duration-300">
+            <div id="stat-card-resellers" class="bg-slate-900/20 border border-slate-800/60 rounded-2xl p-5 hover:border-slate-700/80 transition duration-300">
               <div class="flex justify-between items-start">
                 <div>
                   <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">RESELLER AKTIF</p>
@@ -269,7 +269,7 @@
               </div>
               <p class="text-[9px] text-slate-500 mt-3"><i class="fa-solid fa-arrow-up-right-from-square text-sky-400 mr-1"></i> Khusus Input Nomor</p>
             </div>
-            <div class="bg-slate-900/20 border border-slate-800/60 rounded-2xl p-5 hover:border-slate-700/80 transition duration-300">
+            <div id="stat-card-role" class="bg-slate-900/20 border border-slate-800/60 rounded-2xl p-5 hover:border-slate-700/80 transition duration-300">
               <div class="flex justify-between items-start">
                 <div>
                   <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">LEVEL OTORITAS</p>
@@ -781,11 +781,31 @@
         filterTabs.classList.remove('hidden');
         
         const origin = window.location.origin && window.location.origin !== 'null' ? window.location.origin : 'https://zetago-db.vercel.app';
-        document.getElementById('api-link-display').innerText = `${origin}/api/bot`;
+        document.getElementById('api-link-display').innerText = `${origin}/api/whitelist?token=ZetaShield_Super_Secure_Complex_System_Token_AlphaX99_2026_GatewayKey`;
       } else {
         devConsoleBtn.classList.add('hidden');
         clearLogsBtn.classList.add('hidden');
         filterTabs.classList.add('hidden');
+      }
+
+      const accountsBtn = document.getElementById('nav-accounts');
+      if (role === 'res') {
+        accountsBtn.classList.add('hidden');
+      } else {
+        accountsBtn.classList.remove('hidden');
+      }
+
+      const statSubordinates = document.getElementById('stat-card-subordinates');
+      const statResellers = document.getElementById('stat-card-resellers');
+      const statsGridContainer = document.getElementById('stats-grid');
+      if (role === 'res') {
+        statSubordinates.classList.add('hidden');
+        statResellers.classList.add('hidden');
+        statsGridContainer.className = "grid grid-cols-1 sm:grid-cols-2 gap-4 font-mono";
+      } else {
+        statSubordinates.classList.remove('hidden');
+        statResellers.classList.remove('hidden');
+        statsGridContainer.className = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 font-mono";
       }
 
       const btnAddUser = document.getElementById('btn-open-add-user');
@@ -1171,6 +1191,18 @@
     });
 
     document.getElementById('btn-logout').addEventListener('click', () => {
+      if (numbersUnsubscribe) {
+        numbersUnsubscribe();
+        numbersUnsubscribe = null;
+      }
+      if (accountsUnsubscribe) {
+        accountsUnsubscribe();
+        accountsUnsubscribe = null;
+      }
+      if (logsUnsubscribe) {
+        logsUnsubscribe();
+        logsUnsubscribe = null;
+      }
       signOut(auth).then(() => {
         showToast('success', 'Berhasil melakukan log-off sistem.');
       });
