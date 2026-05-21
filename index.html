@@ -91,7 +91,7 @@
       <div id="login-dev-form" class="hidden space-y-6">
         <div class="text-center py-4 bg-slate-950/60 border border-slate-800/40 rounded-2xl">
           <i class="fa-brands fa-google text-3xl text-sky-400 mb-3 block animate-pulse"></i>
-          <p class="text-[10px] text-slate-400 px-4 font-mono leading-relaxed">Sistem mendeteksi login pengembang menggunakan verifikasi Google Oauth eksklusif. (Firefox Friendly)</p>
+          <p class="text-[10px] text-slate-400 px-4 font-mono leading-relaxed">Sistem mendeteksi login pengembang menggunakan verifikasi Google Oauth eksklusif.</p>
         </div>
         <button id="btn-google-login" class="w-full flex items-center justify-center gap-3 py-3 px-4 bg-white hover:bg-slate-100 text-slate-950 font-bold rounded-xl transition duration-300 shadow-md">
           <svg class="h-5 w-5" viewBox="0 0 24 24">
@@ -145,8 +145,11 @@
   <!-- MAIN APP PLATFORM -->
   <div id="main-app" class="hidden min-h-screen flex flex-col lg:flex-row">
     
-    <!-- SIDEBAR NAVIGATION -->
-    <aside id="sidebar" class="hidden lg:flex w-full lg:w-72 bg-slate-950/75 lg:min-h-screen border-b lg:border-b-0 lg:border-r border-slate-800/80 flex-col justify-between p-6 transition-all duration-300 shrink-0 relative z-30 backdrop-blur-xl">
+    <!-- BACKDROP OVERLAY FOR MOBILE SIDEBAR Drawer -->
+    <div id="sidebar-backdrop" class="fixed inset-0 bg-slate-950/65 backdrop-blur-sm z-30 lg:hidden hidden transition-opacity duration-300" onclick="toggleMobileMenu()"></div>
+
+    <!-- SIDEBAR NAVIGATION (Sliding Drawer on Mobile) -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-72 bg-slate-950/95 lg:bg-slate-950/75 border-r border-slate-800/80 flex flex-col justify-between p-6 transition-transform duration-300 -translate-x-full lg:translate-x-0 lg:static lg:h-screen lg:w-72 shrink-0 backdrop-blur-xl">
       <div>
         <!-- Brand header -->
         <div class="flex items-center justify-between mb-8">
@@ -160,8 +163,8 @@
             </div>
           </div>
           <!-- Close Button Mobile Only -->
-          <button class="lg:hidden text-slate-400 hover:text-sky-400 p-2" onclick="toggleMobileMenu()">
-            <i class="fa-solid fa-xmark text-xl"></i>
+          <button class="lg:hidden text-slate-400 hover:text-sky-400 p-2 rounded-lg hover:bg-slate-900/50 transition-colors" onclick="toggleMobileMenu()">
+            <i class="fa-solid fa-xmark text-lg"></i>
           </button>
         </div>
 
@@ -210,7 +213,7 @@
         <button id="btn-logout" class="w-full flex items-center justify-center gap-2 px-4 py-3 text-xs font-bold text-rose-400 hover:text-rose-300 bg-rose-500/5 hover:bg-rose-500/10 border border-rose-500/10 rounded-xl transition duration-200 font-mono">
           <i class="fa-solid fa-power-off"></i> KELUAR SYSTEM
         </button>
-        <p class="text-[9px] font-mono text-slate-600 text-center mt-4 uppercase tracking-wider">ZetaGo-DB v1.3</p>
+        <p class="text-[9px] font-mono text-slate-600 text-center mt-4 uppercase tracking-wider">ZetaGo-DB v1.4</p>
       </div>
     </aside>
 
@@ -220,7 +223,7 @@
       <header class="h-16 border-b border-slate-800/80 flex items-center justify-between px-6 bg-slate-950/20 backdrop-blur-md relative z-20">
         <div class="flex items-center gap-3">
           <!-- Hamburger Button Mobile Only -->
-          <button class="lg:hidden text-slate-400 hover:text-sky-400 p-2 -ml-2 transition-colors" onclick="toggleMobileMenu()">
+          <button class="lg:hidden text-slate-400 hover:text-sky-400 p-2.5 -ml-2 rounded-xl hover:bg-slate-900/40 transition-colors" onclick="toggleMobileMenu()">
             <i class="fa-solid fa-bars text-lg"></i>
           </button>
           <h2 id="current-page-title" class="text-xs font-black text-slate-200 tracking-[0.15em] uppercase font-mono">DASHBOARD OVERVIEW</h2>
@@ -229,7 +232,7 @@
         <div class="flex items-center gap-3 font-mono">
           <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-slate-900/80 border border-slate-800 rounded-lg">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span class="text-[10px] text-slate-400 font-bold uppercase">ZetaShield v1.3 Active</span>
+            <span class="text-[10px] text-slate-400 font-bold uppercase">ZetaShield v1.4 Active</span>
           </div>
         </div>
       </header>
@@ -705,7 +708,6 @@
     async function fetchConfig() {
       let config = null;
 
-      // Proteksi Sandbox/Blob: Hindari memproses fetch pada domain/protokol yang tidak sah
       const isBlob = window.location.protocol === 'blob:';
       const isSandbox = window.location.hostname.includes('usercontent.goog') || window.location.hostname.includes('github.dev');
 
@@ -720,7 +722,6 @@
         }
       }
 
-      // Gunakan fallback otomatis jika fetch gagal atau berjalan dalam preview/blob sandbox
       if (!config) {
         config = getFallbackConfig();
       }
@@ -730,22 +731,22 @@
         auth = getAuth(appInstance);
         db = getFirestore(appInstance);
 
-        // Pantau hasil dari redirect Google (Firefox Friendly!)
-        getRedirectResult(auth).then(async (result) => {
+        // 1. STALEMATE MITIGATION: Selesaikan & Tunggu redirect result sebelum memicu onAuthStateChanged!
+        try {
+          const result = await getRedirectResult(auth);
           if (result && result.user) {
             if (result.user.email !== "deltaastra24@gmail.com") {
               showToast('error', 'Akses Pengembang Ditolak! Anda bukan pemilik ZetaGo-DB.');
               await signOut(auth);
             }
           }
-        }).catch((err) => {
+        } catch (err) {
           console.error("Gagal mengurai redirect hasil: ", err);
           showToast('error', 'Gagal memproses redirect login Google.');
-        });
+        }
 
-        // Pantau perubahan sesi autentikasi
+        // 2. Pantau perubahan sesi autentikasi
         onAuthStateChanged(auth, async (user) => {
-          document.getElementById('initial-loader').style.display = 'none';
           if (user) {
             currentUser = user;
             await checkUserRole(user);
@@ -754,6 +755,7 @@
             currentUserRole = null;
             showLoginScreen();
           }
+          document.getElementById('initial-loader').style.display = 'none';
         });
 
       } catch (error) {
@@ -1116,18 +1118,48 @@
       };
       document.getElementById('current-page-title').innerText = titles[tabName] || 'ZETAGO-DB';
 
-      // Auto close sidebar on mobile
+      // Auto close sidebar drawer on mobile
       const sidebar = document.getElementById('sidebar');
+      const backdrop = document.getElementById('sidebar-backdrop');
       if (window.innerWidth < 1024) {
-        sidebar.classList.add('hidden');
+        sidebar.classList.remove('translate-x-0');
+        sidebar.classList.add('-translate-x-full');
+        backdrop.classList.add('hidden');
       }
     };
 
+    // ----------------------------------------------------
+    // RESPONSIVE SIDEBAR MOBILE Drawer CONTROLS
+    // ----------------------------------------------------
     window.toggleMobileMenu = function() {
       const sidebar = document.getElementById('sidebar');
-      sidebar.classList.toggle('hidden');
-      sidebar.classList.toggle('flex');
+      const backdrop = document.getElementById('sidebar-backdrop');
+      
+      const isOpen = sidebar.classList.contains('translate-x-0');
+      
+      if (isOpen) {
+        sidebar.classList.remove('translate-x-0');
+        sidebar.classList.add('-translate-x-full');
+        backdrop.classList.add('hidden');
+      } else {
+        sidebar.classList.remove('-translate-x-full');
+        sidebar.classList.add('translate-x-0');
+        backdrop.classList.remove('hidden');
+      }
     };
+
+    window.addEventListener('resize', () => {
+      const sidebar = document.getElementById('sidebar');
+      const backdrop = document.getElementById('sidebar-backdrop');
+      if (window.innerWidth >= 1024) {
+        sidebar.classList.remove('-translate-x-full');
+        sidebar.classList.remove('translate-x-0');
+        backdrop.classList.add('hidden');
+      } else {
+        sidebar.classList.add('-translate-x-full');
+        backdrop.classList.add('hidden');
+      }
+    });
 
     // ----------------------------------------------------
     // GOOGLE AUTH LOGIC WITH FIREFOX REDIRECT FALLBACK
@@ -1166,10 +1198,8 @@
     document.getElementById('btn-google-login').addEventListener('click', async () => {
       const provider = new GoogleAuthProvider();
       try {
-        // Coba login popup standar terlebih dahulu
         await signInWithPopup(auth, provider);
       } catch (err) {
-        // Jika browser memblokir popup (Terjadi di Firefox)
         if (err.code === 'auth/popup-blocked') {
           showToast('info', 'Popup diblokir browser! Mengalihkan ke metode redirect keamanan...');
           await signInWithRedirect(auth, provider);
