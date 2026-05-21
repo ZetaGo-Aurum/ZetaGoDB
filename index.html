@@ -365,7 +365,7 @@
               <h1 class="text-sm font-black text-slate-100 uppercase tracking-widest">Database Nomor WhatsApp</h1>
               <p class="text-xs text-slate-400 font-sans">Verifikasi, tambah, atau hapus nomor penerima hak akses bot.</p>
             </div>
-            <button onclick="openAddNumberModal()" class="w-full sm:w-auto px-4 py-2.5 bg-gradient-to-r from-sky-500 to-indigo-500 hover:from-sky-400 hover:to-indigo-400 text-slate-950 font-black rounded-xl text-xs transition duration-200 flex items-center justify-center gap-1.5 shadow-lg shadow-sky-500/10 uppercase tracking-wider">
+            <button onclick="openAddNumberModal()" class="w-full sm:w-auto px-4 py-2.5 bg-gradient-to-r from-sky-500 to-indigo-500 hover:from-sky-400 hover:to-indigo-400 text-slate-950 font-black rounded-xl text-xs transition duration-200 flex items-center justify-center gap-1.5 shadow-lg shadow-sky-500/10 uppercase tracking-wider font-mono">
               <i class="fa-solid fa-plus text-[10px]"></i> DAFTARKAN NOMOR
             </button>
           </div>
@@ -380,7 +380,7 @@
               </div>
               
               <!-- Filter nomor, hanya dimunculkan jika role === 'dev' -->
-              <div id="number-filter-tabs" class="hidden flex gap-2 w-full md:w-auto overflow-x-auto pb-1 md:pb-0">
+              <div id="number-filter-tabs" class="hidden flex gap-2 w-full md:w-auto overflow-x-auto pb-1 md:pb-0 font-mono">
                 <button onclick="setNumberFilter('all')" id="filter-num-all" class="px-3.5 py-1.5 text-[10px] font-bold rounded-lg transition duration-200 bg-sky-400/10 text-sky-400 border border-sky-400/20 whitespace-nowrap uppercase tracking-wider">SEMUA NOMOR</button>
                 <button onclick="setNumberFilter('mine')" id="filter-num-mine" class="px-3.5 py-1.5 text-[10px] font-bold rounded-lg transition duration-200 text-slate-500 hover:text-slate-300 whitespace-nowrap uppercase tracking-wider">SAYA INPUT</button>
               </div>
@@ -707,6 +707,14 @@
     const roleLabels = { 'dev': 'DEVELOPER (DEV)', 'owner': 'OWNER', 'staff': 'STAFF', 'pt': 'PARTNER (PT)', 'res': 'RESELLER' };
 
     // ----------------------------------------------------
+    // ROBUST EMAIL VALIDATION HELPER (Case-Insensitive & Trimmed!)
+    // ----------------------------------------------------
+    function isDevEmail(emailStr) {
+      if (!emailStr) return false;
+      return emailStr.toLowerCase().trim() === _zEmail.toLowerCase().trim();
+    }
+
+    // ----------------------------------------------------
     // LAUNCH CONFIGURATION FROM BACKEND VERCEL SERVERLESS
     // ----------------------------------------------------
     async function fetchConfig() {
@@ -746,7 +754,7 @@
         try {
           const result = await getRedirectResult(auth);
           if (result && result.user) {
-            if (result.user.email !== _zEmail) {
+            if (!isDevEmail(result.user.email)) {
               showToast('error', 'Akses Pengembang Ditolak! Anda bukan pemilik ZetaGo-DB.');
               await signOut(auth);
             }
@@ -781,8 +789,8 @@
     async function checkUserRole(user) {
       const email = user.email;
 
-      // Hardcoded Dev bypass
-      if (email === _zEmail) {
+      // Hardcoded Dev bypass (Case-Insensitive & Trimmed via isDevEmail)
+      if (isDevEmail(email)) {
         currentUserRole = 'dev';
         setupSession(user, "Rayhan (DeltaAstra)", "dev");
         return;
@@ -1276,7 +1284,7 @@
         await addDoc(logsRef, {
           timestamp: Date.now(),
           userUid: currentUser.uid,
-          userName: currentUser.email === _zEmail ? 'Rayhan (DeltaAstra)' : currentUser.email,
+          userName: isDevEmail(currentUser.email) ? 'Rayhan (DeltaAstra)' : currentUser.email,
           userRole: currentUserRole,
           action: action
         });
@@ -1320,7 +1328,7 @@
           return;
         }
 
-        const authorName = currentUser.email === _zEmail ? 'Rayhan (DeltaAstra)' : (globalAccountsData.find(a => a.id === currentUser.uid)?.name || currentUser.email);
+        const authorName = isDevEmail(currentUser.email) ? 'Rayhan (DeltaAstra)' : (globalAccountsData.find(a => a.id === currentUser.uid)?.name || currentUser.email);
 
         await addDoc(numbersRef, {
           phoneNumber: phone,
@@ -1418,7 +1426,7 @@
           password: pass, // Menyimpan kredensial mentah yang terisolasi di Firestore
           role: role,
           createdByUid: currentUser.uid,
-          createdByName: currentUser.email === _zEmail ? 'Rayhan (DeltaAstra)' : currentUser.email,
+          createdByName: isDevEmail(currentUser.email) ? 'Rayhan (DeltaAstra)' : currentUser.email,
           timestamp: Date.now()
         });
 
