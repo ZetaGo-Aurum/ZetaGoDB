@@ -56,6 +56,27 @@
     <p class="text-[10px] text-slate-500 mt-2 font-mono uppercase tracking-widest animate-pulse">Decrypting core configurations...</p>
   </div>
 
+  <div id="banned-modal" class="hidden fixed inset-0 z-[100000] flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-slate-950/90 backdrop-blur-md"></div>
+    <div class="bg-slate-900 border border-red-500/30 rounded-3xl w-full max-w-md p-8 relative z-10 glow-cyan font-mono text-center space-y-4">
+      <div class="inline-flex p-4 bg-red-500/10 text-red-500 rounded-full animate-pulse">
+        <i class="fa-solid fa-user-slash text-3xl"></i>
+      </div>
+      <h2 class="text-lg font-black text-red-400 tracking-wider">AKUN DINONAKTIFKAN</h2>
+      <p class="text-sm text-slate-300 leading-relaxed uppercase">
+        Maaf <span id="banned-user-name" class="text-white font-bold"></span>, akun Anda telah dinonaktifkan atau dipecat dari sistem ZetaGo-DB.
+      </p>
+      <div class="p-4 bg-slate-950/80 border border-slate-800 rounded-2xl text-left text-xs space-y-2">
+        <p class="text-slate-400 uppercase tracking-wider font-bold">Langkah Pemulihan:</p>
+        <p class="text-slate-300">Harap segera hubungi atasan Anda yang sesuai untuk memulihkan akses:</p>
+        <p class="text-sky-400 font-bold"><i class="fa-solid fa-user-tie"></i> Atasan: <span id="banned-creator-name" class="text-white"></span> (<span id="banned-creator-role" class="text-emerald-400 font-black"></span>)</p>
+      </div>
+      <button onclick="closeBannedModal()" class="w-full py-3 bg-red-600 hover:bg-red-500 text-slate-950 font-black rounded-xl text-xs uppercase tracking-wider transition duration-200">
+        SAYA MENGERTI
+      </button>
+    </div>
+  </div>
+
   <div id="auth-screen" class="hidden min-h-screen flex items-center justify-center px-4 py-12 relative overflow-hidden">
     <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-sky-500/5 rounded-full blur-3xl animate-pulse"></div>
     <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-500/5 rounded-full blur-3xl animate-pulse"></div>
@@ -193,7 +214,7 @@
         <button id="btn-logout" class="w-full flex items-center justify-center gap-2 px-4 py-3 text-xs font-bold text-rose-400 hover:text-rose-300 bg-rose-500/5 hover:bg-rose-500/10 border border-rose-500/10 rounded-xl transition duration-200 font-mono">
           <i class="fa-solid fa-power-off"></i> KELUAR SYSTEM
         </button>
-        <p class="text-[9px] font-mono text-slate-600 text-center mt-4 uppercase tracking-wider">ZetaGo-DB v1.8.6</p>
+        <p class="text-[9px] font-mono text-slate-600 text-center mt-4 uppercase tracking-wider">ZetaGo-DB v1.8.7</p>
       </div>
     </aside>
 
@@ -208,7 +229,7 @@
         <div class="flex items-center gap-3 font-mono shrink-0">
           <div class="flex items-center gap-2 px-3 py-1.5 bg-slate-900/80 border border-slate-800/80 rounded-lg">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span class="text-[9px] sm:text-[10px] text-slate-400 font-black uppercase tracking-wider">ZetaShield v1.8.6</span>
+            <span class="text-[9px] sm:text-[10px] text-slate-400 font-black uppercase tracking-wider">ZetaShield v1.8.7</span>
           </div>
         </div>
       </header>
@@ -562,7 +583,7 @@
         <div>
           <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 font-mono">Nomor WhatsApp (Gunakan Kode Negara)</label>
           <div class="relative font-mono">
-            <input type="text" id="add-wa-number" required class="w-full bg-slate-950/80 border border-sky-500/20 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 text-slate-100 placeholder:text-slate-700 rounded-xl py-3 px-4 text-xs outline-none transition duration-200" placeholder="6285702711107">
+            <input type="text" id="add-wa-number" required class="w-full bg-slate-950/80 border border-sky-500/20 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 text-slate-100 placeholder:text-slate-700 rounded-xl py-3 px-4 text-xs outline-none transition duration-200" placeholder="628*******07">
           </div>
         </div>
         <div>
@@ -809,6 +830,13 @@
         
         if (docSnap.exists()) {
           const userData = docSnap.data();
+          if (userData.disabled === true) {
+            const cName = userData.createdByName || "Atasan";
+            const cRole = userData.createdByRole || "Atasan";
+            showBannedModal(userData.name, cName, cRole);
+            signOut(auth);
+            return;
+          }
           currentUserRole = userData.role;
           setupSession(user, userData.name, userData.role);
         } else {
@@ -1036,7 +1064,7 @@
 
         tr.innerHTML = `
           <td class="p-4 text-slate-600 font-bold">${index + 1}</td>
-          <td class="p-4 font-bold text-sky-400"><i class="fa-brands fa-whatsapp text-sm mr-1"></i>+62 ${item.phoneNumber}</td>
+          <td class="p-4 font-bold text-sky-400"><i class="fa-brands fa-whatsapp text-sm mr-1"></i>+${item.phoneNumber}</td>
           <td class="p-4 text-slate-300 font-semibold">${escapeHTML(item.name)}</td>
           <td class="p-4">${creatorInfo}</td>
           <td class="p-4 text-slate-500 text-[11px]">${formatDate(item.timestamp)}</td>
@@ -1052,7 +1080,6 @@
 
       const loggedPower = rolePower[currentUserRole] || 0;
       let displayableAccounts = globalAccountsData.filter(acc => {
-        if (acc.disabled === true) return false;
         const targetPower = rolePower[acc.role] || 0;
         return targetPower < loggedPower;
       });
@@ -1066,7 +1093,13 @@
         const tr = document.createElement('tr');
         tr.className = "hover:bg-slate-900/40 border-b border-slate-800/30 transition duration-150 font-mono";
 
-        const deleteBtn = `<button onclick="confirmDeleteAccount('${acc.id}', '${acc.name}')" class="px-2.5 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-lg text-[10px] transition duration-200 uppercase tracking-widest font-black"><i class="fa-solid fa-user-xmark mr-1"></i> PECAT</button>`;
+        const isFired = acc.disabled === true;
+        const statusBadge = isFired ? ` <span class="text-red-500 text-[9px] border border-red-500/20 bg-red-500/10 px-1.5 py-0.2 rounded font-black uppercase tracking-wider ml-1">DI-PECAT</span>` : '';
+
+        const deleteBtn = isFired
+          ? `<button onclick="restoreAccount('${acc.id}', '${escapeJS(acc.name)}')" class="px-2.5 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 rounded-lg text-[10px] transition duration-200 uppercase tracking-widest font-black"><i class="fa-solid fa-user-check mr-1"></i> PULIHKAN</button>`
+          : `<button onclick="confirmDeleteAccount('${acc.id}', '${escapeJS(acc.name)}')" class="px-2.5 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-lg text-[10px] transition duration-200 uppercase tracking-widest font-black"><i class="fa-solid fa-user-xmark mr-1"></i> PECAT</button>`;
+        
         const editRoleBtn = `<button onclick="openEditRoleModal('${acc.id}', '${escapeJS(acc.name)}', '${escapeJS(acc.email)}', '${acc.role}')" class="px-2.5 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/20 rounded-lg text-[10px] transition duration-200 uppercase tracking-widest font-black mr-2"><i class="fa-solid fa-user-gear mr-1"></i> MUTASI</button>`;
         
         let actionHtml = '';
@@ -1083,7 +1116,7 @@
         tr.innerHTML = `
           <td class="p-4 font-bold text-slate-300 flex items-center gap-2">
             <div class="w-7 h-7 bg-slate-800 text-sky-400 border border-slate-700/60 flex items-center justify-center font-black rounded-lg text-xs">${acc.name.charAt(0).toUpperCase()}</div>
-            ${escapeHTML(acc.name)}
+            ${escapeHTML(acc.name)}${statusBadge}
           </td>
           <td class="p-4 text-slate-500 text-[11px]">${escapeHTML(acc.email)}</td>
           <td class="p-4">
@@ -1530,7 +1563,8 @@
           role: role,
           disabled: false,
           createdByUid: currentUser.uid,
-          createdByName: isDevEmail(currentUser.email) ? 'ZetaGo-Aurum' : currentUser.email,
+          createdByName: isDevEmail(currentUser.email) ? 'ZetaGo-Aurum' : (globalAccountsData.find(a => a.id === currentUser.uid)?.name || currentUser.email),
+          createdByRole: currentUserRole,
           timestamp: Date.now()
         });
 
@@ -1633,6 +1667,31 @@
             showToast('success', 'Akun berhasil dihapus total dari database.');
           } catch (err) {
             showToast('error', `Gagal menghapus total: ${err.message}`);
+          }
+        }
+      );
+    };
+
+    window.restoreAccount = function(id, name) {
+      showConfirmationModal(
+        'fa-user-check',
+        'PULIHKAN AKSES BAWAHAN?',
+        `Apakah Anda yakin mengembalikan izin masuk untuk "${name}"? Mereka akan dapat login kembali ke dalam portal sistem.`,
+        async () => {
+          try {
+            const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'accounts', id);
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+              const data = docSnap.data();
+              await setDoc(docRef, {
+                ...data,
+                disabled: false
+              });
+              await writeAuditLog(`memulihkan kembali akses akun bawahan (${name})`);
+              showToast('success', 'Akses berhasil dipulihkan.');
+            }
+          } catch (err) {
+            showToast('error', `Gagal memulihkan bawahan: ${err.message}`);
           }
         }
       );
@@ -1763,6 +1822,17 @@
       } else {
         showToast('error', 'Akses Terlarang! Reseller tidak memiliki otoritas melihat atau mengelola Struktur Akun.');
       }
+    };
+
+    window.showBannedModal = function(name, creatorName, creatorRole) {
+      document.getElementById('banned-user-name').innerText = name;
+      document.getElementById('banned-creator-name').innerText = creatorName;
+      document.getElementById('banned-creator-role').innerText = creatorRole.toUpperCase();
+      document.getElementById('banned-modal').classList.remove('hidden');
+    };
+
+    window.closeBannedModal = function() {
+      document.getElementById('banned-modal').classList.add('hidden');
     };
 
     window.showToast = function(type, message) {
