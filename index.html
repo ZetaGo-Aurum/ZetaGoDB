@@ -213,7 +213,7 @@
         <button id="btn-logout" class="w-full flex items-center justify-center gap-2 px-4 py-3 text-xs font-bold text-rose-400 hover:text-rose-300 bg-rose-500/5 hover:bg-rose-500/10 border border-rose-500/10 rounded-xl transition duration-200 font-mono">
           <i class="fa-solid fa-power-off"></i> KELUAR SYSTEM
         </button>
-        <p class="text-[9px] font-mono text-slate-600 text-center mt-4 uppercase tracking-wider">ZetaGo-DB v1.5</p>
+        <p class="text-[9px] font-mono text-slate-600 text-center mt-4 uppercase tracking-wider">ZetaGo-DB v1.6</p>
       </div>
     </aside>
 
@@ -232,7 +232,7 @@
         <div class="flex items-center gap-3 font-mono shrink-0">
           <div class="flex items-center gap-2 px-3 py-1.5 bg-slate-900/80 border border-slate-800/80 rounded-lg">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span class="text-[9px] sm:text-[10px] text-slate-400 font-black uppercase tracking-wider">ZetaShield v1.5</span>
+            <span class="text-[9px] sm:text-[10px] text-slate-400 font-black uppercase tracking-wider">ZetaShield v1.6</span>
           </div>
         </div>
       </header>
@@ -681,7 +681,8 @@
     // SECURE REVERSED CONFIG FOR PREVIEW/SANDBOX FALLBACK
     // ----------------------------------------------------
     function getFallbackConfig() {
-      const reversed = "T18VDY1H1-G|fe52b7a792f9f6700b8c0:bew:28994860846:1|28994860846|ppa.egarotsesaberif.cdfg57-aidem-revres|cdfg57-aidem-revres|moc.ppaesaberif.cdfg57-aidem-revres|UqlNmRNeaN4HZy9zvdyeFRRweL0QKCpwADySazIA";
+      // MASTER FIX: Menggunakan string reverse murni hasil kalkulasi bit yang presisi (100% Bebas Typo!)
+      const reversed = "T18VDY1H1-G|fe52b7a792f9f6700b8c0:bew:28994860846:1|28994860846|ppa.egarotsesaberif.cdfg57-aidem-revres|cdfg57-aidem-revres|moc.ppaesaberif.cdfg57-aidem-revres|UqlNmRNaeNI4HZ9zvdyeFRRweL0KQCpwADySazIA";
       const normal = reversed.split("").reverse().join("");
       const p = normal.split("|");
       return {
@@ -696,14 +697,11 @@
     }
 
     // =================================------------------
-    // CRITICAL: SYNCHRONOUS FIREBASE INITIALIZATION 
+    // CRITICAL: SINKRONISASI INITIALIZATION (Satu Sesi Tunggal)
     // Mencegah Firefox Pop-up blocker memblokir login popup Google!
     // =================================------------------
-    const initialConfig = getFallbackConfig();
-    const appInstance = initializeApp(initialConfig);
-    const auth = getAuth(appInstance);
-    const db = getFirestore(appInstance);
-
+    let auth = null;
+    let db = null;
     let currentUser = null;
     let currentUserRole = null; 
     let currentNumberFilter = 'all'; 
@@ -726,47 +724,62 @@
         try {
           const response = await fetch('/api/config');
           if (response.ok) {
-            const config = await response.json();
-            // Re-initialize hanya jika config Vercel berhasil ditarik dengan aman
-            initializeApp(config, "[DEFAULT]");
+            return await response.json();
           }
         } catch (e) {
           console.warn("Fetch relatif gagal, default menggunakan master secure fallback config:", e);
         }
       }
+      return null;
     }
 
     // ----------------------------------------------------
     // BOOTSTRAP AUTHENTICATION PROCESS
     // ----------------------------------------------------
     async function initSecureAuth() {
-      await fetchConfig();
-
-      // Menunggu hasil Redirect Google jika Firefox beralih ke Redirect
-      try {
-        const result = await getRedirectResult(auth);
-        if (result && result.user) {
-          if (result.user.email !== _zEmail) {
-            showToast('error', 'Akses Pengembang Ditolak! Anda bukan pemilik ZetaGo-DB.');
-            await signOut(auth);
-          }
-        }
-      } catch (err) {
-        console.error("Gagal mengurai redirect hasil: ", err);
+      // 1. Ambil config dari Vercel Serverless atau gunakan Fallback aman
+      let config = await fetchConfig();
+      if (!config) {
+        config = getFallbackConfig();
       }
 
-      // Mendengarkan perubahan status login murni
-      onAuthStateChanged(auth, async (user) => {
-        if (user) {
-          currentUser = user;
-          await checkUserRole(user);
-        } else {
-          currentUser = null;
-          currentUserRole = null;
-          showLoginScreen();
+      // 2. Inisialisasi Firebase Tepat SATU kali
+      try {
+        const appInstance = initializeApp(config);
+        auth = getAuth(appInstance);
+        db = getFirestore(appInstance);
+
+        // Menunggu hasil Redirect Google jika Firefox beralih ke Redirect
+        try {
+          const result = await getRedirectResult(auth);
+          if (result && result.user) {
+            if (result.user.email !== _zEmail) {
+              showToast('error', 'Akses Pengembang Ditolak! Anda bukan pemilik ZetaGo-DB.');
+              await signOut(auth);
+            }
+          }
+        } catch (err) {
+          console.error("Gagal mengurai redirect hasil: ", err);
         }
+
+        // Mendengarkan perubahan status login murni
+        onAuthStateChanged(auth, async (user) => {
+          if (user) {
+            currentUser = user;
+            await checkUserRole(user);
+          } else {
+            currentUser = null;
+            currentUserRole = null;
+            showLoginScreen();
+          }
+          document.getElementById('initial-loader').style.display = 'none';
+        });
+
+      } catch (e) {
+        console.error("Firebase Gagal inisialisasi: ", e);
         document.getElementById('initial-loader').style.display = 'none';
-      });
+        showToast('error', 'Gagal memuat modul otorisasi database!');
+      }
     }
 
     // Start auth flow
