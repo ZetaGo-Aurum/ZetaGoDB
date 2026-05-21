@@ -213,7 +213,7 @@
         <button id="btn-logout" class="w-full flex items-center justify-center gap-2 px-4 py-3 text-xs font-bold text-rose-400 hover:text-rose-300 bg-rose-500/5 hover:bg-rose-500/10 border border-rose-500/10 rounded-xl transition duration-200 font-mono">
           <i class="fa-solid fa-power-off"></i> KELUAR SYSTEM
         </button>
-        <p class="text-[9px] font-mono text-slate-600 text-center mt-4 uppercase tracking-wider">ZetaGo-DB v1.6.1</p>
+        <p class="text-[9px] font-mono text-slate-600 text-center mt-4 uppercase tracking-wider">ZetaGo-DB v1.7</p>
       </div>
     </aside>
 
@@ -232,7 +232,7 @@
         <div class="flex items-center gap-3 font-mono shrink-0">
           <div class="flex items-center gap-2 px-3 py-1.5 bg-slate-900/80 border border-slate-800/80 rounded-lg">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span class="text-[9px] sm:text-[10px] text-slate-400 font-black uppercase tracking-wider">ZetaShield v1.6.1</span>
+            <span class="text-[9px] sm:text-[10px] text-slate-400 font-black uppercase tracking-wider">ZetaShield v1.7</span>
           </div>
         </div>
       </header>
@@ -378,7 +378,9 @@
                 </span>
                 <input type="text" id="search-number-input" onkeyup="filterNumbers()" class="w-full bg-slate-950/80 border border-slate-800 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 text-slate-100 placeholder:text-slate-700 rounded-xl py-2.5 pl-10 pr-4 text-xs outline-none transition duration-200" placeholder="Cari nomor/nama...">
               </div>
-              <div class="flex gap-2 w-full md:w-auto overflow-x-auto pb-1 md:pb-0">
+              
+              <!-- Filter nomor, hanya dimunculkan jika role === 'dev' -->
+              <div id="number-filter-tabs" class="hidden flex gap-2 w-full md:w-auto overflow-x-auto pb-1 md:pb-0">
                 <button onclick="setNumberFilter('all')" id="filter-num-all" class="px-3.5 py-1.5 text-[10px] font-bold rounded-lg transition duration-200 bg-sky-400/10 text-sky-400 border border-sky-400/20 whitespace-nowrap uppercase tracking-wider">SEMUA NOMOR</button>
                 <button onclick="setNumberFilter('mine')" id="filter-num-mine" class="px-3.5 py-1.5 text-[10px] font-bold rounded-lg transition duration-200 text-slate-500 hover:text-slate-300 whitespace-nowrap uppercase tracking-wider">SAYA INPUT</button>
               </div>
@@ -391,7 +393,7 @@
                     <th class="p-4">No</th>
                     <th class="p-4">NOMOR WHATSAPP</th>
                     <th class="p-4">NAMA PEMILIK</th>
-                    <th class="p-4">INPUT OLEH</th>
+                    <th class="p-4">INPUT OLEH / STATUS</th>
                     <th class="p-4">TANGGAL INPUT</th>
                     <th class="p-4 text-center">AKSI</th>
                   </tr>
@@ -476,7 +478,7 @@
         <section id="window-logs" class="hidden space-y-6">
           <div class="bg-slate-900/10 p-4 border border-slate-800/60 rounded-2xl font-mono">
             <h1 class="text-sm font-black text-slate-100 uppercase tracking-widest">AUDIT SECURITY LOGS</h1>
-            <p class="text-xs text-slate-400">Log forensik aktivitas real-time sistem ZetaGo-DB.</p>
+            <p class="text-xs text-slate-400 font-sans">Log forensik aktivitas real-time sistem ZetaGo-DB.</p>
           </div>
 
           <div class="bg-slate-900/20 border border-slate-800/60 rounded-3xl overflow-hidden font-mono">
@@ -681,8 +683,8 @@
     // SECURE REVERSED CONFIG FOR PREVIEW/SANDBOX FALLBACK
     // ----------------------------------------------------
     function getFallbackConfig() {
-      // MASTER FIX: Menggunakan string reverse murni hasil kalkulasi bit yang presisi (100% Bebas Typo!)
-      const reversed = "T18VDY1H1-G|fe52b7a792f9f6700b8c0:bew:28994860846:1|28994860846|ppa.egarotsesaberif.cdfg57-aidem-revres|cdfg57-aidem-revres|moc.ppaesaberif.cdfg57-aidem-revres|UqlNmRNaeNI4HZ9zvdyeFRRweL0KQCpwADySazIA";
+      // MASTER FIX: Menggunakan string reverse murni hasil kalkulasi bit yang presisi (100% Bebas Typo & Lengkap!)
+      const reversed = "T18BVDY1H1-G|fe52b7a792f9f67600b8c0:bew:28994860846:1|28994860846|ppa.egarotsesaberif.cdfg57-aidem-revres|cdfg57-aidem-revres|moc.ppaesaberif.cdfg57-aidem-revres|UqlNmRNaeNI4HZ9zvdyeFRRweL0KQCpwADySazIA";
       const normal = reversed.split("").reverse().join("");
       const p = normal.split("|");
       return {
@@ -829,12 +831,15 @@
       document.getElementById('stat-my-role').innerText = roleLabels[role];
       document.getElementById('stat-my-permissions').innerHTML = `<i class="fa-solid fa-shield text-sky-400 mr-1"></i> Otoritas: ${role.toUpperCase()}`;
 
-      // Strictly limit Dev Console visibility
+      // Strictly limit Dev Console & Filter visibility
       const devConsoleBtn = document.getElementById('nav-dev-console');
       const clearLogsBtn = document.getElementById('btn-clear-logs');
+      const filterTabs = document.getElementById('number-filter-tabs');
+
       if (role === 'dev') {
         devConsoleBtn.classList.remove('hidden');
         clearLogsBtn.classList.remove('hidden');
+        filterTabs.classList.remove('hidden'); // Tampilkan filter eksklusif hanya untuk Dev!
         
         // Atur link API di Dev terminal secara dinamis
         const origin = window.location.origin && window.location.origin !== 'null' ? window.location.origin : 'https://zetago-db.vercel.app';
@@ -842,6 +847,7 @@
       } else {
         devConsoleBtn.classList.add('hidden');
         clearLogsBtn.classList.add('hidden');
+        filterTabs.classList.add('hidden'); // Sembunyikan untuk Owner ke bawah karena data mereka terisolasi murni
       }
 
       const btnAddUser = document.getElementById('btn-open-add-user');
@@ -920,7 +926,12 @@
     // COUNTER STATS
     // ----------------------------------------------------
     function updateDashboardStats() {
-      document.getElementById('stat-total-numbers').innerText = globalWAData.length;
+      // Untuk dashboard stats, sesuaikan counter-nya dengan hak akses pembacaan privat juga!
+      let numbersCount = globalWAData.length;
+      if (currentUser && currentUserRole !== 'dev') {
+        numbersCount = globalWAData.filter(num => num.addedByUid === currentUser.uid).length;
+      }
+      document.getElementById('stat-total-numbers').innerText = numbersCount;
 
       const countSub = globalAccountsData.filter(acc => acc.role === 'staff' || acc.role === 'pt').length;
       const countRes = globalAccountsData.filter(acc => acc.role === 'res').length;
@@ -949,12 +960,22 @@
 
       let dataToRender = [...globalWAData];
 
-      if (currentNumberFilter === 'mine') {
+      // =================================------------------
+      // RULE 2 IN-MEMORY FILTERING: STRICT PRIVACY BOUNDARY
+      // Mengisolasi data Whitelist murni agar 1 role/akun memiliki tempat tersendiri!
+      // =================================------------------
+      if (currentUserRole !== 'dev') {
+        // Non-dev hanya boleh melihat data yang mereka daftarkan sendiri! Gak bisa liat punya orang lain!
         dataToRender = dataToRender.filter(num => num.addedByUid === currentUser.uid);
+      } else {
+        // Dev memiliki otorisasi penuh untuk menyaring seluruh data atau miliknya sendiri
+        if (currentNumberFilter === 'mine') {
+          dataToRender = dataToRender.filter(num => num.addedByUid === currentUser.uid);
+        }
       }
 
       if (dataToRender.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-slate-500 font-mono uppercase tracking-wider text-[11px]">Database kosong.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-slate-500 font-mono uppercase tracking-wider text-[11px]">Database kosong atau Anda belum mendaftarkan nomor.</td></tr>`;
         return;
       }
 
@@ -962,20 +983,34 @@
         const tr = document.createElement('tr');
         tr.className = "hover:bg-slate-900/40 border-b border-slate-800/30 transition duration-150 font-mono";
 
+        // Deletion rule: Owner & Dev bisa hapus apa yang mereka lihat, sisanya hanya bisa hapus miliknya sendiri
         const canDelete = (currentUserRole === 'dev' || currentUserRole === 'owner') || (item.addedByUid === currentUser.uid);
 
         const deleteButton = canDelete 
           ? `<button onclick="confirmDeleteNumber('${item.id}', '${item.phoneNumber}')" class="px-2.5 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-lg text-[10px] transition duration-200 uppercase tracking-widest font-black"><i class="fa-solid fa-trash-can mr-1"></i> Hapus</button>`
           : `<span class="text-slate-600 text-[10px] uppercase font-bold"><i class="fa-solid fa-lock"></i> LOCKED</span>`;
 
+        // Render kolom "Input Oleh" secara dinamis berdasarkan otorisasi peran
+        let creatorInfo = "";
+        if (currentUserRole === 'dev') {
+          // Dev bisa memonitoring dengan jelas asal usul role penginput data tersebut!
+          creatorInfo = `
+            <span class="block text-slate-300 font-medium">${escapeHTML(item.addedByName)}</span>
+            <span class="inline-block mt-1 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider rounded ${getRoleBadgeClass(item.addedByRole)}">${item.addedByRole}</span>
+          `;
+        } else {
+          // Non-dev hanya melihat badge status privat miliknya sendiri
+          creatorInfo = `
+            <span class="block text-slate-400 font-medium font-sans">Data Pribadi</span>
+            <span class="inline-block mt-1 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">PRIVATE V-1.7</span>
+          `;
+        }
+
         tr.innerHTML = `
           <td class="p-4 text-slate-600 font-bold">${index + 1}</td>
           <td class="p-4 font-bold text-sky-400"><i class="fa-brands fa-whatsapp text-sm mr-1"></i>+62 ${item.phoneNumber}</td>
           <td class="p-4 text-slate-300 font-semibold">${escapeHTML(item.name)}</td>
-          <td class="p-4">
-            <span class="block text-slate-300 font-medium">${escapeHTML(item.addedByName)}</span>
-            <span class="inline-block mt-1 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider rounded ${getRoleBadgeClass(item.addedByRole)}">${item.addedByRole}</span>
-          </td>
+          <td class="p-4">${creatorInfo}</td>
           <td class="p-4 text-slate-500 text-[11px]">${formatDate(item.timestamp)}</td>
           <td class="p-4 text-center">${deleteButton}</td>
         `;
