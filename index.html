@@ -245,6 +245,18 @@
               </div>
               <p class="text-[9px] text-slate-500 mt-3"><i class="fa-solid fa-shield-check text-emerald-400 mr-1"></i> Terotorisasi di Bot</p>
             </div>
+            <div id="stat-card-owners" class="hidden bg-slate-900/20 border border-slate-800/60 rounded-2xl p-5 hover:border-slate-700/80 transition duration-300">
+              <div class="flex justify-between items-start">
+                <div>
+                  <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">OWNER TERDAFTAR</p>
+                  <h3 id="stat-total-owners" class="text-3xl font-black text-slate-100 mt-2">0</h3>
+                </div>
+                <div class="p-3 bg-amber-500/10 text-amber-400 rounded-xl">
+                  <i class="fa-solid fa-crown text-xl"></i>
+                </div>
+              </div>
+              <p class="text-[9px] text-slate-500 mt-3"><i class="fa-solid fa-user-shield text-amber-400 mr-1"></i> Owner Sistem</p>
+            </div>
             <div id="stat-card-subordinates" class="bg-slate-900/20 border border-slate-800/60 rounded-2xl p-5 hover:border-slate-700/80 transition duration-300">
               <div class="flex justify-between items-start">
                 <div>
@@ -818,20 +830,30 @@
 
       const statSubordinates = document.getElementById('stat-card-subordinates');
       const statResellers = document.getElementById('stat-card-resellers');
+      const statOwners = document.getElementById('stat-card-owners');
       const statsGridContainer = document.getElementById('stats-grid');
-      if (role === 'res' || role === 'pt') {
-        statSubordinates.classList.add('hidden');
-        if (role === 'res') {
-          statResellers.classList.add('hidden');
-          statsGridContainer.className = "grid grid-cols-1 sm:grid-cols-2 gap-4 font-mono";
-        } else {
-          statResellers.classList.remove('hidden');
-          statsGridContainer.className = "grid grid-cols-1 sm:grid-cols-3 gap-4 font-mono";
-        }
-      } else {
+      
+      if (role === 'dev') {
+        statOwners.classList.remove('hidden');
         statSubordinates.classList.remove('hidden');
         statResellers.classList.remove('hidden');
-        statsGridContainer.className = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 font-mono";
+        statsGridContainer.className = "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 font-mono";
+      } else {
+        statOwners.classList.add('hidden');
+        if (role === 'res' || role === 'pt') {
+          statSubordinates.classList.add('hidden');
+          if (role === 'res') {
+            statResellers.classList.add('hidden');
+            statsGridContainer.className = "grid grid-cols-1 sm:grid-cols-2 gap-4 font-mono";
+          } else {
+            statResellers.classList.remove('hidden');
+            statsGridContainer.className = "grid grid-cols-1 sm:grid-cols-3 gap-4 font-mono";
+          }
+        } else {
+          statSubordinates.classList.remove('hidden');
+          statResellers.classList.remove('hidden');
+          statsGridContainer.className = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 font-mono";
+        }
       }
 
       const btnAddUser = document.getElementById('btn-open-add-user');
@@ -911,9 +933,14 @@
       }
       document.getElementById('stat-total-numbers').innerText = numbersCount;
 
+      const countOwner = globalAccountsData.filter(acc => acc.role === 'owner' && acc.disabled !== true).length;
       const countSub = globalAccountsData.filter(acc => (acc.role === 'staff' || acc.role === 'pt') && acc.disabled !== true).length;
       const countRes = globalAccountsData.filter(acc => acc.role === 'res' && acc.disabled !== true).length;
 
+      const statTotalOwners = document.getElementById('stat-total-owners');
+      if (statTotalOwners) {
+        statTotalOwners.innerText = countOwner;
+      }
       document.getElementById('stat-total-subordinates').innerText = countSub;
       document.getElementById('stat-total-resellers').innerText = countRes;
     }
@@ -1143,7 +1170,7 @@
 
     window.switchTab = function(tabName) {
       if (tabName === 'dev-console' && currentUserRole !== 'dev') {
-        showToast('error', 'Akses Terlarang! Hanya Developer yang memiliki otoritas mengakses Dev Terminal.');
+        showToast('error', 'Akses Terlarang! Anda bukan Developer ZetaGo-DB.');
         switchTab('dashboard');
         return;
       }
