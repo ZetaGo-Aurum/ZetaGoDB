@@ -193,7 +193,7 @@
         <button id="btn-logout" class="w-full flex items-center justify-center gap-2 px-4 py-3 text-xs font-bold text-rose-400 hover:text-rose-300 bg-rose-500/5 hover:bg-rose-500/10 border border-rose-500/10 rounded-xl transition duration-200 font-mono">
           <i class="fa-solid fa-power-off"></i> KELUAR SYSTEM
         </button>
-        <p class="text-[9px] font-mono text-slate-600 text-center mt-4 uppercase tracking-wider">ZetaGo-DB v1.8.5</p>
+        <p class="text-[9px] font-mono text-slate-600 text-center mt-4 uppercase tracking-wider">ZetaGo-DB v1.8.6</p>
       </div>
     </aside>
 
@@ -208,7 +208,7 @@
         <div class="flex items-center gap-3 font-mono shrink-0">
           <div class="flex items-center gap-2 px-3 py-1.5 bg-slate-900/80 border border-slate-800/80 rounded-lg">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span class="text-[9px] sm:text-[10px] text-slate-400 font-black uppercase tracking-wider">ZetaShield v1.8.5</span>
+            <span class="text-[9px] sm:text-[10px] text-slate-400 font-black uppercase tracking-wider">ZetaShield v1.8.6</span>
           </div>
         </div>
       </header>
@@ -562,12 +562,8 @@
         <div>
           <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 font-mono">Nomor WhatsApp (Gunakan Kode Negara)</label>
           <div class="relative font-mono">
-            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500 text-xs font-bold">
-              62
-            </span>
-            <input type="text" id="add-wa-number" required class="w-full bg-slate-950/80 border border-sky-500/20 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 text-slate-100 placeholder:text-slate-700 rounded-xl py-3 pl-9 pr-4 text-xs outline-none transition duration-200" placeholder="81234567890">
+            <input type="text" id="add-wa-number" required class="w-full bg-slate-950/80 border border-sky-500/20 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 text-slate-100 placeholder:text-slate-700 rounded-xl py-3 px-4 text-xs outline-none transition duration-200" placeholder="6285702711107">
           </div>
-          <span class="text-[9px] text-slate-500 mt-1.5 block font-mono">Tulis langsung setelah kode 62 (Contoh: 81234567890)</span>
         </div>
         <div>
           <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 font-mono">Deskripsi Pemilik</label>
@@ -595,26 +591,66 @@
           <input type="text" id="new-user-name" required class="w-full bg-slate-950/80 border border-sky-500/20 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 text-slate-100 placeholder:text-slate-700 rounded-xl py-3 px-4 text-xs outline-none transition duration-200 font-mono" placeholder="Nama Lengkap">
         </div>
         <div>
-          <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 font-mono">Email Akun</label>
-          <input type="email" id="new-user-email" required class="w-full bg-slate-950/80 border border-sky-500/20 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 text-slate-100 placeholder:text-slate-700 rounded-xl py-3 px-4 text-xs outline-none transition duration-200 font-mono" placeholder="email@zetago.com">
+          <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 font-mono">Tingkatan Level Role</label>
+          <select id="new-user-role" required class="w-full bg-slate-950/80 border border-sky-500/20 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 text-slate-100 rounded-xl py-3 px-4 text-xs outline-none transition duration-200 font-mono">
+          </select>
         </div>
         <div>
+          <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 font-mono">Metode Pembuatan Password</label>
+          <div class="flex items-center gap-4 font-mono text-xs mt-1">
+            <label class="flex items-center gap-1.5 cursor-pointer">
+              <input type="radio" name="pwd-method" value="auto" checked onchange="togglePasswordInput(this.value)">
+              <span>Auto Generate</span>
+            </label>
+            <label class="flex items-center gap-1.5 cursor-pointer">
+              <input type="radio" name="pwd-method" value="manual" onchange="togglePasswordInput(this.value)">
+              <span>Manual Input</span>
+            </label>
+          </div>
+        </div>
+        <div id="manual-password-container" class="hidden">
           <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 font-mono">Password Akun</label>
           <div class="relative">
-            <input type="password" id="new-user-password" required class="w-full bg-slate-950/80 border border-sky-500/20 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 text-slate-100 placeholder:text-slate-700 rounded-xl py-3 pl-4 pr-10 text-xs outline-none transition duration-200 font-mono" placeholder="••••••••">
+            <input type="password" id="new-user-password" class="w-full bg-slate-950/80 border border-sky-500/20 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 text-slate-100 placeholder:text-slate-700 rounded-xl py-3 pl-4 pr-10 text-xs outline-none transition duration-200 font-mono" placeholder="••••••••">
             <button type="button" onclick="togglePasswordVisibility('new-user-password', this)" class="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-500 hover:text-slate-300">
               <i class="fa-solid fa-eye text-xs"></i>
             </button>
           </div>
         </div>
-        <div>
-          <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 font-mono">Tingkatan Level Role</label>
-          <select id="new-user-role" required class="w-full bg-slate-950/80 border border-sky-500/20 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 text-slate-100 rounded-xl py-3 px-4 text-xs outline-none transition duration-200 font-mono">
-          </select>
-        </div>
         <div class="pt-2 font-mono">
           <button type="submit" class="w-full py-3 bg-gradient-to-r from-indigo-500 to-sky-500 hover:from-indigo-400 hover:to-sky-400 text-slate-950 font-black rounded-xl text-xs transition duration-300 shadow-md uppercase tracking-wider">
             DAFTARKAN SEKARANG
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="modal-edit-role" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" onclick="closeEditRoleModal()"></div>
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-md p-6 relative z-10 font-mono">
+      <div class="flex justify-between items-center mb-6 border-b border-slate-800 pb-3">
+        <h3 class="text-xs font-black text-slate-100 uppercase tracking-wider"><i class="fa-solid fa-user-gear text-sky-400"></i> Mutasi Jabatan Role Bawahan</h3>
+        <button onclick="closeEditRoleModal()" class="text-slate-500 hover:text-slate-300"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <form id="form-edit-role" class="space-y-4">
+        <input type="hidden" id="edit-role-uid">
+        <div>
+          <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Nama Lengkap Bawahan</label>
+          <input type="text" id="edit-role-name" disabled class="w-full bg-slate-950/40 border border-slate-800/80 text-slate-500 rounded-xl py-3 px-4 text-xs outline-none cursor-not-allowed">
+        </div>
+        <div>
+          <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Alamat Email Sistem</label>
+          <input type="text" id="edit-role-email" disabled class="w-full bg-slate-950/40 border border-slate-800/80 text-slate-500 rounded-xl py-3 px-4 text-xs outline-none cursor-not-allowed">
+        </div>
+        <div>
+          <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Pangkat Level Jabatan Baru (Upgrade / Downgrade)</label>
+          <select id="edit-role-select" required class="w-full bg-slate-950/80 border border-sky-500/20 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 text-slate-100 rounded-xl py-3 px-4 text-xs outline-none transition duration-200">
+          </select>
+        </div>
+        <div class="pt-2">
+          <button type="submit" class="w-full py-3 bg-gradient-to-r from-sky-400 to-indigo-500 hover:from-sky-300 hover:to-indigo-400 text-slate-950 font-black rounded-xl text-xs transition duration-300 shadow-md uppercase tracking-wider">
+            Simpan Perubahan Role
           </button>
         </div>
       </form>
@@ -1031,13 +1067,14 @@
         tr.className = "hover:bg-slate-900/40 border-b border-slate-800/30 transition duration-150 font-mono";
 
         const deleteBtn = `<button onclick="confirmDeleteAccount('${acc.id}', '${acc.name}')" class="px-2.5 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-lg text-[10px] transition duration-200 uppercase tracking-widest font-black"><i class="fa-solid fa-user-xmark mr-1"></i> PECAT</button>`;
+        const editRoleBtn = `<button onclick="openEditRoleModal('${acc.id}', '${escapeJS(acc.name)}', '${escapeJS(acc.email)}', '${acc.role}')" class="px-2.5 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/20 rounded-lg text-[10px] transition duration-200 uppercase tracking-widest font-black mr-2"><i class="fa-solid fa-user-gear mr-1"></i> MUTASI</button>`;
         
         let actionHtml = '';
         if (currentUserRole === 'dev') {
           const hardDeleteBtn = `<button onclick="confirmHardDeleteAccount('${acc.id}', '${acc.name}')" class="px-2.5 py-1.5 bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-500/30 rounded-lg text-[10px] transition duration-200 uppercase tracking-widest font-black mr-2"><i class="fa-solid fa-trash-can mr-1"></i> HAPUS BERSIH</button>`;
-          actionHtml = `${hardDeleteBtn} ${deleteBtn}`;
+          actionHtml = `${editRoleBtn} ${hardDeleteBtn} ${deleteBtn}`;
         } else {
-          actionHtml = deleteBtn;
+          actionHtml = `${editRoleBtn} ${deleteBtn}`;
         }
 
         const passwordPlain = acc.password || 'Tidak tersedia';
@@ -1067,12 +1104,13 @@
         return;
       }
       globalAccountsData.forEach(acc => {
-        if (acc.disabled === true) return;
+        const isFired = acc.disabled === true;
+        const statusLabel = isFired ? `<span class="text-red-500 font-bold ml-1 text-[8px] border border-red-500/20 bg-red-500/10 px-1 rounded uppercase">DI-PECAT</span>` : "";
         const div = document.createElement('div');
         div.className = "dev-account-item flex items-center justify-between p-2.5 bg-slate-950/60 border border-slate-800/80 rounded-xl text-[11px] font-mono";
         div.innerHTML = `
           <div class="truncate mr-2">
-            <span class="font-bold text-slate-300 block truncate">${escapeHTML(acc.name)}</span>
+            <span class="font-bold text-slate-300 flex items-center truncate">${escapeHTML(acc.name)} ${statusLabel}</span>
             <span class="text-slate-500 block truncate text-[9px]">${escapeHTML(acc.email)}</span>
             <span class="inline-block mt-0.5 px-1 py-0.2 text-[8px] font-black uppercase rounded ${getRoleBadgeClass(acc.role)}">${acc.role}</span>
           </div>
@@ -1338,13 +1376,8 @@
       const name = document.getElementById('add-wa-name').value.trim();
 
       phone = phone.replace(/[^0-9]/g, '');
-      if (phone.startsWith('62')) {
-        phone = phone.substring(2);
-      } else if (phone.startsWith('0')) {
-        phone = phone.substring(1);
-      }
 
-      if (phone.length < 9 || phone.length > 14) {
+      if (phone.length < 9 || phone.length > 15) {
         showToast('error', 'Format nomor salah.');
         return;
       }
@@ -1354,7 +1387,7 @@
         
         const exists = globalWAData.some(n => n.phoneNumber === phone);
         if (exists) {
-          showToast('error', `Nomor +62 ${phone} sudah terdaftar.`);
+          showToast('error', `Nomor +${phone} sudah terdaftar.`);
           return;
         }
 
@@ -1369,7 +1402,7 @@
           addedByRole: currentUserRole
         });
 
-        await writeAuditLog(`menambahkan whitelist nomor WhatsApp baru (+62 ${phone})`);
+        await writeAuditLog(`menambahkan whitelist nomor WhatsApp baru (+${phone})`);
         showToast('success', 'Nomor Whitelisted disimpan ke server.');
         closeAddNumberModal();
       } catch (err) {
@@ -1381,18 +1414,31 @@
       showConfirmationModal(
         'fa-trash-can',
         'REVOKE AKSES NOMOR?',
-        `Apakah Anda yakin mencabut hak akses nomor +62 ${phone}? Akses bot WhatsApp akan langsung terhenti.`,
+        `Apakah Anda yakin mencabut hak akses nomor +${phone}? Akses bot WhatsApp akan langsung terhenti.`,
         async () => {
           try {
             const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'whatsapp_numbers', id);
             await deleteDoc(docRef);
-            await writeAuditLog(`mencabut whitelist akses nomor (+62 ${phone})`);
+            await writeAuditLog(`mencabut whitelist akses nomor (+${phone})`);
             showToast('success', 'Akses berhasil dihapus.');
           } catch (err) {
             showToast('error', `Gagal menghapus data: ${err.message}`);
           }
         }
       );
+    };
+
+    window.togglePasswordInput = function(val) {
+      const container = document.getElementById('manual-password-container');
+      const input = document.getElementById('new-user-password');
+      if (val === 'manual') {
+        container.classList.remove('hidden');
+        input.setAttribute('required', 'true');
+      } else {
+        container.classList.add('hidden');
+        input.removeAttribute('required');
+        input.value = '';
+      }
     };
 
     window.openAddUserModal = function() {
@@ -1423,42 +1469,48 @@
     window.closeAddUserModal = function() {
       document.getElementById('modal-add-user').classList.add('hidden');
       document.getElementById('form-add-user').reset();
+      togglePasswordInput('auto');
     };
+
+    function generateUniqueEmail(name, role) {
+      let cleanedName = name.toLowerCase().replace(/[^a-z0-9]/g, '');
+      if (!cleanedName) cleanedName = 'user';
+      
+      let suffix = '@res.db';
+      if (role === 'owner') suffix = '@owner.db';
+      if (role === 'staff') suffix = '@staff.db';
+      if (role === 'pt') suffix = '@pt.db';
+
+      let computedEmail = cleanedName + suffix;
+      let counter = 1;
+
+      while (globalAccountsData.some(acc => acc.email.toLowerCase() === computedEmail.toLowerCase())) {
+        computedEmail = cleanedName + counter + suffix;
+        counter++;
+      }
+      return computedEmail;
+    }
 
     document.getElementById('form-add-user').addEventListener('submit', async (e) => {
       e.preventDefault();
       const name = document.getElementById('new-user-name').value.trim();
-      const email = document.getElementById('new-user-email').value.trim().toLowerCase();
-      const pass = document.getElementById('new-user-password').value;
       const role = document.getElementById('new-user-role').value;
-
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        showToast('error', 'Format email tidak valid!');
-        return;
+      const pwdMethod = document.querySelector('input[name="pwd-method"]:checked').value;
+      
+      let pass = '';
+      if (pwdMethod === 'auto') {
+        const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%';
+        for (let i = 0; i < 10; i++) {
+          pass += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+      } else {
+        pass = document.getElementById('new-user-password').value;
       }
+
+      const email = generateUniqueEmail(name, role);
 
       try {
         showToast('info', 'Mengamankan kredensial...');
-
-        const existingUser = globalAccountsData.find(acc => acc.email.toLowerCase() === email);
-
-        if (existingUser) {
-          const userDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'accounts', existingUser.id);
-          await setDoc(userDocRef, {
-            name: name,
-            email: email,
-            password: pass,
-            role: role,
-            disabled: false,
-            createdByUid: currentUser.uid,
-            createdByName: isDevEmail(currentUser.email) ? 'ZetaGo-Aurum' : currentUser.email,
-            timestamp: Date.now()
-          });
-          await writeAuditLog(`memulihkan & memperbarui akun bawahan level ${role.toUpperCase()} (${name})`);
-          showToast('success', `Akun ${name} berhasil didaftarkan ulang.`);
-          closeAddUserModal();
-          return;
-        }
 
         const secondaryApp = initializeApp(auth.app.options, "ZetaGoSecureAppReg");
         const secondaryAuth = getAuth(secondaryApp);
@@ -1483,18 +1535,71 @@
         });
 
         await writeAuditLog(`membuat kredensial bawahan baru level ${role.toUpperCase()} (${name})`);
-        showToast('success', `Akun ${name} berhasil didaftarkan.`);
+        
+        const credsText = `🔑 DETAIL KREDENSIAL BARU ZETAGO-DB 🔑\n\nNama : ${name}\nEmail: ${email}\nSandi: ${pass}\nPeran: ${role.toUpperCase()}\nLink : ${window.location.origin}\n\nHarap simpan kredensial ini baik-baik! 🛡️⚡`;
+        copyStringToClipboard(credsText, `Akun ${name} terdaftar! Kredensial disalin ke clipboard 📋`);
         closeAddUserModal();
       } catch (err) {
         showToast('error', `Gagal mendaftarkan: ${err.message}`);
       }
     });
 
+    window.openEditRoleModal = function(uid, name, email, currentRole) {
+      document.getElementById('edit-role-uid').value = uid;
+      document.getElementById('edit-role-name').value = name;
+      document.getElementById('edit-role-email').value = email;
+
+      const select = document.getElementById('edit-role-select');
+      select.innerHTML = '';
+      
+      const loggedPower = rolePower[currentUserRole] || 0;
+      for (const [r, label] of Object.entries(roleLabels)) {
+        if (r === 'dev') continue;
+        if (rolePower[r] < loggedPower) {
+          const o = document.createElement('option');
+          o.value = r;
+          o.text = label;
+          if (r === currentRole) o.setAttribute('selected', 'true');
+          select.appendChild(o);
+        }
+      }
+      document.getElementById('modal-edit-role').classList.remove('hidden');
+    };
+
+    window.closeEditRoleModal = function() {
+      document.getElementById('modal-edit-role').classList.add('hidden');
+      document.getElementById('form-edit-role').reset();
+    };
+
+    document.getElementById('form-edit-role').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const uid = document.getElementById('edit-role-uid').value;
+      const targetRole = document.getElementById('edit-role-select').value;
+      const name = document.getElementById('edit-role-name').value;
+
+      try {
+        const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'accounts', uid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const existingData = docSnap.data();
+          await setDoc(docRef, {
+            ...existingData,
+            role: targetRole
+          });
+          await writeAuditLog(`mengubah pangkat jabatan role ${name} menjadi ${targetRole.toUpperCase()}`);
+          showToast('success', `Berhasil mutasi pangkat role ${name} ke ${targetRole.toUpperCase()}!`);
+          closeEditRoleModal();
+        }
+      } catch (err) {
+        showToast('error', `Gagal melakukan mutasi role: ${err.message}`);
+      }
+    });
+
     window.confirmDeleteAccount = function(id, name) {
       showConfirmationModal(
         'fa-user-slash',
-        'REVOKE AKSES BAWAHAN?',
-        `Apakah Anda yakin menonaktifkan kredensial atas nama "${name}"?`,
+        'PECAT/REVOKE AKSES BAWAHAN?',
+        `Apakah Anda yakin mencabut izin masuk untuk "${name}"? Hak login diblokir, namun berkas tetap aman disimpan untuk kebutuhan audit.`,
         async () => {
           try {
             const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'accounts', id);
@@ -1505,11 +1610,11 @@
                 ...data,
                 disabled: true
               });
-              await writeAuditLog(`menonaktifkan akses akun bawahan (${name})`);
-              showToast('success', 'Kredensial dinonaktifkan.');
+              await writeAuditLog(`mencabut izin masuk akun bawahan (${name})`);
+              showToast('success', 'Akses dinonaktifkan dari sistem utama.');
             }
           } catch (err) {
-            showToast('error', `Gagal menonaktifkan: ${err.message}`);
+            showToast('error', `Gagal memecat bawahan: ${err.message}`);
           }
         }
       );
