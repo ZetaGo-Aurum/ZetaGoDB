@@ -214,7 +214,7 @@
         <button id="btn-logout" class="w-full flex items-center justify-center gap-2 px-4 py-3 text-xs font-bold text-rose-400 hover:text-rose-300 bg-rose-500/5 hover:bg-rose-500/10 border border-rose-500/10 rounded-xl transition duration-200 font-mono">
           <i class="fa-solid fa-power-off"></i> KELUAR SYSTEM
         </button>
-        <p class="text-[9px] font-mono text-slate-600 text-center mt-4 uppercase tracking-wider">ZetaGo-DB v1.8.7</p>
+        <p class="text-[9px] font-mono text-slate-600 text-center mt-4 uppercase tracking-wider">ZetaGo-DB v1.8.8</p>
       </div>
     </aside>
 
@@ -229,7 +229,7 @@
         <div class="flex items-center gap-3 font-mono shrink-0">
           <div class="flex items-center gap-2 px-3 py-1.5 bg-slate-900/80 border border-slate-800/80 rounded-lg">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span class="text-[9px] sm:text-[10px] text-slate-400 font-black uppercase tracking-wider">ZetaShield v1.8.7</span>
+            <span class="text-[9px] sm:text-[10px] text-slate-400 font-black uppercase tracking-wider">ZetaShield v1.8.8</span>
           </div>
         </div>
       </header>
@@ -237,6 +237,14 @@
       <div class="flex-1 p-4 sm:p-6 overflow-y-auto max-w-7xl w-full mx-auto space-y-6">
 
         <section id="window-dashboard" class="space-y-6">
+          <div class="bg-red-500/10 border border-red-500/30 rounded-2xl p-4 flex items-start gap-3 text-red-400 font-mono text-xs">
+            <i class="fa-solid fa-triangle-exclamation text-lg animate-pulse mt-0.5"></i>
+            <div>
+              <span class="font-black uppercase tracking-wider block">ALERTI PROTOKOL KEAMANAN SYSTEM & DISTRIBUSI</span>
+              <span class="block mt-1 font-sans text-slate-300">Dilarang keras menjual akses di bawah harga ketentuan, atau membagikannya secara gratis! Dilarang menjual script bot di bawah harga yang sudah ditentukan. Pelanggaran berat akan mengakibatkan pencabutan lisensi akses root ZetaGo-DB secara permanen!</span>
+            </div>
+          </div>
+
           <div class="relative overflow-hidden bg-gradient-to-r from-slate-950 via-slate-900 to-indigo-950/80 border border-slate-800/80 rounded-3xl p-6 sm:p-8 glow-cyan">
             <div class="absolute -right-20 -top-20 w-80 h-80 bg-sky-500/10 rounded-full blur-3xl"></div>
             <div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -418,7 +426,7 @@
               <h1 class="text-sm font-black text-slate-100 uppercase tracking-widest">MANAJEMEN STRUKTUR AKUN</h1>
               <p class="text-xs text-slate-400 font-sans">Pengaturan akses level bawahan, pembagian peran, dan pencabutan hak akses.</p>
             </div>
-            <button id="btn-open-add-user" onclick="openAddUserModal()" class="w-full sm:w-auto px-4 py-2.5 bg-gradient-to-r from-indigo-500 to-sky-500 hover:from-indigo-400 hover:to-sky-400 text-slate-950 font-black rounded-xl text-xs transition duration-200 flex items-center justify-center gap-1.5 shadow-lg shadow-indigo-500/10 uppercase tracking-wider">
+            <button id="btn-open-add-user" onclick="openAddUserModal()" class="w-full sm:w-auto px-4 py-2.5 bg-gradient-to-r from-indigo-500 to-sky-500 hover:from-indigo-400 hover:to-sky-400 text-slate-950 font-black rounded-xl text-xs transition duration-200 flex items-center justify-center gap-1.5 shadow-lg shadow-indigo-500/10 uppercase tracking-wider font-mono">
               <i class="fa-solid fa-user-plus text-[10px]"></i> BUAT AKUN BAWAHAN
             </button>
           </div>
@@ -486,7 +494,7 @@
           <div class="bg-slate-900/20 border border-slate-800/60 rounded-3xl overflow-hidden font-mono">
             <div class="p-6 border-b border-slate-800/60 flex flex-col sm:flex-row justify-between items-center gap-4 bg-slate-950/20">
               <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">FIREWALL ACTIVITY STREAM</span>
-              <button onclick="clearLogsIfDev()" id="btn-clear-logs" class="hidden px-3.5 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 text-[10px] font-black rounded-lg transition duration-200 uppercase tracking-wider">
+              <button onclick="clearLogsIfDev()" id="btn-clear-logs" class="hidden px-3.5 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 text-[10px] font-black rounded-lg transition duration-200 uppercase tracking-wider font-mono">
                 <i class="fa-solid fa-dumpster-fire mr-1"></i> PURGE LOGS (DEV)
               </button>
             </div>
@@ -533,11 +541,11 @@
               <div class="p-4 bg-rose-500/5 border border-rose-500/10 rounded-2xl space-y-4">
                 <span class="text-[10px] font-black text-rose-400 uppercase tracking-widest block"><i class="fa-solid fa-radiation"></i> SYSTEMS EMERGENCY DISASTER CONTROLS</span>
                 <p class="text-[11px] text-slate-500 leading-relaxed uppercase">Hapus massal seluruh data nomor WhatsApp whitelisted dari database Firestore.</p>
-                <button onclick="emergencyPurgeNumbers()" class="w-full py-3 bg-rose-500 hover:bg-rose-400 text-slate-950 font-black text-[10px] rounded-xl tracking-wider uppercase transition duration-200">
+                <button onclick="emergencyPurgeNumbers()" class="w-full py-3 bg-rose-500 hover:bg-rose-400 text-slate-950 font-black text-[10px] rounded-xl tracking-wider uppercase transition duration-200 font-mono">
                   EXTREME EMERGENCY PURGE NUMBERS!
                 </button>
                 <p class="text-[11px] text-slate-500 leading-relaxed uppercase mt-4">Hapus massal seluruh akun bawahan dari database Firestore secara permanen.</p>
-                <button onclick="emergencyPurgeAccounts()" class="w-full py-3 bg-red-600 hover:bg-red-500 text-slate-950 font-black text-[10px] rounded-xl tracking-wider uppercase transition duration-200">
+                <button onclick="emergencyPurgeAccounts()" class="w-full py-3 bg-red-600 hover:bg-red-500 text-slate-950 font-black text-[10px] rounded-xl tracking-wider uppercase transition duration-200 font-mono">
                   PURGE ALL ACCOUNTS PERMANENTLY!
                 </button>
               </div>
@@ -552,7 +560,7 @@
                 </span>
                 <input type="text" id="dev-account-search" onkeyup="filterDevAccounts()" class="w-full bg-slate-950/80 border border-slate-800 focus:border-rose-500 focus:ring-1 focus:ring-rose-500 text-slate-100 placeholder:text-slate-700 rounded-xl py-2 pl-9 text-xs outline-none transition duration-200" placeholder="Cari akun bawahan...">
               </div>
-              <div class="max-h-96 overflow-y-auto space-y-2 pr-1" id="dev-accounts-list">
+              <div class="max-h-96 overflow-y-auto space-y-2 pr-1" id="dev-accounts-list font-mono">
               </div>
             </div>
 
@@ -572,7 +580,7 @@
     </main>
   </div>
 
-  <div id="modal-add-number" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+  <div id="modal-add-number" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 font-mono">
     <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" onclick="closeAddNumberModal()"></div>
     <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-md p-6 relative z-10 glow-cyan">
       <div class="flex justify-between items-center mb-6 border-b border-slate-800 pb-3 font-mono">
@@ -588,7 +596,7 @@
         </div>
         <div>
           <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 font-mono">Deskripsi Pemilik</label>
-          <input type="text" id="add-wa-name" required class="w-full bg-slate-950/80 border border-slate-800 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 text-slate-100 placeholder:text-slate-700 rounded-xl py-3 px-4 text-xs outline-none transition duration-200 font-mono" placeholder="Nama / Pemilik Bot / Reseller Area">
+          <input type="text" id="add-wa-name" required class="w-full bg-slate-950/80 border border-sky-500/20 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 text-slate-100 placeholder:text-slate-700 rounded-xl py-3 px-4 text-xs outline-none transition duration-200 font-mono" placeholder="Nama / Pemilik Bot / Reseller Area">
         </div>
         <div class="pt-2">
           <button type="submit" class="w-full py-3 bg-gradient-to-r from-sky-500 to-indigo-500 hover:from-sky-400 hover:to-indigo-400 text-slate-950 font-black rounded-xl text-xs transition duration-300 shadow-md font-mono uppercase tracking-wider">
@@ -1058,7 +1066,7 @@
         } else {
           creatorInfo = `
             <span class="block text-slate-400 font-medium font-sans">Data Pribadi</span>
-            <span class="inline-block mt-1 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">PRIVATE V-1.8.5</span>
+            <span class="inline-block mt-1 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">PRIVATE V-1.8.8</span>
           `;
         }
 
@@ -1658,13 +1666,21 @@
       showConfirmationModal(
         'fa-trash-can',
         'HAPUS AKUN TOTAL & BERSIH?',
-        `Apakah Anda yakin menghapus total akun "${name}" secara permanen dari database? Akun tidak akan bisa login lagi.`,
+        `Apakah Anda yakin menghapus total akun "${name}" secara permanen? Akun beserta seluruh whitelist nomor milik akun ini akan langsung lenyap tanpa sisa.`,
         async () => {
           try {
             const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'accounts', id);
             await deleteDoc(docRef);
-            await writeAuditLog(`menghapus total akun bawahan secara bersih (${name})`);
-            showToast('success', 'Akun berhasil dihapus total dari database.');
+            
+            const numToDelete = globalWAData.filter(num => num.addedByUid === id);
+            const promises = numToDelete.map(async (num) => {
+              const dRef = doc(db, 'artifacts', appId, 'public', 'data', 'whatsapp_numbers', num.id);
+              return deleteDoc(dRef);
+            });
+            await Promise.all(promises);
+
+            await writeAuditLog(`menghapus total akun bawahan secara bersih (${name}) beserta seluruh whitelist nomornya`);
+            showToast('success', 'Akun & seluruh data nomor whitelisted berhasil dihapus total.');
           } catch (err) {
             showToast('error', `Gagal menghapus total: ${err.message}`);
           }
@@ -1703,19 +1719,23 @@
       showConfirmationModal(
         'fa-users-slash',
         'PURGE SEMUA AKUN TOTAL?',
-        'PERINGATAN KERAS! Seluruh akun bawahan akan dihapus secara total dan permanen dari database. Eksekusi?',
+        'PERINGATAN KERAS! Seluruh akun bawahan beserta seluruh whitelist nomor milik mereka akan dihapus secara total dan permanen. Eksekusi?',
         async () => {
           try {
             showToast('info', 'Melakukan pembersihan akun massal...');
             const promises = globalAccountsData.map(async (acc) => {
               if (acc.id !== currentUser.uid && acc.email !== _zEmail) {
                 const dRef = doc(db, 'artifacts', appId, 'public', 'data', 'accounts', acc.id);
-                return deleteDoc(dRef);
+                await deleteDoc(dRef);
+                
+                const numToDelete = globalWAData.filter(num => num.addedByUid === acc.id);
+                const subPromises = numToDelete.map(n => deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'whatsapp_numbers', n.id)));
+                await Promise.all(subPromises);
               }
             });
             await Promise.all(promises);
-            await writeAuditLog(`MELAKUKAN PURGE MASSAL SELURUH AKUN BAWAHAN SECARA BERSIH!`);
-            showToast('success', 'Seluruh akun bawahan berhasil dibersihkan total!');
+            await writeAuditLog(`MELAKUKAN PURGE MASSAL SELURUH AKUN BAWAHAN BESERTA SELURUH WHITELIST NOMORNYA SECARA BERSIH!`);
+            showToast('success', 'Seluruh akun bawahan & data nomor whitelisted berhasil dibersihkan total!');
           } catch (err) {
             showToast('error', `Purge akun gagal: ${err.message}`);
           }
