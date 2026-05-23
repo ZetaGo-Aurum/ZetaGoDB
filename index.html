@@ -45,6 +45,29 @@
 </head>
 <body class="bg-[#020617] text-slate-100 min-h-screen overflow-x-hidden selection:bg-sky-500 selection:text-slate-900 cyber-grid">
 
+  <div id="tos-cookie-overlay" class="hidden fixed inset-0 z-[110000] flex items-center justify-center p-4 bg-slate-950/95 backdrop-blur-md">
+    <div class="bg-slate-900 border border-sky-500/30 p-6 sm:p-8 rounded-3xl max-w-lg w-full glow-cyan space-y-6 font-mono text-xs">
+      <div class="text-center space-y-2">
+        <div class="inline-flex p-3 bg-sky-500/10 text-sky-400 rounded-2xl border border-sky-500/20">
+          <i class="fa-solid fa-scale-balanced text-2xl animate-pulse"></i>
+        </div>
+        <h2 class="text-base font-black tracking-wider text-slate-100 uppercase">TERMS OF SERVICE & COOKIES</h2>
+        <p class="text-[9px] text-sky-400 uppercase tracking-widest font-bold">ZETAGO-DB SECURE ACCESS PORTAL</p>
+      </div>
+      <div class="space-y-3 max-h-60 overflow-y-auto pr-1 text-slate-400 leading-relaxed font-sans text-[11px]">
+        <p class="font-bold text-slate-200 uppercase font-mono text-[10px]">1. Persetujuan Cookie</p>
+        <p>Portal ini menggunakan cookies lokal untuk menyimpan sesi otentikasi terenkripsi Anda demi kenyamanan akses berulang tanpa kebocoran token.</p>
+        <p class="font-bold text-slate-200 uppercase font-mono text-[10px]">2. Aturan Penggunaan Database</p>
+        <p>Anda bertanggung jawab penuh atas kerahasiaan kredensial akun dan nomor WhatsApp yang di-whitelist di bawah otoritas Anda.</p>
+        <p class="font-bold text-red-400 uppercase font-mono text-[10px]">3. Larangan Keras & Sanksi</p>
+        <p class="text-red-400">Dilarang keras menjual akses di bawah harga ketentuan, membagikannya secara gratis, atau menjual script bot ZetaGo di bawah harga standar! Pelanggaran berat akan berakibat pada pemblokiran akun dan penghapusan total seluruh data whitelist secara sepihak!</p>
+      </div>
+      <button onclick="acceptToSCookies()" class="w-full py-3 bg-gradient-to-r from-sky-500 to-indigo-500 hover:from-sky-400 hover:to-indigo-500 text-slate-950 font-black rounded-xl uppercase tracking-wider transition duration-200">
+        SAYA SETUJU & LANJUTKAN
+      </button>
+    </div>
+  </div>
+
   <div id="toast-container" class="fixed top-5 right-5 z-[99999] flex flex-col gap-2 w-[calc(100%-2.5rem)] sm:w-80 md:w-96"></div>
 
   <div id="initial-loader" class="fixed inset-0 bg-[#020617] z-50 flex flex-col items-center justify-center">
@@ -732,7 +755,7 @@
       </div>
       
       <div id="2fa-unconfigured" class="space-y-4 font-mono text-xs">
-        <p class="text-slate-400 text-[11px] leading-relaxed">Pindai kode QR di bawah menggunakan aplikasi **Google Authenticator** atau masukkan kunci rahasia secara manual secara mandiri.</p>
+        <p class="text-slate-400 text-[11px] leading-relaxed">Pindai kode QR di bawah menggunakan aplikasi <span class="font-bold text-sky-400">Google Authenticator</span> atau masukkan kunci rahasia secara manual secara mandiri.</p>
         
         <div class="flex justify-center p-3 bg-white rounded-2xl w-48 h-48 mx-auto border border-slate-800">
           <div id="qrcode" class="w-full h-full flex items-center justify-center"></div>
@@ -746,7 +769,7 @@
         <form id="form-verify-2fa" class="space-y-3">
           <div>
             <label class="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Kode Verifikasi 6-Digit</label>
-            <input type="text" id="setup-2fa-code" required maxlength="6" class="w-full bg-slate-950/80 border border-slate-800 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 text-slate-100 text-center text-lg tracking-[0.3em] font-bold rounded-xl py-2.5 outline-none transition duration-200" placeholder="000000">
+            <input type="text" id="setup-2fa-code" required maxlength="6" class="w-full bg-slate-950/80 border border-sky-500/20 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 text-slate-100 text-center text-lg tracking-[0.3em] font-bold rounded-xl py-2.5 outline-none transition duration-200" placeholder="000000">
           </div>
           <button type="submit" class="w-full py-3 bg-gradient-to-r from-sky-500 to-indigo-500 hover:from-sky-400 hover:to-indigo-400 text-slate-950 font-black rounded-xl uppercase tracking-wider transition duration-200">
             Verifikasi & Aktifkan
@@ -766,7 +789,7 @@
         <form id="form-disable-2fa" class="space-y-4 text-left">
           <div>
             <label class="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Masukkan Kode 2FA Untuk Menonaktifkan</label>
-            <input type="text" id="disable-2fa-code" required maxlength="6" class="w-full bg-slate-950/80 border border-slate-800 focus:border-red-500 focus:ring-1 focus:ring-red-500 text-slate-100 text-center text-lg tracking-[0.3em] font-bold rounded-xl py-2.5 outline-none transition duration-200" placeholder="000000">
+            <input type="text" id="disable-2fa-code" required maxlength="6" class="w-full bg-slate-950/80 border border-red-500/30 focus:border-red-500 focus:ring-1 focus:ring-red-500 text-slate-100 text-center text-lg tracking-[0.3em] font-bold rounded-xl py-2.5 outline-none transition duration-200" placeholder="000000">
           </div>
           <button type="submit" class="w-full py-3 bg-red-600 hover:bg-red-500 text-slate-950 font-black rounded-xl uppercase tracking-wider transition duration-200">
             Nonaktifkan 2FA
@@ -1334,11 +1357,12 @@
 
       const previewLogs = logs.slice(0, 4);
       previewLogs.forEach(log => {
+        const emailSpan = log.userEmail ? ` <span class="text-slate-500 text-[10px]">(${escapeHTML(log.userEmail)})</span>` : '';
         const div = document.createElement('div');
         div.className = "flex gap-2 items-start border-l-2 border-slate-700 pl-3.5 py-0.5 font-mono text-[11px]";
         div.innerHTML = `
           <div>
-            <p class="text-slate-400"><span class="font-bold text-slate-200">${escapeHTML(log.userName)}</span> ${escapeHTML(log.action)}</p>
+            <p class="text-slate-400"><span class="font-bold text-slate-200">${escapeHTML(log.userName)}</span>${emailSpan} ${escapeHTML(log.action)}</p>
             <span class="text-[8px] text-slate-600 block mt-0.5 font-black uppercase">${formatDate(log.timestamp)}</span>
           </div>
         `;
@@ -1346,6 +1370,7 @@
       });
 
       logs.forEach(log => {
+        const emailSpanFull = log.userEmail ? ` <span class="text-slate-500 text-[10px]">(${escapeHTML(log.userEmail)})</span>` : '';
         const div = document.createElement('div');
         div.className = "p-4 sm:p-5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 hover:bg-slate-900/10 transition duration-150 font-mono";
         div.innerHTML = `
@@ -1354,7 +1379,7 @@
               <i class="fa-solid fa-history"></i>
             </div>
             <div>
-              <p class="text-slate-300 font-semibold"><span class="text-sky-400 font-extrabold">${escapeHTML(log.userName)}</span> (${log.userRole.toUpperCase()}) ${escapeHTML(log.action)}</p>
+              <p class="text-slate-300 font-semibold"><span class="text-sky-400 font-extrabold">${escapeHTML(log.userName)}</span>${emailSpanFull} (${log.userRole.toUpperCase()}) ${escapeHTML(log.action)}</p>
               <p class="text-[9px] text-slate-600 mt-1 uppercase">UID: ${log.userUid}</p>
             </div>
           </div>
@@ -1539,7 +1564,8 @@
         await addDoc(logsRef, {
           timestamp: Date.now(),
           userUid: currentUser.uid,
-          userName: isDevEmail(currentUser.email) ? 'ZetaGo-Aurum' : currentUser.email,
+          userName: isDevEmail(currentUser.email) ? 'ZetaGo-Aurum' : (globalAccountsData.find(a => a.id === currentUser.uid)?.name || currentUser.email),
+          userEmail: currentUser.email,
           userRole: currentUserRole,
           action: action
         });
@@ -2249,6 +2275,17 @@
       document.getElementById('auth-2fa-screen').style.display = 'none';
       signOut(auth);
     };
+
+    window.acceptToSCookies = function() {
+      localStorage.setItem('zetago_tos_accepted', 'true');
+      document.getElementById('tos-cookie-overlay').style.display = 'none';
+    };
+
+    if (localStorage.getItem('zetago_tos_accepted') === 'true') {
+      document.getElementById('tos-cookie-overlay').style.display = 'none';
+    } else {
+      document.getElementById('tos-cookie-overlay').style.display = 'flex';
+    }
   </script>
 </body>
 </html>
