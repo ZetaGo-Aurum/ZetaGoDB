@@ -1054,71 +1054,87 @@
       return null;
     }
 
-    // System-integrity safe copying
+    // Modern, bulletproof selection and clipboard copy helper designed for mobile iframes inside Canvas
     window.copyStringToClipboard = function(text, successMessage) {
       if (!text) {
         showToast('error', 'Gagal menyalin: Teks kosong!');
         return;
       }
-      const el = document.createElement('textarea');
-      el.value = text;
-      el.setAttribute('readonly', '');
-      el.style.position = 'fixed';
-      el.style.opacity = '0';
-      el.style.top = '0';
-      el.style.left = '0';
-      el.style.width = '2em';
-      el.style.height = '2em';
-      el.style.padding = '0';
-      el.style.border = 'none';
-      el.style.outline = 'none';
-      el.style.boxShadow = 'none';
-      el.style.background = 'transparent';
-      document.body.appendChild(el);
-      
-      el.focus();
-      el.select();
-      el.setSelectionRange(0, 99999);
-      
-      const selection = window.getSelection();
-      const range = document.createRange();
-      range.selectNodeContents(el);
-      selection.removeAllRanges();
-      selection.addRange(range);
 
-      let successful = false;
-      try {
-        successful = document.execCommand('copy');
-      } catch (err) {
-        console.warn('execCommand failed, trying navigator clip: ', err);
-      }
-
-      document.body.removeChild(el);
-      selection.removeAllRanges();
-
-      if (successful) {
-        showToast('success', successMessage);
-      } else {
+      const fallbackCopy = (str) => {
+        const textarea = document.createElement('textarea');
+        textarea.value = str;
+        // Prevents layout shift & zoom behaviors on iOS Safari
+        textarea.style.fontSize = '12pt';
+        textarea.setAttribute('readonly', '');
+        textarea.style.position = 'fixed';
+        textarea.style.top = '0';
+        textarea.style.left = '-9999px';
+        textarea.style.width = '2em';
+        textarea.style.height = '2em';
+        textarea.style.padding = '0';
+        textarea.style.border = 'none';
+        textarea.style.outline = 'none';
+        textarea.style.boxShadow = 'none';
+        textarea.style.background = 'transparent';
+        
+        document.body.appendChild(textarea);
+        
+        // Native mobile focus & select
+        textarea.focus();
+        textarea.select();
+        textarea.setSelectionRange(0, 99999);
+        
+        // Selection range fallback for deep WebKit engines
+        const range = document.createRange();
+        range.selectNodeContents(textarea);
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+        
+        let success = false;
         try {
-          navigator.clipboard.writeText(text).then(() => {
-            showToast('success', successMessage);
-          }).catch(() => {
-            showToast('error', 'Gagal menyalin teks ke Clipboard.');
-          });
+          success = document.execCommand('copy');
         } catch (err) {
-          showToast('error', 'Browser tidak mendukung bypass penyalinan.');
+          console.error('Fallback copy operation failed:', err);
+        }
+        
+        document.body.removeChild(textarea);
+        selection.removeAllRanges();
+        return success;
+      };
+
+      // Try modern async API first (strictly under secure contexts)
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text)
+          .then(() => {
+            showToast('success', successMessage);
+          })
+          .catch(() => {
+            // Secondary robust fallback for iframe policy constraints
+            if (fallbackCopy(text)) {
+              showToast('success', successMessage);
+            } else {
+              showToast('error', 'Gagal menyalin otomatis secara internal.');
+            }
+          });
+      } else {
+        if (fallbackCopy(text)) {
+          showToast('success', successMessage);
+        } else {
+          showToast('error', 'Akses salin otomatis terhalang oleh browser.');
         }
       }
     };
 
     window.copyApiLink = function() {
-      const linkText = document.getElementById('api-link-display').innerText;
-      window.copyStringToClipboard(linkText, 'Link REST API Whitelist disalin ke clipboard! 📋');
+      // Use direct cached state instead of fragile DOM parsing which behaves unpredictably under mobile truncation
+      window.copyStringToClipboard(window.whitelistLinkVal, 'Link REST API Whitelist disalin ke clipboard! 📋');
     };
 
     window.copyStructureApiLink = function() {
-      const linkText = document.getElementById('api-structure-link-display').innerText;
-      window.copyStringToClipboard(linkText, 'Link REST API Struktur disalin ke clipboard! 📋');
+      // Use direct cached state instead of fragile DOM parsing
+      window.copyStringToClipboard(window.structureLinkVal, 'Link REST API Struktur disalin ke clipboard! 📋');
     };
 
     window.copyCredentials = function(name, email, password, role) {
@@ -1290,8 +1306,13 @@
         filterTabs.classList.remove('hidden');
         
         const origin = window.location.origin && window.location.origin !== 'null' ? window.location.origin : 'https://zetago-db.vercel.app';
-        document.getElementById('api-link-display').innerText = `${origin}/api/whitelist?token=ZetaShield_ZTGrYHRdR424248484_9f8b2c7a1e0d3f4b5a6c7d8e9f0a1b2c_SecureGatewaySystemToken_df849302948201948201948201948202_AlphaX99_VercelProd_2026_dB_Auth_Key_Encrypt_CEEOCS_Complex_u83jdxn829103948_ZTGrYHRdR424248484_SecureAccessGatewayAuthenticationSystemKey_v928fks9201mshd82019shdbf639shdbfn`;
-        document.getElementById('api-structure-link-display').innerText = `${origin}/api/structure?token=ZetaShield_ZTGrYHRdR424248484_9f8b2c7a1e0d3f4b5a6c7d8e9f0a1b2c_SecureGatewaySystemToken_df849302948201948201948201948202_AlphaX99_VercelProd_2026_dB_Auth_Key_Encrypt_CEEOCS_Complex_u83jdxn829103948_ZTGrYHRdR424248484_SecureAccessGatewayAuthenticationSystemKey_v928fks9201mshd82019shdbf639shdbfn`;
+        
+        // Cache API links values inside strict JS memory space to ensure fail-safe copy on mobile
+        window.whitelistLinkVal = `${origin}/api/whitelist?token=ZetaShield_ZTGrYHRdR424248484_9f8b2c7a1e0d3f4b5a6c7d8e9f0a1b2c_SecureGatewaySystemToken_df849302948201948201948201948202_AlphaX99_VercelProd_2026_dB_Auth_Key_Encrypt_CEEOCS_Complex_u83jdxn829103948_ZTGrYHRdR424248484_SecureAccessGatewayAuthenticationSystemKey_v928fks9201mshd82019shdbf639shdbfn`;
+        window.structureLinkVal = `${origin}/api/structure?token=ZetaShield_ZTGrYHRdR424248484_9f8b2c7a1e0d3f4b5a6c7d8e9f0a1b2c_SecureGatewaySystemToken_df849302948201948201948201948202_AlphaX99_VercelProd_2026_dB_Auth_Key_Encrypt_CEEOCS_Complex_u83jdxn829103948_ZTGrYHRdR424248484_SecureAccessGatewayAuthenticationSystemKey_v928fks9201mshd82019shdbf639shdbfn`;
+
+        document.getElementById('api-link-display').innerText = window.whitelistLinkVal;
+        document.getElementById('api-structure-link-display').innerText = window.structureLinkVal;
       } else {
         devConsoleBtn.classList.add('opacity-40', 'grayscale', 'cursor-not-allowed');
         devConsoleBtn.classList.remove('text-rose-400', 'hover:text-rose-300');
@@ -1737,6 +1758,10 @@
         const whitelistLink = `${origin}/api/whitelist?token=ZetaShield_ZTGrYHRdR424248484_9f8b2c7a1e0d3f4b5a6c7d8e9f0a1b2c_SecureGatewaySystemToken_df849302948201948201948201948202_AlphaX99_VercelProd_2026_dB_Auth_Key_Encrypt_CEEOCS_Complex_u83jdxn829103948_ZTGrYHRdR424248484_SecureAccessGatewayAuthenticationSystemKey_v928fks9201mshd82019shdbf639shdbfn`;
         const structureLink = `${origin}/api/structure?token=ZetaShield_ZTGrYHRdR424248484_9f8b2c7a1e0d3f4b5a6c7d8e9f0a1b2c_SecureGatewaySystemToken_df849302948201948201948201948202_AlphaX99_VercelProd_2026_dB_Auth_Key_Encrypt_CEEOCS_Complex_u83jdxn829103948_ZTGrYHRdR424248484_SecureAccessGatewayAuthenticationSystemKey_v928fks9201mshd82019shdbf639shdbfn`;
         
+        // Save link strictly on runtime object space to prevent dynamic parsing failure on mobile viewports
+        window.currentWhitelistLink = whitelistLink;
+        window.currentStructureLink = structureLink;
+
         const displayWhitelist = showApiSensored ? '••••••••••••••••••••••••••••••••••••••••••••••••' : whitelistLink;
         const displayStructure = showApiSensored ? '••••••••••••••••••••••••••••••••••••••••••••••••' : structureLink;
         
@@ -1756,14 +1781,14 @@
                 <span class="text-[9px] text-slate-500 font-bold block mb-1 uppercase tracking-wider">Bot Whitelist API Link</span>
                 <div class="flex items-center gap-2 bg-slate-950 border border-slate-800/80 p-2.5 rounded-xl overflow-hidden">
                   <span class="text-[9px] text-emerald-400 truncate flex-1 font-mono">${displayWhitelist}</span>
-                  <button onclick="window.copyStringToClipboard('${whitelistLink}', 'Link API Whitelist disalin!')" class="px-2.5 py-1 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-[9px] rounded uppercase transition shrink-0 font-mono"><i class="fa-solid fa-copy mr-1"></i> Copy</button>
+                  <button onclick="window.copyStringToClipboard(window.currentWhitelistLink, 'Link API Whitelist disalin!')" class="px-2.5 py-1 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-[9px] rounded uppercase transition shrink-0 font-mono"><i class="fa-solid fa-copy mr-1"></i> Copy</button>
                 </div>
               </div>
               <div>
                 <span class="text-[9px] text-slate-500 font-bold block mb-1 uppercase tracking-wider">Bot Structure API Link</span>
                 <div class="flex items-center gap-2 bg-slate-950 border border-slate-800/80 p-2.5 rounded-xl overflow-hidden">
                   <span class="text-[9px] text-emerald-400 truncate flex-1 font-mono">${displayStructure}</span>
-                  <button onclick="window.copyStringToClipboard('${structureLink}', 'Link API Structure disalin!')" class="px-2.5 py-1 bg-indigo-500 hover:bg-indigo-400 text-slate-950 font-black text-[9px] rounded uppercase transition shrink-0 font-mono"><i class="fa-solid fa-copy mr-1"></i> Copy</button>
+                  <button onclick="window.copyStringToClipboard(window.currentStructureLink, 'Link API Structure disalin!')" class="px-2.5 py-1 bg-indigo-500 hover:bg-indigo-400 text-slate-950 font-black text-[9px] rounded uppercase transition shrink-0 font-mono"><i class="fa-solid fa-copy mr-1"></i> Copy</button>
                 </div>
               </div>
             </div>
