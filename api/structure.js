@@ -81,15 +81,6 @@ module.exports = async (req, res) => {
       premiumUntil = userData.fields?.premiumUntil?.integerValue ? parseInt(userData.fields.premiumUntil.integerValue) : 0;
     }
 
-    if (userRole !== 'dev') {
-      if (userRole !== 'owner') {
-        return res.status(403).json({ error: "FORBIDDEN: Akses API hanya diizinkan untuk Owner dan Developer!" });
-      }
-      if (!isPremium || premiumUntil < Date.now()) {
-        return res.status(403).json({ error: "FORBIDDEN: Masa aktif premium sewa API Anda telah kedaluwarsa atau belum diaktifkan! Harap sewa via Trakteer." });
-      }
-    }
-
     const loggedPower = rolePower[userRole] || 1;
     const { action, name, role, email: targetEmail, password: targetPassword, targetUid } = req.body;
 
