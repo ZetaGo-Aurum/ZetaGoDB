@@ -850,12 +850,12 @@
           <div class="grid grid-cols-3 gap-2 text-center font-mono mt-2 text-[10px]">
             <div class="bg-slate-950/80 border border-slate-800/80 p-2 rounded-xl">
               <span class="block text-[8px] text-slate-500 font-black uppercase">BULANAN</span>
-              <span class="block text-[11px] font-black text-emerald-400 mt-1">Rp 65.000</span>
+              <span class="block text-[11px] font-black text-emerald-400 mt-1">Rp 66.000</span>
               <span class="block text-[8px] text-slate-600 mt-0.5">~22 ACRON</span>
             </div>
             <div class="bg-slate-950/80 border border-slate-800/80 p-2 rounded-xl border-amber-500/20">
               <span class="block text-[8px] text-amber-500 font-black uppercase">TAHUNAN</span>
-              <span class="block text-[11px] font-black text-amber-400 mt-1">Rp 700.000</span>
+              <span class="block text-[11px] font-black text-amber-400 mt-1">Rp 702.000</span>
               <span class="block text-[8px] text-slate-600 mt-0.5">~234 ACRON</span>
             </div>
             <div class="bg-slate-950/80 border border-slate-800/80 p-2 rounded-xl border-yellow-500/30">
@@ -923,7 +923,9 @@
       signInWithPopup, 
       signInWithRedirect,
       getRedirectResult,
-      signOut
+      signOut,
+      createUserWithEmailAndPassword,
+      deleteUser
     } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
     import { 
       getFirestore, 
@@ -938,6 +940,62 @@
     } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
     const _zEmail = atob("ZGVsdGFhc3RyYTI0QGdtYWlsLmNvbQ==");
+
+    // Global Notification UI (Hoisted standard function declarations)
+    function showToast(type, message) {
+      const container = document.getElementById('toast-container');
+      if (!container) return;
+      const toast = document.createElement('div');
+      
+      let bg = 'bg-slate-900/90 border-slate-800';
+      let icon = '<i class="fa-solid fa-circle-info text-sky-400"></i>';
+
+      if (type === 'success') {
+        bg = 'bg-slate-900/90 border-emerald-500/30';
+        icon = '<i class="fa-solid fa-circle-check text-emerald-400"></i>';
+      } else if (type === 'error') {
+        bg = 'bg-slate-900/90 border-rose-500/30';
+        icon = '<i class="fa-solid fa-circle-exclamation text-rose-400"></i>';
+      }
+
+      toast.className = `flex items-center gap-3 p-4 rounded-2xl border ${bg} shadow-2xl backdrop-blur-md text-xs text-slate-200 font-mono transition duration-300`;
+      toast.innerHTML = `
+        ${icon}
+        <span class="flex-1 font-semibold leading-relaxed uppercase">${message}</span>
+        <button onclick="this.parentElement.remove()" class="text-slate-600 hover:text-slate-300"><i class="fa-solid fa-xmark"></i></button>
+      `;
+
+      container.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(-10px)';
+        setTimeout(() => toast.remove(), 300);
+      }, 4000);
+    }
+    window.showToast = showToast;
+
+    function showBannedModal(name, creatorName, creatorRole) {
+      const modal = document.getElementById('banned-modal');
+      if (!modal) return;
+      document.getElementById('banned-user-name').innerText = name;
+      document.getElementById('banned-creator-name').innerText = creatorName;
+      document.getElementById('banned-creator-role').innerText = creatorRole.toUpperCase();
+      modal.classList.remove('hidden');
+    }
+    window.showBannedModal = showBannedModal;
+
+    let confirmCallback = null;
+    function showConfirmationModal(iconClass, title, desc, onOk) {
+      const modal = document.getElementById('confirm-modal');
+      if (!modal) return;
+      document.getElementById('confirm-icon').className = `fa-solid ${iconClass} text-xl`;
+      document.getElementById('confirm-title').innerText = title;
+      document.getElementById('confirm-desc').innerText = desc;
+      modal.classList.remove('hidden');
+      confirmCallback = onOk;
+    }
+    window.showConfirmationModal = showConfirmationModal;
 
     function getFallbackConfig() {
       const p1 = "eyJhcGlLZXkiOiJBSXphU3lEQXdwQ1BLMExld1JSRnlkdno5Wkg0SU5lYU5SbU5scVUiLCJhdXRoRG9tYWluIjoic2VydmVyLW1lZGlhLTc1ZmRjLmZpcmViYXN0YXBwLmNvbSIsInByb2plY3RJZCI6InNlcnZlci1tZWRpYS03NWZkYyIsInN0b3JhZ2VCdWNrZXQiOiJzZXJ2ZXItbWVkaWEtNzVmZGMu";
@@ -996,14 +1054,10 @@
       return null;
     }
 
-    /**
-     * SYSTEM-INTEGRITY COPIER FIX (IFRAME SAFE)
-     * binding functions directly to window object to prevent 'not defined' reference errors.
-     * uses selection range tracking to lock focus inside iframe body to avoid copying editor source code.
-     */
+    // System-integrity safe copying
     window.copyStringToClipboard = function(text, successMessage) {
       if (!text) {
-        window.showToast('error', 'Gagal menyalin: Teks kosong!');
+        showToast('error', 'Gagal menyalin: Teks kosong!');
         return;
       }
       const el = document.createElement('textarea');
@@ -1022,12 +1076,10 @@
       el.style.background = 'transparent';
       document.body.appendChild(el);
       
-      // Select the input element and handle iOS/Iframe constraints
       el.focus();
       el.select();
       el.setSelectionRange(0, 99999);
       
-      // Strict selection range binding to prevent editor backup capture
       const selection = window.getSelection();
       const range = document.createRange();
       range.selectNodeContents(el);
@@ -1038,23 +1090,23 @@
       try {
         successful = document.execCommand('copy');
       } catch (err) {
-        console.warn('execCommand failed, attempting modern navigator API: ', err);
+        console.warn('execCommand failed, trying navigator clip: ', err);
       }
 
       document.body.removeChild(el);
       selection.removeAllRanges();
 
       if (successful) {
-        window.showToast('success', successMessage);
+        showToast('success', successMessage);
       } else {
         try {
           navigator.clipboard.writeText(text).then(() => {
-            window.showToast('success', successMessage);
+            showToast('success', successMessage);
           }).catch(() => {
-            window.showToast('error', 'Gagal menyalin teks ke Clipboard.');
+            showToast('error', 'Gagal menyalin teks ke Clipboard.');
           });
         } catch (err) {
-          window.showToast('error', 'Browser tidak mengizinkan bypass penyalinan.');
+          showToast('error', 'Browser tidak mendukung bypass penyalinan.');
         }
       }
     };
@@ -1094,7 +1146,7 @@
           const result = await getRedirectResult(auth);
           if (result && result.user) {
             if (!isDevEmail(result.user.email)) {
-              window.showToast('error', 'Akses Pengembang Ditolak! Anda bukan pemilik ZetaGo-DB.');
+              showToast('error', 'Akses Pengembang Ditolak! Anda bukan pemilik ZetaGo-DB.');
               await signOut(auth);
             }
           }
@@ -1117,7 +1169,7 @@
       } catch (e) {
         console.error(e);
         document.getElementById('initial-loader').style.display = 'none';
-        window.showToast('error', 'Gagal memuat modul otorisasi database!');
+        showToast('error', 'Gagal memuat modul otorisasi database!');
       }
     }
 
@@ -1141,7 +1193,7 @@
           if (userData.disabled === true) {
             const cName = userData.createdByName || "Atasan";
             const cRole = userData.createdByRole || "Atasan";
-            window.showBannedModal(userData.name, cName, cRole);
+            showBannedModal(userData.name, cName, cRole);
             signOut(auth);
             return;
           }
@@ -1168,12 +1220,12 @@
             document.getElementById('owner-premium-widget').classList.add('hidden');
           }
         } else {
-          window.showToast('error', 'Akses ditolak! Kredensial tidak diizinkan di database.');
+          showToast('error', 'Akses ditolak! Kredensial tidak diizinkan di database.');
           signOut(auth);
         }
       } catch (e) {
         console.error(e);
-        window.showToast('error', 'Gagal memverifikasi modul otorisasi.');
+        showToast('error', 'Gagal memverifikasi modul otorisasi.');
         signOut(auth);
       }
     }
@@ -1292,7 +1344,7 @@
       }
 
       startRealtimeStreams();
-      window.showToast('success', `Akses Terbuka. Selamat Bekerja, ${name}!`);
+      showToast('success', `Akses Terbuka. Selamat Bekerja, ${name}!`);
     }
 
     function showLoginScreen() {
@@ -1323,7 +1375,7 @@
           document.getElementById('raw-json-viewer').innerText = JSON.stringify(numbers, null, 2);
         }
       }, (error) => {
-        window.showToast('error', `Gagal terhubung ke database nomor: ${error.message}`);
+        showToast('error', `Gagal terhubung ke database nomor: ${error.message}`);
       });
 
       const accountsRef = collection(db, 'artifacts', appId, 'public', 'data', 'accounts');
@@ -1350,7 +1402,7 @@
           }
         }
       }, (error) => {
-        window.showToast('error', `Gagal membaca list user: ${error.message}`);
+        showToast('error', `Gagal membaca list user: ${error.message}`);
       });
 
       const logsRef = collection(db, 'artifacts', appId, 'public', 'data', 'activity_logs');
@@ -1363,7 +1415,7 @@
         logs.sort((a, b) => b.timestamp - a.timestamp);
         renderLogs(logs);
       }, (error) => {
-        window.showToast('error', `Gagal sinkronisasi log keamanan: ${error.message}`);
+        showToast('error', `Gagal sinkronisasi log keamanan: ${error.message}`);
       });
     }
 
@@ -1631,10 +1683,10 @@
           }, { merge: true });
           
           await writeAuditLog(`mengubah durasi sewa API owner ${snap.data().name} sebanyak +${days} hari`);
-          window.showToast('success', `PREMIUM: Akun berhasil disesuaikan +${days} hari!`);
+          showToast('success', `PREMIUM: Akun berhasil disesuaikan +${days} hari!`);
         }
       } catch (err) {
-        window.showToast('error', `Gagal menyesuaikan sewa: ${err.message}`);
+        showToast('error', `Gagal menyesuaikan sewa: ${err.message}`);
       }
     };
 
@@ -1649,10 +1701,10 @@
           }, { merge: true });
           
           await writeAuditLog(`mengaktifkan status PERMANENT PREMIUM untuk owner ${snap.data().name}`);
-          window.showToast('success', `PREMIUM: Status ${snap.data().name} diubah menjadi PERMANENT! 👑`);
+          showToast('success', `PREMIUM: Status ${snap.data().name} diubah menjadi PERMANENT! 👑`);
         }
       } catch (err) {
-        window.showToast('error', `Gagal merubah status permanent: ${err.message}`);
+        showToast('error', `Gagal merubah status permanent: ${err.message}`);
       }
     };
 
@@ -1667,10 +1719,10 @@
           }, { merge: true });
           
           await writeAuditLog(`mencabut paksa akses sewa API owner ${snap.data().name}`);
-          window.showToast('success', `PREMIUM: Akses sewa API dicabut secara manual!`);
+          showToast('success', `PREMIUM: Akses sewa API dicabut secara manual!`);
         }
       } catch (err) {
-        window.showToast('error', `Gagal mencabut sewa: ${err.message}`);
+        showToast('error', `Gagal mencabut sewa: ${err.message}`);
       }
     };
 
@@ -1696,7 +1748,7 @@
                 <span class="text-xs font-black text-slate-100 uppercase tracking-wider">Akses Premium REST API Bot WhatsApp</span>
               </div>
               <button onclick="toggleApiSensored()" class="text-slate-400 hover:text-sky-400 transition">
-                <i class="fa-solid ${showApiSensored ? 'fa-eye' : 'fa-eye-slash'} text-xs font-mono"></i>
+                <i class="fa-solid ${showApiSensored ? 'fa-eye' : 'fa-eye-slash'} text-xs"></i>
               </button>
             </div>
             <div class="space-y-4">
@@ -1819,7 +1871,7 @@
 
     window.switchTab = function(tabName) {
       if (tabName === 'dev-console' && currentUserRole !== 'dev') {
-        window.showToast('error', 'Akses Terlarang! Anda bukan Developer ZetaGo-DB.');
+        showToast('error', 'Akses Terlarang! Anda bukan Developer ZetaGo-DB.');
         switchTab('dashboard');
         return;
       }
@@ -1902,11 +1954,11 @@
 
       if (type === 'dev') {
         tabDev.className = "flex-1 py-2.5 text-xs font-semibold rounded-lg transition-all duration-300 text-sky-400 bg-slate-900 border border-slate-800/80 font-mono";
-        tabSub.className = "flex-1 py-2.5 text-xs font-semibold rounded-lg transition-all duration-300 text-slate-400 hover:text-slate-200 font-mono";
+        tabSub.className = "flex-1 py-2.5 text-xs font-semibold rounded-lg transition-all duration-300 text-slate-400 hover:text-slate-200";
         formDev.classList.remove('hidden');
         formSub.classList.add('hidden');
       } else {
-        tabSub.className = "flex-1 py-2.5 text-xs font-semibold rounded-lg transition-all duration-300 text-sky-400 bg-slate-900 border border-slate-800/80 font-mono";
+        tabSub.className = "flex-1 py-2.5 text-xs font-semibold rounded-lg transition-all duration-300 text-sky-400 bg-slate-900 border border-slate-800/80";
         tabDev.className = "flex-1 py-2.5 text-xs font-semibold rounded-lg transition-all duration-300 text-slate-400 hover:text-slate-200 font-mono";
         formSub.classList.remove('hidden');
         formDev.classList.add('hidden');
@@ -1921,7 +1973,7 @@
       try {
         await signInWithEmailAndPassword(auth, email, pass);
       } catch (err) {
-        window.showToast('error', 'Login ditolak! Kredensial tidak valid.');
+        showToast('error', 'Login ditolak! Kredensial tidak valid.');
       }
     });
 
@@ -1931,10 +1983,10 @@
         await signInWithPopup(auth, provider);
       } catch (err) {
         if (err.code === 'auth/popup-blocked') {
-          window.showToast('info', 'Popup diblokir browser! Mengalihkan ke metode redirect keamanan...');
+          showToast('info', 'Popup diblokir browser! Mengalihkan ke metode redirect keamanan...');
           await signInWithRedirect(auth, provider);
         } else {
-          window.showToast('error', `Gagal otentikasi Google: ${err.message}`);
+          showToast('error', `Gagal otentikasi Google: ${err.message}`);
         }
       }
     });
@@ -1954,7 +2006,7 @@
         logsUnsubscribe = null;
       }
       signOut(auth).then(() => {
-        window.showToast('success', 'Berhasil melakukan log-off sistem.');
+        showToast('success', 'Berhasil melakukan log-off sistem.');
       });
     });
 
@@ -1991,7 +2043,7 @@
       phone = phone.replace(/[^0-9]/g, '');
 
       if (phone.length < 9 || phone.length > 15) {
-        window.showToast('error', 'Format nomor salah.');
+        showToast('error', 'Format nomor salah.');
         return;
       }
 
@@ -2000,7 +2052,7 @@
         
         const exists = globalWAData.some(n => n.phoneNumber === phone);
         if (exists) {
-          window.showToast('error', `Nomor +${phone} sudah terdaftar.`);
+          showToast('error', `Nomor +${phone} sudah terdaftar.`);
           return;
         }
 
@@ -2016,15 +2068,15 @@
         });
 
         await writeAuditLog(`menambahkan whitelist nomor WhatsApp baru (+${phone})`);
-        window.showToast('success', 'Nomor Whitelisted disimpan ke server.');
+        showToast('success', 'Nomor Whitelisted disimpan ke server.');
         closeAddNumberModal();
       } catch (err) {
-        window.showToast('error', `Gagal menulis data: ${err.message}`);
+        showToast('error', `Gagal menulis data: ${err.message}`);
       }
     });
 
     window.confirmDeleteNumber = function(id, phone) {
-      window.showConfirmationModal(
+      showConfirmationModal(
         'fa-trash-can',
         'REVOKE AKSES NOMOR?',
         `Apakah Anda yakin mencabut hak akses nomor +${phone}? Akses bot WhatsApp akan langsung terhenti.`,
@@ -2033,9 +2085,9 @@
             const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'whatsapp_numbers', id);
             await deleteDoc(docRef);
             await writeAuditLog(`mencabut whitelist akses nomor (+${phone})`);
-            window.showToast('success', 'Akses berhasil dihapus.');
+            showToast('success', 'Akses berhasil dihapus.');
           } catch (err) {
-            window.showToast('error', `Gagal menghapus data: ${err.message}`);
+            showToast('error', `Gagal menghapus data: ${err.message}`);
           }
         }
       );
@@ -2123,17 +2175,16 @@
       const email = generateUniqueEmail(name, role);
 
       try {
-        window.showToast('info', 'Mengamankan kredensial...');
+        showToast('info', 'Mengamankan kredensial...');
 
+        // Top-level imports used safely instead of dynamic dynamic URL imports
         const secondaryApp = initializeApp(auth.app.options, "ZetaGoSecureAppReg");
         const secondaryAuth = getAuth(secondaryApp);
         
-        const { createUserWithEmailAndPassword, signOut: tempSignOut } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js");
-
         const tempCreds = await createUserWithEmailAndPassword(secondaryAuth, email, pass);
         const newUid = tempCreds.user.uid;
 
-        await tempSignOut(secondaryAuth);
+        await signOut(secondaryAuth);
 
         const userDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'accounts', newUid);
         await setDoc(userDocRef, {
@@ -2154,7 +2205,7 @@
         window.copyStringToClipboard(credsText, `Akun ${name} terdaftar! Kredensial disalin ke clipboard 📋`);
         closeAddUserModal();
       } catch (err) {
-        window.showToast('error', `Gagal mendaftarkan: ${err.message}`);
+        showToast('error', `Gagal mendaftarkan: ${err.message}`);
       }
     });
 
@@ -2201,16 +2252,16 @@
             role: targetRole
           });
           await writeAuditLog(`mengubah pangkat jabatan role ${name} menjadi ${targetRole.toUpperCase()}`);
-          window.showToast('success', `Berhasil mutasi pangkat role ${name} ke ${targetRole.toUpperCase()}!`);
+          showToast('success', `Berhasil mutasi pangkat role ${name} ke ${targetRole.toUpperCase()}!`);
           closeEditRoleModal();
         }
       } catch (err) {
-        window.showToast('error', `Gagal melakukan mutasi role: ${err.message}`);
+        showToast('error', `Gagal melakukan mutasi role: ${err.message}`);
       }
     });
 
     window.confirmDeleteAccount = function(id, name) {
-      window.showConfirmationModal(
+      showConfirmationModal(
         'fa-user-slash',
         'PECAT/REVOKE AKSES BAWAHAN?',
         `Apakah Anda yakin mencabut izin masuk untuk "${name}"? Hak login diblokir, namun berkas tetap aman disimpan untuk kebutuhan audit.`,
@@ -2225,17 +2276,17 @@
                 disabled: true
               });
               await writeAuditLog(`mencabut izin masuk akun bawahan (${name})`);
-              window.showToast('success', 'Akses dinonaktifkan dari sistem utama.');
+              showToast('success', 'Akses dinonaktifkan dari sistem utama.');
             }
           } catch (err) {
-            window.showToast('error', `Gagal memecat bawahan: ${err.message}`);
+            showToast('error', `Gagal memecat bawahan: ${err.message}`);
           }
         }
       );
     };
 
     window.confirmHardDeleteAccount = function(id, name) {
-      window.showConfirmationModal(
+      showConfirmationModal(
         'fa-trash-can',
         'HAPUS AKUN TOTAL & BERSIH?',
         `Apakah Anda yakin menghapus total akun "${name}" secara permanen? Akun beserta seluruh whitelist nomor milik akun ini akan langsung lenyap tanpa sisa.`,
@@ -2252,8 +2303,7 @@
                   const secondaryApp = initializeApp(auth.app.options, "ZetaGoSecondaryAuthDeleteTmp");
                   const secondaryAuth = getAuth(secondaryApp);
                   
-                  const { signInWithEmailAndPassword: secondarySignIn, deleteUser } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js");
-                  const tempCred = await secondarySignIn(secondaryAuth, targetEmail, targetPassword);
+                  const tempCred = await signInWithEmailAndPassword(secondaryAuth, targetEmail, targetPassword);
                   await deleteUser(tempCred.user);
                 } catch (authErr) {
                   console.warn("Firebase Auth Cascade deletion skipped or failed:", authErr.message);
@@ -2271,16 +2321,16 @@
             await Promise.all(promises);
 
             await writeAuditLog(`menghapus total akun bawahan secara bersih (${name}) beserta seluruh whitelist nomornya`);
-            window.showToast('success', 'Akun & seluruh data nomor whitelisted berhasil dihapus total.');
+            showToast('success', 'Akun & seluruh data nomor whitelisted berhasil dihapus total.');
           } catch (err) {
-            window.showToast('error', `Gagal menghapus total: ${err.message}`);
+            showToast('error', `Gagal menghapus total: ${err.message}`);
           }
         }
       );
     };
 
     window.restoreAccount = function(id, name) {
-      window.showConfirmationModal(
+      showConfirmationModal(
         'fa-user-check',
         'PULIHKAN AKSES BAWAHAN?',
         `Apakah Anda yakin mengembalikan izin masuk untuk "${name}"? Mereka akan dapat login kembali ke dalam portal sistem.`,
@@ -2295,10 +2345,10 @@
                 disabled: false
               });
               await writeAuditLog(`memulihkan kembali akses akun bawahan (${name})`);
-              window.showToast('success', 'Akses berhasil dipulihkan.');
+              showToast('success', 'Akses berhasil dipulihkan.');
             }
           } catch (err) {
-            window.showToast('error', `Gagal memulihkan bawahan: ${err.message}`);
+            showToast('error', `Gagal memulihkan bawahan: ${err.message}`);
           }
         }
       );
@@ -2307,13 +2357,13 @@
     window.emergencyPurgeAccounts = function() {
       if (currentUserRole !== 'dev') return;
 
-      window.showConfirmationModal(
+      showConfirmationModal(
         'fa-user-xmark',
         'PURGE SEMUA AKUN TOTAL?',
         'PERINGATAN KERAS! Seluruh akun bawahan beserta seluruh whitelist nomor milik mereka akan dihapus secara total dan permanen. Eksekusi?',
         async () => {
           try {
-            window.showToast('info', 'Melakukan pembersihan akun massal...');
+            showToast('info', 'Melakukan pembersihan akun massal...');
             const promises = globalAccountsData.map(async (acc) => {
               if (acc.id !== currentUser.uid && acc.email !== _zEmail) {
                 const dRef = doc(db, 'artifacts', appId, 'public', 'data', 'accounts', acc.id);
@@ -2326,9 +2376,9 @@
             });
             await Promise.all(promises);
             await writeAuditLog(`MELAKUKAN PURGE MASSAL SELURUH AKUN BAWAHAN BESERTA SELURUH WHITELIST NOMORNYA SECARA BERSIH!`);
-            window.showToast('success', 'Seluruh akun bawahan & data nomor whitelisted berhasil dibersihkan total!');
+            showToast('success', 'Seluruh akun bawahan & data nomor whitelisted berhasil dibersihkan total!');
           } catch (err) {
-            window.showToast('error', `Purge akun gagal: ${err.message}`);
+            showToast('error', `Purge akun gagal: ${err.message}`);
           }
         }
       );
@@ -2337,13 +2387,13 @@
     window.emergencyPurgeNumbers = function() {
       if (currentUserRole !== 'dev') return;
 
-      window.showConfirmationModal(
+      showConfirmationModal(
         'fa-radiation',
         'EMERGENCY DISASTER PURGE?',
         'PERINGATAN PROTOKOL KEAMANAN! Seluruh database nomor terdaftar akan dihapus secara massal dari server. Eksekusi?',
         async () => {
           try {
-            window.showToast('info', 'Melakukan pembersihan total...');
+            showToast('info', 'Melakukan pembersihan total...');
             
             const promises = globalWAData.map(async (num) => {
               const dRef = doc(db, 'artifacts', appId, 'public', 'data', 'whatsapp_numbers', num.id);
@@ -2352,9 +2402,9 @@
 
             await Promise.all(promises);
             await writeAuditLog(`MELAKUKAN PROTOKOL EMERGENY PURGE MASSAL DATABASE NOMOR WA!`);
-            window.showToast('success', 'Database berhasil dibersihkan!');
+            showToast('success', 'Database berhasil dibersihkan!');
           } catch (err) {
-            window.showToast('error', `Bypass gagal: ${err.message}`);
+            showToast('error', `Bypass gagal: ${err.message}`);
           }
         }
       );
@@ -2363,7 +2413,7 @@
     window.clearLogsIfDev = function() {
       if (currentUserRole !== 'dev') return;
       
-      window.showConfirmationModal(
+      showConfirmationModal(
         'fa-dumpster',
         'MUTASI LOGS KEAMANAN?',
         'Anda akan menghapus seluruh rekaman log firewall sistem. Lanjutkan?',
@@ -2378,9 +2428,9 @@
             });
 
             await Promise.all(promises);
-            window.showToast('success', 'System Logs dikosongkan.');
+            showToast('success', 'System Logs dikosongkan.');
           } catch (err) {
-            window.showToast('error', `Gagal membersihkan log: ${err.message}`);
+            showToast('error', `Gagal membersihkan log: ${err.message}`);
           }
         }
       );
@@ -2402,7 +2452,7 @@
       if (currentUserRole === 'dev') {
         switchTab('dev-console');
       } else {
-        window.showToast('error', 'Akses Terlarang! Hanya Developer yang memiliki otoritas mengakses Dev Terminal.');
+        showToast('error', 'Akses Terlarang! Hanya Developer yang memiliki otoritas mengakses Dev Terminal.');
       }
     };
 
@@ -2410,62 +2460,12 @@
       if (currentUserRole !== 'res') {
         switchTab('accounts');
       } else {
-        window.showToast('error', 'Akses Terlarang! Reseller tidak memiliki otoritas melihat atau mengelola Struktur Akun.');
+        showToast('error', 'Akses Terlarang! Reseller tidak memiliki otoritas melihat atau mengelola Struktur Akun.');
       }
-    };
-
-    window.showBannedModal = function(name, creatorName, creatorRole) {
-      document.getElementById('banned-user-name').innerText = name;
-      document.getElementById('banned-creator-name').innerText = creatorName;
-      document.getElementById('banned-creator-role').innerText = creatorRole.toUpperCase();
-      document.getElementById('banned-modal').classList.remove('hidden');
     };
 
     window.closeBannedModal = function() {
       document.getElementById('banned-modal').classList.add('hidden');
-    };
-
-    window.showToast = function(type, message) {
-      const container = document.getElementById('toast-container');
-      const toast = document.createElement('div');
-      
-      let bg = 'bg-slate-900/90 border-slate-800';
-      let icon = '<i class="fa-solid fa-circle-info text-sky-400"></i>';
-
-      if (type === 'success') {
-        bg = 'bg-slate-900/90 border-emerald-500/30';
-        icon = '<i class="fa-solid fa-circle-check text-emerald-400"></i>';
-      } else if (type === 'error') {
-        bg = 'bg-slate-900/90 border-rose-500/30';
-        icon = '<i class="fa-solid fa-circle-exclamation text-rose-400"></i>';
-      }
-
-      toast.className = `flex items-center gap-3 p-4 rounded-2xl border ${bg} shadow-2xl backdrop-blur-md text-xs text-slate-200 font-mono transition duration-300`;
-      toast.innerHTML = `
-        ${icon}
-        <span class="flex-1 font-semibold leading-relaxed uppercase">${message}</span>
-        <button onclick="this.parentElement.remove()" class="text-slate-600 hover:text-slate-300"><i class="fa-solid fa-xmark"></i></button>
-      `;
-
-      container.appendChild(toast);
-      
-      setTimeout(() => {
-        toast.style.opacity = '0';
-        toast.style.transform = 'translateY(-10px)';
-        setTimeout(() => toast.remove(), 300);
-      }, 4000);
-    };
-
-    let confirmCallback = null;
-    window.showConfirmationModal = function(iconClass, title, desc, onOk) {
-      document.getElementById('confirm-icon').className = `fa-solid ${iconClass} text-xl`;
-      document.getElementById('confirm-title').innerText = title;
-      document.getElementById('confirm-desc').innerText = desc;
-      
-      const modal = document.getElementById('confirm-modal');
-      modal.classList.remove('hidden');
-      
-      confirmCallback = onOk;
     };
 
     safeAddListener('confirm-cancel-btn', 'click', () => {
@@ -2511,41 +2511,52 @@
 
     window.openSetup2FAModal = async function() {
       if (!currentUser) return;
+      
+      // Strict check if dependencies are loaded safely
+      if (typeof OTPAuth === 'undefined' || typeof QRCode === 'undefined') {
+        showToast('error', 'Pustaka Google Authenticator / QRCode gagal dimuat! Periksa koneksi internet Anda atau matikan adblocker.');
+        return;
+      }
+
       const modal = document.getElementById('modal-setup-2fa');
       modal.classList.remove('hidden');
       
-      const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'accounts', currentUser.uid);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists() && docSnap.data().twoFactorEnabled === true) {
-        document.getElementById('2fa-unconfigured').classList.add('hidden');
-        document.getElementById('2fa-configured').classList.remove('hidden');
-      } else {
-        document.getElementById('2fa-unconfigured').classList.remove('hidden');
-        document.getElementById('2fa-configured').classList.add('hidden');
-        
-        const secret = OTPAuth.Secret.fromHex(Array.from({length: 20}, () => Math.floor(Math.random()*256).toString(16).padStart(2, '0')).join('')).base32;
-        document.getElementById('2fa-secret-text').innerText = secret;
-        
-        let totp = new OTPAuth.TOTP({
-          issuer: 'ZetaGo-DB',
-          label: currentUser.email,
-          algorithm: 'SHA1',
-          digits: 6,
-          period: 30,
-          secret: secret
-        });
-        
-        const uri = totp.toString();
-        const qrContainer = document.getElementById('qrcode');
-        qrContainer.innerHTML = '';
-        new QRCode(qrContainer, {
-          text: uri,
-          width: 180,
-          height: 180,
-          colorDark: "#020617",
-          colorLight: "#ffffff",
-          correctLevel: QRCode.CorrectLevel.H
-        });
+      try {
+        const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'accounts', currentUser.uid);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists() && docSnap.data().twoFactorEnabled === true) {
+          document.getElementById('2fa-unconfigured').classList.add('hidden');
+          document.getElementById('2fa-configured').classList.remove('hidden');
+        } else {
+          document.getElementById('2fa-unconfigured').classList.remove('hidden');
+          document.getElementById('2fa-configured').classList.add('hidden');
+          
+          const secret = OTPAuth.Secret.fromHex(Array.from({length: 20}, () => Math.floor(Math.random()*256).toString(16).padStart(2, '0')).join('')).base32;
+          document.getElementById('2fa-secret-text').innerText = secret;
+          
+          let totp = new OTPAuth.TOTP({
+            issuer: 'ZetaGo-DB',
+            label: currentUser.email,
+            algorithm: 'SHA1',
+            digits: 6,
+            period: 30,
+            secret: secret
+          });
+          
+          const uri = totp.toString();
+          const qrContainer = document.getElementById('qrcode');
+          qrContainer.innerHTML = '';
+          new QRCode(qrContainer, {
+            text: uri,
+            width: 180,
+            height: 180,
+            colorDark: "#020617",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
+          });
+        }
+      } catch (err) {
+        showToast('error', `Gagal setup 2FA: ${err.message}`);
       }
     };
 
@@ -2560,6 +2571,8 @@
       const code = document.getElementById('setup-2fa-code').value.trim();
       const secret = document.getElementById('2fa-secret-text').innerText;
       
+      if (typeof OTPAuth === 'undefined') return;
+
       let totp = new OTPAuth.TOTP({
         issuer: 'ZetaGo-DB',
         label: currentUser.email,
@@ -2579,13 +2592,13 @@
           }, { merge: true });
           
           await writeAuditLog('mengaktifkan pengamanan Google Authenticator 2FA');
-          window.showToast('success', 'Google Authenticator (2FA) Berhasil Diaktifkan!');
+          showToast('success', 'Google Authenticator (2FA) Berhasil Diaktifkan!');
           closeSetup2FAModal();
         } catch (err) {
-          window.showToast('error', `Gagal menyimpan pengaturan: ${err.message}`);
+          showToast('error', `Gagal menyimpan pengaturan: ${err.message}`);
         }
       } else {
-        window.showToast('error', 'Kode verifikasi salah atau kedaluwarsa!');
+        showToast('error', 'Kode verifikasi salah atau kedaluwarsa!');
       }
     });
 
@@ -2615,13 +2628,13 @@
             }, { merge: true });
             
             await writeAuditLog('menonaktifkan pengamanan Google Authenticator 2FA');
-            window.showToast('success', 'Google Authenticator (2FA) Berhasil Dinonaktifkan!');
+            showToast('success', 'Google Authenticator (2FA) Berhasil Dinonaktifkan!');
             closeSetup2FAModal();
           } catch (err) {
-            window.showToast('error', `Gagal mematikan 2FA: ${err.message}`);
+            showToast('error', `Gagal mematikan 2FA: ${err.message}`);
           }
         } else {
-          window.showToast('error', 'Kode verifikasi salah atau kedaluwarsa!');
+          showToast('error', 'Kode verifikasi salah atau kedaluwarsa!');
         }
       }
     });
@@ -2630,7 +2643,7 @@
       e.preventDefault();
       const code = document.getElementById('auth-2fa-code').value.trim();
       if (code.length !== 6) {
-        window.showToast('error', 'Kode harus 6 digit!');
+        showToast('error', 'Kode harus 6 digit!');
         return;
       }
       
@@ -2655,7 +2668,7 @@
         tempRole = "";
         tempSecret = "";
       } else {
-        window.showToast('error', 'Kode verifikasi 2FA salah atau kedaluwarsa!');
+        showToast('error', 'Kode verifikasi 2FA salah atau kedaluwarsa!');
       }
     });
 
@@ -2688,49 +2701,59 @@
       document.getElementById('modal-sewa-api').classList.add('hidden');
     };
 
-    const channelID = 'OW04ZDVqa2s5eXJvM2UwNy50cnN0cmVhbS1yN1k2ZkhFQW5sajZtNUEwWjJBaw==';
-    TrakteerWS.register(channelID);
-    TrakteerWS.onNewTipSuccess = async (data) => {
-      const message = data.supporter_message || '';
-      const priceText = data.price || 'Rp 0';
-      const qty = data.quantity || 1;
-      const priceNum = parseInt(priceText.replace(/[^0-9]/g, '')) * qty;
-      
-      const emailMatch = message.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
-      if (emailMatch) {
-        const targetEmail = emailMatch[0].toLowerCase().trim();
-        const accsRef = collection(db, 'artifacts', appId, 'public', 'data', 'accounts');
-        const snap = await getDocs(accsRef);
-        let targetDoc = null;
-        snap.forEach(doc => {
-          if (doc.data().email.toLowerCase().trim() === targetEmail) {
-            targetDoc = doc;
-          }
-        });
-        
-        if (targetDoc) {
-          if (priceNum >= 1500000) {
-            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'accounts', targetDoc.id), {
-              isPremium: true,
-              premiumUntil: 9999999999999
-            }, { merge: true });
-            window.showToast('success', `TRAKTEER: Akun ${targetEmail} berhasil diperpanjang PERMANENT! 👑`);
-          } else {
-            const msToAdd = (priceNum / 65000) * 30 * 24 * 60 * 60 * 1000;
-            const currentUntil = targetDoc.data().premiumUntil || 0;
-            const baseUntil = (currentUntil === 9999999999999) ? Date.now() : currentUntil;
-            const newUntil = Math.max(baseUntil, Date.now()) + msToAdd;
+    // Fail-safe initialization for WebSocket Traktiran
+    try {
+      if (typeof TrakteerWS !== 'undefined') {
+        const channelID = 'OW04ZDVqa2s5eXJvM2UwNy50cnN0cmVhbS1yN1k2ZkhFQW5sajZtNUEwWjJBaw==';
+        TrakteerWS.register(channelID);
+        TrakteerWS.onNewTipSuccess = async (data) => {
+          const message = data.supporter_message || '';
+          const priceText = data.price || 'Rp 0';
+          const qty = data.quantity || 1;
+          const priceNum = parseInt(priceText.replace(/[^0-9]/g, '')) * qty;
+          
+          const emailMatch = message.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+          if (emailMatch) {
+            const targetEmail = emailMatch[0].toLowerCase().trim();
+            const accsRef = collection(db, 'artifacts', appId, 'public', 'data', 'accounts');
+            const snap = await getDocs(accsRef);
+            let targetDoc = null;
+            snap.forEach(doc => {
+              if (doc.data().email.toLowerCase().trim() === targetEmail) {
+                targetDoc = doc;
+              }
+            });
             
-            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'accounts', targetDoc.id), {
-              isPremium: true,
-              premiumUntil: Math.floor(newUntil)
-            }, { merge: true });
-            
-            window.showToast('success', `TRAKTEER: Akun ${targetEmail} berhasil diperpanjang +${Math.round(msToAdd/(24*60*60*1000))} Hari! 👑`);
+            if (targetDoc) {
+              if (priceNum >= 1500000) {
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'accounts', targetDoc.id), {
+                  isPremium: true,
+                  premiumUntil: 9999999999999
+                }, { merge: true });
+                showToast('success', `TRAKTEER: Akun ${targetEmail} berhasil diperpanjang PERMANENT! 👑`);
+              } else {
+                // Mengonversi nominal traktiran berdasarkan tarif sewa Bulanan baru Rp 66.000 per 30 hari
+                const msToAdd = (priceNum / 66000) * 30 * 24 * 60 * 60 * 1000;
+                const currentUntil = targetDoc.data().premiumUntil || 0;
+                const baseUntil = (currentUntil === 9999999999999) ? Date.now() : currentUntil;
+                const newUntil = Math.max(baseUntil, Date.now()) + msToAdd;
+                
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'accounts', targetDoc.id), {
+                  isPremium: true,
+                  premiumUntil: Math.floor(newUntil)
+                }, { merge: true });
+                
+                showToast('success', `TRAKTEER: Akun ${targetEmail} berhasil diperpanjang +${Math.round(msToAdd/(24*60*60*1000))} Hari! 👑`);
+              }
+            }
           }
-        }
+        };
+      } else {
+        console.warn("TrakteerWS library blocked or failed to load. Manual validation is still fully active.");
       }
-    };
+    } catch (wsErr) {
+      console.error("TrakteerWS initialization crashed gracefully:", wsErr);
+    }
   </script>
 </body>
 </html>
