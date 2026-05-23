@@ -1,17 +1,9 @@
-/**
- * 🤖 ZETAGO-DB // MASTER BOT INTEGRATION API GATEWAY
- * Endpoint Vercel Serverless: POST /api/bot
- * Menghubungkan Bot WhatsApp langsung menggunakan Email & Password Pengguna tanpa SDK Firebase.
- */
-
 const appId = 'server-media-75fdc';
-const rolePower = { 'dev': 5, 'owner': 4, 'staff': 3, 'pt': 2, 'res': 1 };
-const roleLabels = { 'dev': 'DEVELOPER (DEV)', 'owner': 'OWNER', 'staff': 'STAFF', 'pt': 'PARTNER (PT)', 'res': 'RESELLER' };
+const SECURE_TOKEN = "ZetaShield_ZTGrYHRdR424248484_9f8b2c7a1e0d3f4b5a6c7d8e9f0a1b2c_SecureGatewaySystemToken_df849302948201948201948201948202_AlphaX99_VercelProd_2026_dB_Auth_Key_Encrypt_CEEOCS_Complex_u83jdxn829103948_ZTGrYHRdR424248484_SecureAccessGatewayAuthenticationSystemKey_v928fks9201mshd82019shdbf639shdbfn";
 
 module.exports = async (req, res) => {
-  // 1. Set Secure Headers
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   res.setHeader('Content-Type', 'application/json');
 
@@ -19,154 +11,169 @@ module.exports = async (req, res) => {
     return res.status(200).end();
   }
 
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: "METHOD NOT ALLOWED: Gunakan metode POST untuk integrasi aman!" });
+  const token = req.query.token || req.headers['x-api-key'];
+  if (token !== SECURE_TOKEN) {
+    return res.status(401).json({ error: "UNAUTHORIZED: Token tidak valid!" });
   }
 
-  const { email, password, action, payload } = req.body;
+  const apiKey = process.env.FIREBASE_API_KEY;
+  const projectId = process.env.FIREBASE_PROJECT_ID;
 
-  if (!email || !password || !action) {
-    return res.status(400).json({ error: "BAD REQUEST: Kredensial email, password, dan jenis action wajib diisi!" });
+  if (!apiKey || !projectId) {
+    return res.status(500).json({ error: "SERVER ERROR: Environment Variables belum terkonfigurasi!" });
   }
 
   try {
-    const apiKey = process.env.FIREBASE_API_KEY;
-    const projectId = process.env.FIREBASE_PROJECT_ID;
-
-    if (!apiKey || !projectId) {
-      return res.status(500).json({ error: "SERVER ERROR: Environment Variables di Vercel belum dikonfigurasi!" });
-    }
-
-    // =================================------------------
-    // STEP 1: REST AUTHENTICATION (Verifikasi Akun Pengelola via Google Identity Toolkit)
-    // =================================------------------
     const authUrl = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`;
     const authResponse = await fetch(authUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password, returnSecureToken: true })
+      body: JSON.stringify({
+        email: "bot-gateway@zetago.com",
+        password: "ZetaShieldBotGateway2026!",
+        returnSecureToken: true
+      })
     });
 
-    if (!authResponse.ok) {
-      return res.status(401).json({ error: "UNAUTHORIZED: Kredensial akun bot Anda salah atau tidak valid!" });
-    }
-
-    const authData = await authResponse.json();
-    const idToken = authData.idToken;
-    const uid = authData.localId;
-
-    // =================================------------------
-    // STEP 2: OTORITAS ROLE CHECK (Tarik Profil Role dari Firestore REST API)
-    // =================================------------------
-    let userRole = 'res';
-    let userName = email;
-
-    // Bypass khusus Dev DeltaAstra
-    if (email.toLowerCase() === "deltaastra24@gmail.com") {
-      userRole = 'dev';
-      userName = "Rayhan (DeltaAstra)";
+    let idToken = "";
+    if (authResponse.ok) {
+      const authData = await authResponse.json();
+      idToken = authData.idToken;
     } else {
-      const firestoreUserUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/artifacts/${appId}/public/data/accounts/${uid}`;
-      const userRes = await fetch(firestoreUserUrl, {
-        headers: { 'Authorization': `Bearer ${idToken}` }
+      const signUpUrl = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`;
+      const signUpResponse = await fetch(signUpUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ returnSecureToken: true })
       });
-
-      if (userRes.ok) {
-        const userData = await userRes.json();
-        userRole = userData.fields?.role?.stringValue || 'res';
-        userName = userData.fields?.name?.stringValue || email;
+      if (signUpResponse.ok) {
+        const signUpData = await signUpResponse.json();
+        idToken = signUpData.idToken;
       } else {
-        return res.status(403).json({ error: "FORBIDDEN: Akun Anda terotentikasi, namun tidak terdaftar di database ZetaGo-DB!" });
+        throw new Error("Gagal melakukan otentikasi ke Firebase.");
       }
     }
 
-    const loggedPower = rolePower[userRole] || 1;
-
-    // =================================------------------
-    // STEP 3: ACTION ROUTER EXECUTION
-    // =================================------------------
     const dbBaseUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/artifacts/${appId}/public/data`;
 
-    // --------------------------------------------------
-    // ACTION A: GET_NUMBERS (Mendapatkan List Whitelist Nomor)
-    // --------------------------------------------------
-    if (action === 'get_numbers') {
-      const numbersUrl = `${dbBaseUrl}/whatsapp_numbers?pageSize=300`;
-      const numRes = await fetch(numbersUrl, {
+    if (req.method === 'GET') {
+      const numRes = await fetch(`${dbBaseUrl}/whatsapp_numbers?pageSize=300`, {
         headers: { 'Authorization': `Bearer ${idToken}` }
       });
 
       if (!numRes.ok) throw new Error("Gagal mengambil database nomor!");
       const numData = await numRes.json();
 
-      let numbersList = [];
+      const numbersList = [];
       if (numData.documents) {
         numData.documents.forEach(doc => {
           const fields = doc.fields;
           if (fields && fields.phoneNumber && fields.phoneNumber.stringValue) {
-            const addedByUid = fields.addedByUid?.stringValue || '';
-            const addedByName = fields.addedByName?.stringValue || '';
-            const addedByRole = fields.addedByRole?.stringValue || '';
-            
-            // STRICT ISOLATION: Non-Dev hanya boleh membaca data yang mereka daftarkan sendiri!
-            if (userRole === 'dev' || addedByUid === uid) {
-              numbersList.push({
-                phoneNumber: '62' + fields.phoneNumber.stringValue,
-                name: fields.name?.stringValue || 'No Name',
-                addedBy: addedByName,
-                role: addedByRole
-              });
-            }
+            numbersList.push({
+              id: doc.name.split('/').pop(),
+              phoneNumber: '62' + fields.phoneNumber.stringValue,
+              name: fields.name?.stringValue || ''
+            });
           }
         });
       }
 
       return res.status(200).json({
         success: true,
-        role: userRole,
         total_active: numbersList.length,
         numbers: numbersList
       });
     }
 
-    // --------------------------------------------------
-    // ACTION B: ADD_NUMBER (Menambah Whitelist Nomor WhatsApp Baru)
-    // --------------------------------------------------
-    if (action === 'add_number') {
-      if (!payload || !payload.phoneNumber || !payload.name) {
-        return res.status(400).json({ error: "BAD REQUEST: Nomor HP dan Deskripsi Nama wajib disertakan di payload!" });
+    if (req.method === 'POST') {
+      const { phoneNumber, name, action } = req.body;
+
+      if (action === 'delete') {
+        if (!phoneNumber) {
+          return res.status(400).json({ error: "BAD REQUEST: phoneNumber wajib diisi untuk menghapus!" });
+        }
+        let phone = phoneNumber.replace(/[^0-9]/g, '');
+        if (phone.startsWith('62')) phone = phone.substring(2);
+        if (phone.startsWith('0')) phone = phone.substring(1);
+
+        const checkRes = await fetch(`${dbBaseUrl}/whatsapp_numbers?pageSize=300`, {
+          headers: { 'Authorization': `Bearer ${idToken}` }
+        });
+
+        if (!checkRes.ok) throw new Error("Gagal mengambil database nomor!");
+        const checkData = await checkRes.json();
+
+        let targetDocId = null;
+        if (checkData.documents) {
+          const matchedDoc = checkData.documents.find(d => d.fields?.phoneNumber?.stringValue === phone);
+          if (matchedDoc) {
+            targetDocId = matchedDoc.name.split('/').pop();
+          }
+        }
+
+        if (!targetDocId) {
+          return res.status(444).json({ error: "NOT FOUND: Nomor tidak ditemukan di whitelist!" });
+        }
+
+        const delRes = await fetch(`${dbBaseUrl}/whatsapp_numbers/${targetDocId}`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${idToken}` }
+        });
+
+        if (!delRes.ok) throw new Error("Gagal menghapus nomor!");
+
+        await fetch(`${dbBaseUrl}/activity_logs`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${idToken}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            fields: {
+              timestamp: { integerValue: Date.now() },
+              userUid: { stringValue: "bot-gateway" },
+              userName: { stringValue: "Bot Gateway" },
+              userRole: { stringValue: "res" },
+              action: { stringValue: `mencabut whitelist nomor WhatsApp (+62 ${phone}) via BOT API` }
+            }
+          })
+        });
+
+        return res.status(200).json({
+          success: true,
+          message: `SUCCESS: +62${phone} berhasil didelete dari whitelist!`
+        });
       }
 
-      let phone = payload.phoneNumber.replace(/[^0-9]/g, '');
+      if (!phoneNumber || !name) {
+        return res.status(400).json({ error: "BAD REQUEST: phoneNumber dan name wajib diisi!" });
+      }
+
+      let phone = phoneNumber.replace(/[^0-9]/g, '');
       if (phone.startsWith('62')) phone = phone.substring(2);
       if (phone.startsWith('0')) phone = phone.substring(1);
 
-      // Cek duplikasi nomor terlebih dahulu secara REST
-      const numbersUrl = `${dbBaseUrl}/whatsapp_numbers?pageSize=300`;
-      const checkRes = await fetch(numbersUrl, {
+      const checkRes = await fetch(`${dbBaseUrl}/whatsapp_numbers?pageSize=300`, {
         headers: { 'Authorization': `Bearer ${idToken}` }
       });
+
       if (checkRes.ok) {
         const checkData = await checkRes.json();
         const isDuplicate = checkData.documents && checkData.documents.some(d => d.fields?.phoneNumber?.stringValue === phone);
         if (isDuplicate) {
-          return res.status(409).json({ error: "DUPLICATE: Nomor WhatsApp tersebut sudah di whitelist sebelumnya!" });
+          return res.status(409).json({ error: "DUPLICATE: Nomor sudah terdaftar di whitelist!" });
         }
       }
 
-      const insertUrl = `${dbBaseUrl}/whatsapp_numbers`;
       const bodyPayload = {
         fields: {
           phoneNumber: { stringValue: phone },
-          name: { stringValue: payload.name },
+          name: { stringValue: name },
           timestamp: { integerValue: Date.now() },
-          addedByUid: { stringValue: uid },
-          addedByName: { stringValue: userName },
-          addedByRole: { stringValue: userRole }
+          addedByUid: { stringValue: "bot-gateway" },
+          addedByName: { stringValue: "Bot Gateway" },
+          addedByRole: { stringValue: "res" }
         }
       };
 
-      const writeRes = await fetch(insertUrl, {
+      const writeRes = await fetch(`${dbBaseUrl}/whatsapp_numbers`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${idToken}`,
@@ -175,18 +182,17 @@ module.exports = async (req, res) => {
         body: JSON.stringify(bodyPayload)
       });
 
-      if (!writeRes.ok) throw new Error("Gagal menyimpan nomor baru ke database!");
+      if (!writeRes.ok) throw new Error("Gagal menyimpan nomor baru!");
 
-      // Catat log aktivitas
       await fetch(`${dbBaseUrl}/activity_logs`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${idToken}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
           fields: {
             timestamp: { integerValue: Date.now() },
-            userUid: { stringValue: uid },
-            userName: { stringValue: userName },
-            userRole: { stringValue: userRole },
+            userUid: { stringValue: "bot-gateway" },
+            userName: { stringValue: "Bot Gateway" },
+            userRole: { stringValue: "res" },
             action: { stringValue: `menambahkan whitelist nomor WhatsApp baru (+62 ${phone}) via BOT API` }
           }
         })
@@ -194,88 +200,65 @@ module.exports = async (req, res) => {
 
       return res.status(200).json({
         success: true,
-        message: `SUCCESS Whitelist: +62${phone} berhasil ditambahkan oleh ${userName} (${userRole.toUpperCase()})!`
+        message: `SUCCESS Whitelist: +62${phone} berhasil ditambahkan oleh Bot Gateway!`
       });
     }
 
-    // --------------------------------------------------
-    // ACTION C: ADD_USER (Pendaftaran Bawahan Baru via REST)
-    // --------------------------------------------------
-    if (action === 'add_user') {
-      if (userRole === 'res') {
-        return res.status(403).json({ error: "FORBIDDEN: Reseller tidak memiliki wewenang membuat akun baru!" });
+    if (req.method === 'DELETE') {
+      const { phoneNumber } = req.body;
+      if (!phoneNumber) {
+        return res.status(400).json({ error: "BAD REQUEST: phoneNumber wajib diisi!" });
       }
 
-      if (!payload || !payload.name || !payload.email || !payload.password || !payload.role) {
-        return res.status(400).json({ error: "BAD REQUEST: Format pembuatan akun bawahan tidak lengkap!" });
-      }
+      let phone = phoneNumber.replace(/[^0-9]/g, '');
+      if (phone.startsWith('62')) phone = phone.substring(2);
+      if (phone.startsWith('0')) phone = phone.substring(1);
 
-      const targetPower = rolePower[payload.role] || 1;
-      if (targetPower >= loggedPower) {
-        return res.status(403).json({ error: "FORBIDDEN: Anda hanya bisa mendaftarkan akun di bawah level role Anda saat ini!" });
-      }
-
-      // Buat akun baru di Firebase Auth menggunakan REST API
-      const registerUrl = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`;
-      const regResponse = await fetch(registerUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: payload.email, password: payload.password, returnSecureToken: true })
+      const checkRes = await fetch(`${dbBaseUrl}/whatsapp_numbers?pageSize=300`, {
+        headers: { 'Authorization': `Bearer ${idToken}` }
       });
 
-      if (!regResponse.ok) {
-        const errorData = await regResponse.json();
-        return res.status(400).json({ error: "Gagal membuat kredensial: " + (errorData.error?.message || "Email sudah digunakan!") });
+      if (!checkRes.ok) throw new Error("Gagal mengambil database nomor!");
+      const checkData = await checkRes.json();
+
+      let targetDocId = null;
+      if (checkData.documents) {
+        const matchedDoc = checkData.documents.find(d => d.fields?.phoneNumber?.stringValue === phone);
+        if (matchedDoc) {
+          targetDocId = matchedDoc.name.split('/').pop();
+        }
       }
 
-      const regData = await regResponse.json();
-      const newUid = regData.localId;
+      if (!targetDocId) {
+        return res.status(444).json({ error: "NOT FOUND: Nomor tidak ditemukan di whitelist!" });
+      }
 
-      // Catat profil user baru di Firestore
-      const userDocUrl = `${dbBaseUrl}/accounts/${newUid}`;
-      const writeUserRes = await fetch(userDocUrl, {
-        method: 'PATCH', // Menggunakan PATCH agar setDoc berjalan
-        headers: {
-          'Authorization': `Bearer ${idToken}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          fields: {
-            name: { stringValue: payload.name },
-            email: { stringValue: payload.email },
-            password: { stringValue: payload.password },
-            role: { stringValue: payload.role },
-            createdByUid: { stringValue: uid },
-            createdByName: { stringValue: userName },
-            timestamp: { integerValue: Date.now() }
-          }
-        })
+      const delRes = await fetch(`${dbBaseUrl}/whatsapp_numbers/${targetDocId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${idToken}` }
       });
 
-      if (!writeUserRes.ok) throw new Error("Gagal mencatat profil akun bawahan baru di database!");
+      if (!delRes.ok) throw new Error("Gagal menghapus nomor!");
 
-      // Catat log aktivitas
       await fetch(`${dbBaseUrl}/activity_logs`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${idToken}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
           fields: {
             timestamp: { integerValue: Date.now() },
-            userUid: { stringValue: uid },
-            userName: { stringValue: userName },
-            userRole: { stringValue: userRole },
-            action: { stringValue: `membuat kredensial bawahan baru level ${payload.role.toUpperCase()} (${payload.name}) via BOT API` }
+            userUid: { stringValue: "bot-gateway" },
+            userName: { stringValue: "Bot Gateway" },
+            userRole: { stringValue: "res" },
+            action: { stringValue: `mencabut whitelist nomor WhatsApp (+62 ${phone}) via BOT API` }
           }
         })
       });
 
       return res.status(200).json({
         success: true,
-        message: `SUCCESS CREATED: Akun bawahan ${payload.name} (${payload.role.toUpperCase()}) berhasil didaftarkan!`
+        message: `SUCCESS: +62${phone} berhasil didelete dari whitelist!`
       });
     }
-
-    return res.status(400).json({ error: "BAD REQUEST: Action yang Anda minta tidak terdaftar!" });
 
   } catch (err) {
     return res.status(500).json({ error: "INTERNAL SERVER ERROR: " + err.message });
