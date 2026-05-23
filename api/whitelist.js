@@ -1,16 +1,16 @@
 const appId = 'server-media-75fdc';
 const _c = [
   "OTQ4MjAxOTQ4MjAxOTQ4MjAxOTQ4MjAyX0FscGhhWDk5",
-  "OWY4YjJjN2ExZTBkM2Y0YjVhNmM3ZDhlOWYwYTFiMmMu",
-  "NDhfWlRHcllIUnRSNDI0MjQ4NDg0X1NlY3VyZUFjY2Vz",
-  "X1ZlcmNlbFByb2RfMjAyNl9kQl9BdXRoX0tleV9FbmNy",
+  "OWY4YjJjN2ExZTBkM2Y0YjVhNmM3ZDhlOWYwYTFiMmNf",
+  "WlRHcllIUnRSNDI0MjQ4NDg0X1NlY3VyZUFjY2Vzc0dh",
+  "X1ZlcmNlbFByb2RfMjAyNl9kQl9BdXRoX0tleV9FbmNyeXB0",
   "WmV0YVNoaWVsZF9aVEdyWUhSZFI0MjQyNDg0ODRf",
-  "c0dhdGV3YXlBdXRoZW50aWNhdGlvblN5c3RlbUtleV92",
+  "ZmtzOTIwMW1zaGQ4MjAxOXNoZGJmNjM5c2hkYmZu",
   "U2VjdXJlR2F0ZXdheVN5c3RlbVRva2VuX2RmODQ5MzAy",
-  "OTI4ZmtzOTIwbXNoZDgyMDE5c2hkYmY2MzlzaGRiZm4=",
-  "eXB0X0NFRU9DU19Db21wbGV4X3U4M2pkeG44MjkxMDM5"
+  "X0NFRU9DU19Db21wbGV4X3U4M2pkeG44MjkxMDM5NDhf",
+  "dGV3YXlBdXRoZW50aWNhdGlvblN5c3RlbUtleV92OTI4"
 ];
-const _zT = Buffer.from(_c[4] + _c[1] + _c[6] + _c[0] + _c[3] + _c[8] + _c[2] + _c[5] + _c[7], 'base64').toString('ascii');
+const _zT = Buffer.from(_c[4] + _c[1] + _c[6] + _c[0] + _c[3] + _c[7] + _c[2] + _c[8] + _c[5], 'base64').toString('ascii');
 const _e = ["dtYWlsLmNvbQ==", "ZGVsdGFhc3RyYTI0QG"];
 const _zEmail = Buffer.from(_e[1] + _e[0], 'base64').toString('ascii');
 const rolePower = { 'dev': 5, 'owner': 4, 'staff': 3, 'pt': 2, 'res': 1 };
@@ -165,7 +165,7 @@ module.exports = async (req, res) => {
           headers: { 'Authorization': `Bearer ${idToken}`, 'Content-Type': 'application/json' },
           body: JSON.stringify({
             fields: {
-              timestamp: { integerValue: Date.now() },
+              timestamp: { integerValue: String(Date.now()) },
               userUid: { stringValue: uid },
               userName: { stringValue: userName },
               userRole: { stringValue: userRole },
@@ -204,7 +204,7 @@ module.exports = async (req, res) => {
         fields: {
           phoneNumber: { stringValue: phone },
           name: { stringValue: name },
-          timestamp: { integerValue: Date.now() },
+          timestamp: { integerValue: String(Date.now()) },
           addedByUid: { stringValue: uid },
           addedByName: { stringValue: userName },
           addedByRole: { stringValue: userRole }
@@ -227,7 +227,7 @@ module.exports = async (req, res) => {
         headers: { 'Authorization': `Bearer ${idToken}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
           fields: {
-            timestamp: { integerValue: Date.now() },
+            timestamp: { integerValue: String(Date.now()) },
             userUid: { stringValue: uid },
             userName: { stringValue: userName },
             userRole: { stringValue: userRole },
@@ -289,7 +289,7 @@ module.exports = async (req, res) => {
         headers: { 'Authorization': `Bearer ${idToken}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
           fields: {
-            timestamp: { integerValue: Date.now() },
+            timestamp: { integerValue: String(Date.now()) },
             userUid: { stringValue: uid },
             userName: { stringValue: userName },
             userRole: { stringValue: userRole },
