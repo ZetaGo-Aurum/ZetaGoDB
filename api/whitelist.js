@@ -19,7 +19,7 @@ const _p = [
   "U2VjdXJlQWNjZXNzR2F0ZXdheUF1dGhlbnRpY2F0aW9uU3lzdGVtS2V5",
   "djkyOGZrczkyMDFtc2hkODIwMTlzaGRiZjYzOXNoZGJmbg=="
 ];
-const _zT = _p.map(x => Buffer.from(x, 'base64').toString('ascii')).join('_');
+const _zT = process.env.SECURE_TOKEN || _p.map(x => Buffer.from(x, 'base64').toString('ascii')).join('_');
 const _e = ["ZGVsdGFhc3RyYTI0", "QGdtYWlsLmNvbQ=="];
 const _zEmail = Buffer.from(_e[0] + _e[1], 'base64').toString('ascii');
 const rolePower = { 'dev': 5, 'owner': 4, 'staff': 3, 'pt': 2, 'res': 1 };
