@@ -497,7 +497,7 @@
               <h1 class="text-sm font-black text-slate-100 uppercase tracking-widest">MANAJEMEN STRUKTUR AKUN</h1>
               <p class="text-xs text-slate-400 font-sans">Pengaturan akses level bawahan, pembagian peran, dan pencabutan hak akses.</p>
             </div>
-            <button id="btn-open-add-user" onclick="openAddUserModal()" class="w-full sm:w-auto px-4 py-2.5 bg-gradient-to-r from-indigo-500 to-sky-500 hover:from-indigo-400 hover:to-sky-400 text-slate-950 font-black rounded-xl text-xs transition duration-200 flex items-center justify-center gap-1.5 shadow-lg shadow-indigo-500/10 uppercase tracking-wider font-mono">
+            <button id="btn-open-add-user" onclick="openAddUserModal()" class="w-full sm:w-auto px-4 py-2.5 bg-gradient-to-r from-indigo-500 to-sky-500 hover:from-indigo-400 hover:to-sky-400 text-slate-950 font-black rounded-xl text-xs transition duration-200 flex items-center justify-center gap-1.5 shadow-lg shadow-indigo-500/10 uppercase tracking-wider">
               <i class="fa-solid fa-user-plus text-[10px]"></i> BUAT AKUN BAWAHAN
             </button>
           </div>
@@ -603,14 +603,14 @@
               <div class="bg-slate-950/40 border border-slate-800/60 p-4 rounded-xl space-y-3">
                 <span class="text-[10px] font-black text-sky-400 uppercase tracking-widest block"><i class="fa-solid fa-link"></i> BOT WHITELIST API LINK</span>
                 <div class="flex items-center gap-2 bg-slate-950 border border-slate-800 p-2.5 rounded-lg overflow-hidden">
-                  <span id="api-link-display" class="text-[9px] text-emerald-400 truncate flex-1 select-all">https://loading...</span>
-                  <button onclick="copyApiLink()" class="px-2.5 py-1 bg-sky-500 hover:bg-sky-400 text-slate-950 font-black text-[9px] rounded uppercase transition duration-150 shrink-0"><i class="fa-solid fa-copy"></i> Copy</button>
+                  <span id="api-link-display" class="text-[9px] text-emerald-400 truncate flex-1 select-all font-mono">https://loading...</span>
+                  <button onclick="copyApiLink()" class="px-2.5 py-1 bg-sky-500 hover:bg-sky-400 text-slate-950 font-black text-[9px] rounded uppercase transition duration-150 shrink-0 font-mono"><i class="fa-solid fa-copy"></i> Copy</button>
                 </div>
 
                 <span class="text-[10px] font-black text-indigo-400 uppercase tracking-widest block mt-2"><i class="fa-solid fa-sitemap"></i> BOT STRUCTURE API LINK</span>
                 <div class="flex items-center gap-2 bg-slate-950 border border-slate-800 p-2.5 rounded-lg overflow-hidden">
-                  <span id="api-structure-link-display" class="text-[9px] text-emerald-400 truncate flex-1 select-all">https://loading...</span>
-                  <button onclick="copyStructureApiLink()" class="px-2.5 py-1 bg-indigo-500 hover:bg-indigo-400 text-slate-950 font-black text-[9px] rounded uppercase transition duration-150 shrink-0"><i class="fa-solid fa-copy"></i> Copy</button>
+                  <span id="api-structure-link-display" class="text-[9px] text-emerald-400 truncate flex-1 select-all font-mono">https://loading...</span>
+                  <button onclick="copyStructureApiLink()" class="px-2.5 py-1 bg-indigo-500 hover:bg-indigo-400 text-slate-950 font-black text-[9px] rounded uppercase transition duration-150 shrink-0 font-mono"><i class="fa-solid fa-copy"></i> Copy</button>
                 </div>
               </div>
 
@@ -636,7 +636,7 @@
                 <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-600">
                   <i class="fa-solid fa-search text-xs"></i>
                 </span>
-                <input type="text" id="dev-account-search" onkeyup="filterDevAccounts()" class="w-full bg-slate-950/80 border border-rose-500 focus:border-rose-500 focus:ring-1 focus:ring-rose-500 text-slate-100 placeholder:text-slate-700 rounded-xl py-2 pl-9 text-xs outline-none transition duration-200 font-mono" placeholder="Cari akun bawahan...">
+                <input type="text" id="dev-account-search" onkeyup="filterDevAccounts()" class="w-full bg-slate-950/80 border border-slate-800 focus:border-rose-500 focus:ring-1 focus:ring-rose-500 text-slate-100 placeholder:text-slate-700 rounded-xl py-2 pl-9 text-xs outline-none transition duration-200 font-mono" placeholder="Cari akun bawahan...">
               </div>
               <div class="max-h-56 overflow-y-auto space-y-2 pr-1" id="dev-accounts-list">
               </div>
@@ -751,11 +751,11 @@
         <input type="hidden" id="edit-role-uid">
         <div>
           <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 font-mono">Nama Lengkap Bawahan</label>
-          <input type="text" id="edit-role-name" disabled class="w-full bg-slate-950/40 border border-slate-800/80 text-slate-500 rounded-xl py-3 px-4 text-xs outline-none cursor-not-allowed">
+          <input type="text" id="edit-role-name" disabled class="w-full bg-slate-950/40 border border-slate-800/80 text-slate-500 rounded-xl py-3 px-4 text-xs outline-none cursor-not-allowed font-mono">
         </div>
         <div>
           <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 font-mono">Alamat Email Sistem</label>
-          <input type="text" id="edit-role-email" disabled class="w-full bg-slate-950/40 border border-slate-800/80 text-slate-500 rounded-xl py-3 px-4 text-xs outline-none cursor-not-allowed">
+          <input type="text" id="edit-role-email" disabled class="w-full bg-slate-950/40 border border-slate-800/80 text-slate-500 rounded-xl py-3 px-4 text-xs outline-none cursor-not-allowed font-mono">
         </div>
         <div>
           <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1.5 font-mono">Pangkat Level Jabatan Baru (Upgrade / Downgrade)</label>
@@ -780,7 +780,7 @@
       </div>
       
       <div id="2fa-unconfigured" class="space-y-4 font-mono text-xs">
-        <p class="text-slate-400 text-[11px] leading-relaxed font-sans">Pindai kode QR di bawah menggunakan aplikasi <span class="font-bold text-sky-400">Google Authenticator</span> atau masukkan kunci rahasia secara manual secara mandiri.</p>
+        <p class="text-slate-400 text-[11px] leading-relaxed font-sans">Pindai kode QR di bawah menggunakan aplikasi <span class="font-bold text-sky-400 font-mono text-xs">Google Authenticator</span> atau masukkan kunci rahasia secara manual secara mandiri.</p>
         
         <div class="flex justify-center p-3 bg-white rounded-2xl w-48 h-48 mx-auto border border-slate-800">
           <div id="qrcode" class="w-full h-full flex items-center justify-center font-mono"></div>
@@ -788,7 +788,7 @@
         
         <div class="bg-slate-950/80 border border-slate-800 p-3 rounded-xl text-center font-mono">
           <span class="text-[9px] text-slate-500 block uppercase tracking-wider font-bold mb-1 font-mono">Kunci Rahasia (Manual)</span>
-          <span id="2fa-secret-text" class="text-xs text-sky-400 font-bold select-all tracking-wider"></span>
+          <span id="2fa-secret-text" class="text-xs text-sky-400 font-bold select-all tracking-wider font-mono"></span>
         </div>
         
         <form id="form-verify-2fa" class="space-y-3 font-mono">
@@ -813,7 +813,7 @@
         
         <form id="form-disable-2fa" class="space-y-4 text-left">
           <div>
-            <label class="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5 font-mono">Masukkan Kode 2FA Untuk Menonaktifkan</label>
+            <label class="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Masukkan Kode 2FA Untuk Menonaktifkan</label>
             <input type="text" id="disable-2fa-code" required maxlength="6" class="w-full bg-slate-950/80 border border-red-500/30 focus:border-red-500 focus:ring-1 focus:ring-red-500 text-slate-100 text-center text-lg tracking-[0.3em] font-bold rounded-xl py-2.5 outline-none transition duration-200 font-mono" placeholder="000000">
           </div>
           <button type="submit" class="w-full py-3 bg-red-600 hover:bg-red-500 text-slate-950 font-black rounded-xl uppercase tracking-wider transition duration-200 font-mono">
@@ -856,15 +856,19 @@
           <p>2. Kirim minimal <span class="text-amber-400 font-bold font-mono">22 ACRON</span> (Rp 66.000) untuk sewa 1 bulan, <span class="text-amber-400 font-bold font-mono">234 ACRON</span> (Rp 702.000) untuk sewa 1 tahun, atau <span class="text-yellow-400 font-bold font-mono">500 ACRON</span> (Rp 1.500.000) untuk akses Permanent!</p>
           <p>3. <span class="text-white font-bold">Wajib menuliskan email akun ZetaGo-DB Anda</span> pada kolom pesan traktiran Anda saat membayar!</p>
           <p>4. Sistem web socket kami akan mendeteksi traktiran secara instan dan mengaktifkan status premium Anda detik itu juga!</p>
+          <p class="text-[9px] text-slate-500 mt-2">5. Jika mengalami kendala pembayaran atau ingin melakukan klaim garansi, silakan klik tombol WhatsApp di bawah untuk menghubungi pengembang utama dengan menyertakan bukti pembayaran/traktiran yang valid, jelas, dan tanpa sensor.</p>
         </div>
         <div class="space-y-2 font-mono">
           <span class="block font-black text-slate-400 uppercase tracking-wider text-[9px]">Tutorial Pengisian Pesan Dukungan:</span>
           <img src="https://img2.pixhost.to/images/8108/729747609_elaina-1779535786236.jpg" alt="Tutorial Trakteer" class="w-full rounded-xl border border-slate-800/80 object-cover h-36">
         </div>
       </div>
-      <div class="pt-2 font-mono">
+      <div class="pt-2 font-mono space-y-2">
         <a href="https://trakteer.id/Aleocrophic/tip" target="_blank" class="w-full py-3 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-black rounded-xl flex items-center justify-center gap-2 uppercase tracking-wider text-xs transition duration-200 shadow-md">
           <i class="fa-solid fa-heart animate-pulse"></i> BAYAR SEWA VIA TRAKTEER
+        </a>
+        <a href="https://wa.me/6285702711107" target="_blank" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black rounded-xl flex items-center justify-center gap-2 uppercase tracking-wider text-xs transition duration-200 shadow-md">
+          <i class="fa-brands fa-whatsapp text-sm"></i> HUBUNGI DEV / KLAIM GARANSI
         </a>
       </div>
     </div>
@@ -880,8 +884,8 @@
         <h3 id="confirm-title" class="text-xs font-black text-slate-100 uppercase tracking-wider">APAKAH ANDA YAKIN?</h3>
         <p id="confirm-desc" class="text-[11px] text-slate-500 leading-relaxed uppercase font-sans">Tindakan ini tidak dapat dibatalkan.</p>
         <div class="flex gap-3 pt-2 text-xs font-mono">
-          <button id="confirm-cancel-btn" class="flex-1 py-2.5 bg-slate-950 hover:bg-slate-800 text-slate-300 font-bold rounded-xl border border-slate-800 transition duration-200">BATAL</button>
-          <button id="confirm-ok-btn" class="flex-1 py-2.5 bg-rose-500 hover:bg-rose-400 text-slate-950 font-black rounded-xl transition duration-200">LANJUTKAN</button>
+          <button id="confirm-cancel-btn" class="flex-1 py-2.5 bg-slate-950 hover:bg-slate-800 text-slate-300 font-bold rounded-xl border border-slate-800 transition duration-200 font-mono">BATAL</button>
+          <button id="confirm-ok-btn" class="flex-1 py-2.5 bg-rose-500 hover:bg-rose-400 text-slate-950 font-black rounded-xl transition duration-200 font-mono">LANJUTKAN</button>
         </div>
       </div>
     </div>
@@ -1593,7 +1597,7 @@
                 <span class="text-xs font-black text-slate-100 uppercase tracking-wider">Akses Premium REST API Bot WhatsApp</span>
               </div>
               <button onclick="toggleApiSensored()" class="text-slate-400 hover:text-sky-400 transition">
-                <i class="fa-solid ${showApiSensored ? 'fa-eye' : 'fa-eye-slash'} text-xs"></i>
+                <i class="fa-solid ${showApiSensored ? 'fa-eye' : 'fa-eye-slash'} text-xs font-mono"></i>
               </button>
             </div>
             <div class="space-y-4">
@@ -1601,14 +1605,14 @@
                 <span class="text-[9px] text-slate-500 font-bold block mb-1 uppercase tracking-wider">Bot Whitelist API Link</span>
                 <div class="flex items-center gap-2 bg-slate-950 border border-slate-800/80 p-2.5 rounded-xl overflow-hidden">
                   <span class="text-[9px] text-emerald-400 truncate flex-1 font-mono">${displayWhitelist}</span>
-                  <button onclick="copyStringToClipboard('${whitelistLink}', 'Link API Whitelist disalin!')" class="px-2.5 py-1 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-[9px] rounded uppercase transition shrink-0"><i class="fa-solid fa-copy"></i> Copy</button>
+                  <button onclick="copyStringToClipboard('${whitelistLink}', 'Link API Whitelist disalin!')" class="px-2.5 py-1 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-[9px] rounded uppercase transition shrink-0 font-mono"><i class="fa-solid fa-copy font-mono"></i> Copy</button>
                 </div>
               </div>
               <div>
                 <span class="text-[9px] text-slate-500 font-bold block mb-1 uppercase tracking-wider">Bot Structure API Link</span>
                 <div class="flex items-center gap-2 bg-slate-950 border border-slate-800/80 p-2.5 rounded-xl overflow-hidden">
                   <span class="text-[9px] text-emerald-400 truncate flex-1 font-mono">${displayStructure}</span>
-                  <button onclick="copyStringToClipboard('${structureLink}', 'Link API Structure disalin!')" class="px-2.5 py-1 bg-indigo-500 hover:bg-indigo-400 text-slate-950 font-black text-[9px] rounded uppercase transition shrink-0"><i class="fa-solid fa-copy"></i> Copy</button>
+                  <button onclick="copyStringToClipboard('${structureLink}', 'Link API Structure disalin!')" class="px-2.5 py-1 bg-indigo-500 hover:bg-indigo-400 text-slate-950 font-black text-[9px] rounded uppercase transition shrink-0 font-mono"><i class="fa-solid fa-copy font-mono"></i> Copy</button>
                 </div>
               </div>
             </div>
@@ -1673,7 +1677,7 @@
         div.innerHTML = `
           <div class="flex items-start gap-3 text-xs">
             <div class="p-2 bg-slate-950/60 rounded-lg text-slate-500 mt-0.5 border border-slate-800">
-              <i class="fa-solid fa-history"></i>
+              <i class="fa-solid fa-history font-mono"></i>
             </div>
             <div>
               <p class="text-slate-300 font-semibold"><span class="text-sky-400 font-extrabold">${escapeHTML(log.userName)}</span>${emailSpanFull} (${log.userRole.toUpperCase()}) ${escapeHTML(log.action)}</p>
@@ -1704,12 +1708,12 @@
     window.setNumberFilter = function(filter) {
       currentNumberFilter = filter;
       document.getElementById('filter-num-all').className = filter === 'all' 
-        ? "px-3.5 py-1.5 text-[10px] font-bold rounded-lg transition duration-200 bg-sky-400/10 text-sky-400 border border-sky-400/20 whitespace-nowrap uppercase tracking-wider" 
-        : "px-3.5 py-1.5 text-[10px] font-bold rounded-lg transition duration-200 text-slate-500 hover:text-slate-300 whitespace-nowrap uppercase tracking-wider";
+        ? "px-3.5 py-1.5 text-[10px] font-bold rounded-lg transition duration-200 bg-sky-400/10 text-sky-400 border border-sky-400/20 whitespace-nowrap uppercase tracking-wider font-mono" 
+        : "px-3.5 py-1.5 text-[10px] font-bold rounded-lg transition duration-200 text-slate-500 hover:text-slate-300 whitespace-nowrap uppercase tracking-wider font-mono";
 
       document.getElementById('filter-num-mine').className = filter === 'mine' 
-        ? "px-3.5 py-1.5 text-[10px] font-bold rounded-lg transition duration-200 bg-sky-400/10 text-sky-400 border border-sky-400/20 whitespace-nowrap uppercase tracking-wider" 
-        : "px-3.5 py-1.5 text-[10px] font-bold rounded-lg transition duration-200 text-slate-500 hover:text-slate-300 whitespace-nowrap uppercase tracking-wider";
+        ? "px-3.5 py-1.5 text-[10px] font-bold rounded-lg transition duration-200 bg-sky-400/10 text-sky-400 border border-sky-400/20 whitespace-nowrap uppercase tracking-wider font-mono" 
+        : "px-3.5 py-1.5 text-[10px] font-bold rounded-lg transition duration-200 text-slate-500 hover:text-slate-300 whitespace-nowrap uppercase tracking-wider font-mono";
 
       renderWhatsAppNumbers();
     };
@@ -1737,9 +1741,9 @@
       const activeNav = document.getElementById(`nav-${tabName}`);
       if (activeNav) {
         if (tabName === 'dev-console') {
-          activeNav.className = "w-full flex items-center gap-3 px-4 py-3 font-bold rounded-xl transition-all duration-200 text-rose-400 bg-rose-500/10 border-l-4 border-rose-500";
+          activeNav.className = "w-full flex items-center gap-3 px-4 py-3 font-bold rounded-xl transition-all duration-200 text-rose-400 bg-rose-500/10 border-l-4 border-rose-500 font-mono";
         } else {
-          activeNav.className = "w-full flex items-center gap-3 px-4 py-3 font-bold rounded-xl transition-all duration-200 text-sky-400 bg-sky-400/10 border-l-4 border-sky-400";
+          activeNav.className = "w-full flex items-center gap-3 px-4 py-3 font-bold rounded-xl transition-all duration-200 text-sky-400 bg-sky-400/10 border-l-4 border-sky-400 font-mono";
         }
       }
 
@@ -1798,13 +1802,13 @@
       const formDev = document.getElementById('login-dev-form');
 
       if (type === 'dev') {
-        tabDev.className = "flex-1 py-2.5 text-xs font-semibold rounded-lg transition-all duration-300 text-sky-400 bg-slate-900 border border-slate-800/80";
-        tabSub.className = "flex-1 py-2.5 text-xs font-semibold rounded-lg transition-all duration-300 text-slate-400 hover:text-slate-200";
+        tabDev.className = "flex-1 py-2.5 text-xs font-semibold rounded-lg transition-all duration-300 text-sky-400 bg-slate-900 border border-slate-800/80 font-mono";
+        tabSub.className = "flex-1 py-2.5 text-xs font-semibold rounded-lg transition-all duration-300 text-slate-400 hover:text-slate-200 font-mono";
         formDev.classList.remove('hidden');
         formSub.classList.add('hidden');
       } else {
-        tabSub.className = "flex-1 py-2.5 text-xs font-semibold rounded-lg transition-all duration-300 text-sky-400 bg-slate-900 border border-slate-800/80";
-        tabDev.className = "flex-1 py-2.5 text-xs font-semibold rounded-lg transition-all duration-300 text-slate-400 hover:text-slate-200";
+        tabSub.className = "flex-1 py-2.5 text-xs font-semibold rounded-lg transition-all duration-300 text-sky-400 bg-slate-900 border border-slate-800/80 font-mono";
+        tabDev.className = "flex-1 py-2.5 text-xs font-semibold rounded-lg transition-all duration-300 text-slate-400 hover:text-slate-200 font-mono";
         formSub.classList.remove('hidden');
         formDev.classList.add('hidden');
       }
