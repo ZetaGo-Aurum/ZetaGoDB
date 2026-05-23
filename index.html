@@ -71,9 +71,11 @@
         <p class="text-slate-300">Harap segera hubungi atasan Anda yang sesuai untuk memulihkan akses:</p>
         <p class="text-sky-400 font-bold"><i class="fa-solid fa-user-tie"></i> Atasan: <span id="banned-creator-name" class="text-white"></span> (<span id="banned-creator-role" class="text-emerald-400 font-black"></span>)</p>
       </div>
-      <button onclick="closeBannedModal()" class="w-full py-3 bg-red-600 hover:bg-red-500 text-slate-950 font-black rounded-xl text-xs uppercase tracking-wider transition duration-200">
-        SAYA MENGERTI
-      </button>
+      <div class="pt-2">
+        <button onclick="closeBannedModal()" class="w-full py-3 bg-red-600 hover:bg-red-500 text-slate-950 font-black rounded-xl text-xs uppercase tracking-wider transition duration-200">
+          SAYA MENGERTI
+        </button>
+      </div>
     </div>
   </div>
 
@@ -214,7 +216,7 @@
         <button id="btn-logout" class="w-full flex items-center justify-center gap-2 px-4 py-3 text-xs font-bold text-rose-400 hover:text-rose-300 bg-rose-500/5 hover:bg-rose-500/10 border border-rose-500/10 rounded-xl transition duration-200 font-mono">
           <i class="fa-solid fa-power-off"></i> KELUAR SYSTEM
         </button>
-        <p class="text-[9px] font-mono text-slate-600 text-center mt-4 uppercase tracking-wider">ZetaGo-DB v1.8.9</p>
+        <p class="text-[9px] font-mono text-slate-600 text-center mt-4 uppercase tracking-wider">ZetaGo-DB v1.9.0</p>
       </div>
     </aside>
 
@@ -229,7 +231,7 @@
         <div class="flex items-center gap-3 font-mono shrink-0">
           <div class="flex items-center gap-2 px-3 py-1.5 bg-slate-900/80 border border-slate-800/80 rounded-lg">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span class="text-[9px] sm:text-[10px] text-slate-400 font-black uppercase tracking-wider">ZetaShield v1.8.9</span>
+            <span class="text-[9px] sm:text-[10px] text-slate-400 font-black uppercase tracking-wider">ZetaShield v1.9.0</span>
           </div>
         </div>
       </header>
@@ -365,7 +367,7 @@
                   <p class="text-slate-600 text-center py-6 text-[11px] uppercase tracking-wider font-mono">Memproses log sistem...</p>
                 </div>
               </div>
-              <button onclick="switchTab('logs')" class="mt-4 text-[10px] font-bold text-sky-400 hover:text-sky-300 hover:underline text-left block uppercase tracking-wider">
+              <button onclick="switchTab('logs')" class="mt-4 text-[10px] font-bold text-sky-400 hover:text-sky-300 hover:underline text-left block uppercase tracking-wider font-mono">
                 LIHAT LOGS LENGKAP <i class="fa-solid fa-arrow-right-long ml-1"></i>
               </button>
             </div>
@@ -493,13 +495,13 @@
 
           <div class="bg-slate-900/20 border border-slate-800/60 rounded-3xl overflow-hidden font-mono">
             <div class="p-6 border-b border-slate-800/60 flex flex-col sm:flex-row justify-between items-center gap-4 bg-slate-950/20">
-              <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">FIREWALL ACTIVITY STREAM</span>
+              <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest font-mono">FIREWALL ACTIVITY STREAM</span>
               <button onclick="clearLogsIfDev()" id="btn-clear-logs" class="hidden px-3.5 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 text-[10px] font-black rounded-lg transition duration-200 uppercase tracking-wider font-mono">
                 <i class="fa-solid fa-dumpster-fire mr-1"></i> PURGE LOGS (DEV)
               </button>
             </div>
             <div class="divide-y divide-slate-800/40 max-h-[500px] overflow-y-auto" id="global-logs-container">
-              <div class="p-6 text-center text-slate-500 text-xs uppercase tracking-wider">Memproses log dari server...</div>
+              <div class="p-6 text-center text-slate-500 text-xs uppercase tracking-wider font-mono">Memproses log dari server...</div>
             </div>
           </div>
         </section>
@@ -533,13 +535,13 @@
                 <span class="text-[10px] font-black text-sky-400 uppercase tracking-widest block"><i class="fa-solid fa-link"></i> BOT WHITELIST API LINK</span>
                 <div class="flex items-center gap-2 bg-slate-950 border border-slate-800 p-2.5 rounded-lg overflow-hidden">
                   <span id="api-link-display" class="text-[9px] text-emerald-400 truncate flex-1 select-all">https://loading...</span>
-                  <button onclick="copyApiLink()" class="px-2.5 py-1 bg-sky-500 hover:bg-sky-400 text-slate-950 font-black text-[9px] rounded uppercase transition duration-150 shrink-0"><i class="fa-solid fa-copy"></i> Copy</button>
+                  <button onclick="copyApiLink()" class="px-2.5 py-1 bg-sky-500 hover:bg-sky-400 text-slate-950 font-black text-[9px] rounded uppercase transition duration-150 shrink-0 font-mono"><i class="fa-solid fa-copy"></i> Copy</button>
                 </div>
 
                 <span class="text-[10px] font-black text-indigo-400 uppercase tracking-widest block mt-2"><i class="fa-solid fa-sitemap"></i> BOT STRUCTURE API LINK</span>
                 <div class="flex items-center gap-2 bg-slate-950 border border-slate-800 p-2.5 rounded-lg overflow-hidden">
                   <span id="api-structure-link-display" class="text-[9px] text-emerald-400 truncate flex-1 select-all">https://loading...</span>
-                  <button onclick="copyStructureApiLink()" class="px-2.5 py-1 bg-indigo-500 hover:bg-indigo-400 text-slate-950 font-black text-[9px] rounded uppercase transition duration-150 shrink-0"><i class="fa-solid fa-copy"></i> Copy</button>
+                  <button onclick="copyStructureApiLink()" class="px-2.5 py-1 bg-indigo-500 hover:bg-indigo-400 text-slate-950 font-black text-[9px] rounded uppercase transition duration-150 shrink-0 font-mono"><i class="fa-solid fa-copy"></i> Copy</button>
                 </div>
               </div>
 
@@ -558,12 +560,12 @@
 
             <div class="bg-slate-900/20 border border-slate-800/60 rounded-3xl p-6 space-y-4 lg:col-span-1">
               <span class="text-[10px] font-black text-rose-400 uppercase tracking-widest block"><i class="fa-solid fa-users-slash"></i> SUBACCOUNT MASTER DESTRUCTION PANEL</span>
-              <p class="text-[10px] text-slate-500">Pantau dan hapus permanen akun bawahan sesuai alur hierarki dalam struktur organisasi.</p>
+              <p class="text-[10px] text-slate-500 font-sans">Pantau dan hapus permanen akun bawahan sesuai alur hierarki dalam struktur organisasi.</p>
               <div class="relative">
                 <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-600">
                   <i class="fa-solid fa-search text-xs"></i>
                 </span>
-                <input type="text" id="dev-account-search" onkeyup="filterDevAccounts()" class="w-full bg-slate-950/80 border border-slate-800 focus:border-rose-500 focus:ring-1 focus:ring-rose-500 text-slate-100 placeholder:text-slate-700 rounded-xl py-2 pl-9 text-xs outline-none transition duration-200" placeholder="Cari akun bawahan...">
+                <input type="text" id="dev-account-search" onkeyup="filterDevAccounts()" class="w-full bg-slate-950/80 border border-slate-800 focus:border-rose-500 focus:ring-1 focus:ring-rose-500 text-slate-100 placeholder:text-slate-700 rounded-xl py-2 pl-9 text-xs outline-none transition duration-200 font-mono" placeholder="Cari akun bawahan...">
               </div>
               <div class="max-h-96 overflow-y-auto space-y-2 pr-1" id="dev-accounts-list">
               </div>
@@ -700,7 +702,7 @@
         </div>
         <h3 id="confirm-title" class="text-xs font-black text-slate-100 uppercase tracking-wider">APAKAH ANDA YAKIN?</h3>
         <p id="confirm-desc" class="text-[11px] text-slate-500 leading-relaxed uppercase">Tindakan ini tidak dapat dibatalkan.</p>
-        <div class="flex gap-3 pt-2 text-xs">
+        <div class="flex gap-3 pt-2 text-xs font-mono">
           <button id="confirm-cancel-btn" class="flex-1 py-2.5 bg-slate-950 hover:bg-slate-800 text-slate-300 font-bold rounded-xl border border-slate-800 transition duration-200">BATAL</button>
           <button id="confirm-ok-btn" class="flex-1 py-2.5 bg-rose-500 hover:bg-rose-400 text-slate-950 font-black rounded-xl transition duration-200">LANJUTKAN</button>
         </div>
@@ -1072,7 +1074,7 @@
         } else {
           creatorInfo = `
             <span class="block text-slate-400 font-medium font-sans">Data Pribadi</span>
-            <span class="inline-block mt-1 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">PRIVATE V-1.8.8</span>
+            <span class="inline-block mt-1 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">PRIVATE V-1.9.0</span>
           `;
         }
 
@@ -1178,7 +1180,7 @@
     function renderTreeNode(node, depth = 0) {
       const indent = depth * 16;
       const isFired = node.disabled === true;
-      const statusLabel = isFired ? `<span class="text-red-500 font-bold ml-1 text-[8px] border border-red-500/20 bg-red-500/10 px-1 rounded uppercase">DI-PECAT</span>` : "";
+      const statusLabel = isFired ? `<span class="text-red-500 font-bold ml-1 text-[8px] border border-red-500/20 bg-red-500/10 px-1 rounded uppercase font-mono">DI-PECAT</span>` : "";
       
       let html = `
         <div class="dev-account-item flex items-center justify-between p-2.5 bg-slate-950/60 border border-slate-800/80 rounded-xl text-[11px] font-mono mb-2" style="margin-left: ${indent}px">
