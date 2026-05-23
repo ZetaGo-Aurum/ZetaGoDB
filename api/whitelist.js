@@ -1,25 +1,5 @@
 const appId = 'server-media-75fdc';
-const _p = [
-  "WmV0YVNoaWVsZA==",
-  "WlRHcllIUnRSNDI0MjQ4NDg0",
-  "OWY4YjJjN2ExZTBkM2Y0YjVhNmM3ZDhlOWYwYTFiMmM=",
-  "U2VjdXJlR2F0ZXdheVN5c3RlbVRva2Vu",
-  "ZGY4NDkzMDI5NDgyMDE5NDgyMDE5NDgyMDE5NDgyMDI=",
-  "QWxwaGFYOTk=",
-  "VmVyY2VsUHJvZA==",
-  "MjAyNg==",
-  "ZEI=",
-  "QXV0aA==",
-  "S2V5",
-  "RW5jcnlwdA==",
-  "Q0VFT0NT",
-  "Q29tcGxleA==",
-  "dTgzamR4bjgyOTEwMzk0OA==",
-  "WlRHcllIUnRSNDI0MjQ4NDg0",
-  "U2VjdXJlQWNjZXNzR2F0ZXdheUF1dGhlbnRpY2F0aW9uU3lzdGVtS2V5",
-  "djkyOGZrczkyMDFtc2hkODIwMTlzaGRiZjYzOXNoZGJmbg=="
-];
-const _zT = process.env.SECURE_TOKEN || _p.map(x => Buffer.from(x, 'base64').toString('ascii')).join('_');
+const _zT = process.env.SECURE_TOKEN;
 const _e = ["ZGVsdGFhc3RyYTI0", "QGdtYWlsLmNvbQ=="];
 const _zEmail = Buffer.from(_e[0] + _e[1], 'base64').toString('ascii');
 const rolePower = { 'dev': 5, 'owner': 4, 'staff': 3, 'pt': 2, 'res': 1 };
@@ -32,6 +12,10 @@ module.exports = async (req, res) => {
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
+  }
+
+  if (!_zT) {
+    return res.status(500).json({ error: "SERVER ERROR: SECURE_TOKEN environment variable belum dikonfigurasi di Vercel!" });
   }
 
   const token = req.query.token || req.headers['x-api-key'] || (req.body && req.body.token);
