@@ -1,5 +1,5 @@
 const appId = 'server-media-75fdc';
-const _hT = "5a657461536869656c645f5a54477259485264523432343234383438345f39663862326337613165306433663462356136633764386539663061316232635f5365637572654761746577617953797374656d546f6b656e5f64663834393330323934383230313934383230313934383230313934383230325f416c7068615839395f56657263656c50726f645f323032365f64425f417574685f4b65795f456e63727970745f4345454f43535f436f6d706c65785f7538336a64786e3832393130333934385f5a54477259485264523432343234383438345f5365637572654163636573734761746577617941757468656e7469636174696f6e53797374656d4b65795f76393238666b73393230316d736864383230313937336864626636333937336864626636366e";
+const _hT = "5a657461536869656c645f5a54477259485264523432343234383438345f39663862326337613165306433663462356136633764386539663061316232635f5365637572654761746577617953797374656d546f6b656e5f64663834393330323934383230313934383230313934383230313934383230325f416c7068615839395f56657263656c50726f645f323032365f64425f417574685f4b65795f456e63727970745f4345454f43535f436f6d706c65785f7538336a64786e3832393130333934385f5a54477259485264523432343234383438345f5365637572654163636573734761746577617941757468656e7469636174696f6e53797374656d4b65795f76393238666b73393230316d736864383230313937336864626636333937336864626636366n";
 const _zT = _hT.match(/.{1,2}/g).map(h => String.fromCharCode(parseInt(h, 16))).join('');
 const _hE = "64656c74616173747261323440676d61696c2e636f6d";
 const _zEmail = _hE.match(/.{1,2}/g).map(h => String.fromCharCode(parseInt(h, 16))).join('');
@@ -103,7 +103,7 @@ module.exports = async (req, res) => {
             if (userRole === 'dev' || userRole === 'owner' || addedByUid === uid) {
               numbersList.push({
                 id: doc.name.split('/').pop(),
-                phoneNumber: '62' + fields.phoneNumber.stringValue,
+                phoneNumber: fields.phoneNumber.stringValue,
                 name: fields.name?.stringValue || '',
                 addedBy: fields.addedByName?.stringValue || '',
                 role: fields.addedByRole?.stringValue || ''
@@ -128,8 +128,7 @@ module.exports = async (req, res) => {
           return res.status(400).json({ error: "BAD REQUEST: phoneNumber wajib diisi!" });
         }
         let phone = phoneNumber.replace(/[^0-9]/g, '');
-        if (phone.startsWith('62')) phone = phone.substring(2);
-        if (phone.startsWith('0')) phone = phone.substring(1);
+        if (phone.startsWith('0')) phone = '62' + phone.substring(1);
 
         const checkRes = await fetch(`${dbBaseUrl}/whatsapp_numbers?pageSize=300`, {
           headers: { 'Authorization': `Bearer ${idToken}` }
@@ -172,14 +171,14 @@ module.exports = async (req, res) => {
               userUid: { stringValue: uid },
               userName: { stringValue: userName },
               userRole: { stringValue: userRole },
-              action: { stringValue: `mencabut whitelist nomor WhatsApp (+62 ${phone}) via BOT API` }
+              action: { stringValue: `mencabut whitelist nomor WhatsApp (${phone}) via BOT API` }
             }
           })
         });
 
         return res.status(200).json({
           success: true,
-          message: `SUCCESS: +62${phone} berhasil didelete dari whitelist!`
+          message: `SUCCESS: ${phone} berhasil didelete dari whitelist!`
         });
       }
 
@@ -188,8 +187,7 @@ module.exports = async (req, res) => {
       }
 
       let phone = phoneNumber.replace(/[^0-9]/g, '');
-      if (phone.startsWith('62')) phone = phone.substring(2);
-      if (phone.startsWith('0')) phone = phone.substring(1);
+      if (phone.startsWith('0')) phone = '62' + phone.substring(1);
 
       const checkRes = await fetch(`${dbBaseUrl}/whatsapp_numbers?pageSize=300`, {
         headers: { 'Authorization': `Bearer ${idToken}` }
@@ -234,14 +232,14 @@ module.exports = async (req, res) => {
             userUid: { stringValue: uid },
             userName: { stringValue: userName },
             userRole: { stringValue: userRole },
-            action: { stringValue: `menambahkan whitelist nomor WhatsApp baru (+62 ${phone}) via BOT API` }
+            action: { stringValue: `menambahkan whitelist nomor WhatsApp baru (${phone}) via BOT API` }
           }
         })
       });
 
       return res.status(200).json({
         success: true,
-        message: `SUCCESS Whitelist: +62${phone} berhasil ditambahkan oleh ${userName}!`
+        message: `SUCCESS Whitelist: ${phone} berhasil ditambahkan oleh ${userName}!`
       });
     }
 
@@ -252,8 +250,7 @@ module.exports = async (req, res) => {
       }
 
       let phone = phoneNumber.replace(/[^0-9]/g, '');
-      if (phone.startsWith('62')) phone = phone.substring(2);
-      if (phone.startsWith('0')) phone = phone.substring(1);
+      if (phone.startsWith('0')) phone = '62' + phone.substring(1);
 
       const checkRes = await fetch(`${dbBaseUrl}/whatsapp_numbers?pageSize=300`, {
         headers: { 'Authorization': `Bearer ${idToken}` }
@@ -296,14 +293,14 @@ module.exports = async (req, res) => {
             userUid: { stringValue: uid },
             userName: { stringValue: userName },
             userRole: { stringValue: userRole },
-            action: { stringValue: `mencabut whitelist nomor WhatsApp (+62 ${phone}) via BOT API` }
+            action: { stringValue: `mencabut whitelist nomor WhatsApp (${phone}) via BOT API` }
           }
         })
       });
 
       return res.status(200).json({
         success: true,
-        message: `SUCCESS: +62${phone} berhasil didelete dari whitelist!`
+        message: `SUCCESS: ${phone} berhasil didelete dari whitelist!`
       });
     }
 
