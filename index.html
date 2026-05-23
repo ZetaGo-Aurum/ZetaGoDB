@@ -238,7 +238,7 @@
               </span>
             </div>
             <div class="overflow-hidden">
-              <h4 id="user-display-name" class="font-semibold text-xs truncate text-slate-200">User</h4>
+              <h4 id="user-display-name" class="font-semibold text-xs truncate text-slate-200 font-mono">User</h4>
               <span id="user-display-role" class="inline-block mt-0.5 px-2 py-0.5 text-[8px] font-black tracking-widest text-sky-400 bg-sky-400/10 border border-sky-400/20 rounded uppercase font-mono">LOADING</span>
             </div>
           </div>
@@ -341,7 +341,7 @@
                   <i class="fa-brands fa-whatsapp text-xl"></i>
                 </div>
               </div>
-              <p class="text-[9px] text-slate-500 mt-3"><i class="fa-solid fa-shield-check text-emerald-400 mr-1"></i> Terotorisasi di Bot</p>
+              <p class="text-[9px] text-slate-500 mt-3"><i class="fa-solid fa-circle-check text-emerald-400 mr-1"></i> Terotorisasi di Bot</p>
             </div>
             <div id="stat-card-owners" class="hidden bg-slate-900/20 border border-slate-800/60 rounded-2xl p-5 hover:border-slate-700/80 transition duration-300">
               <div class="flex justify-between items-start">
@@ -353,7 +353,7 @@
                   <i class="fa-solid fa-crown text-xl"></i>
                 </div>
               </div>
-              <p class="text-[9px] text-slate-500 mt-3"><i class="fa-solid fa-user-shield text-amber-400 mr-1"></i> Owner Sistem</p>
+              <p class="text-[9px] text-slate-500 mt-3"><i class="fa-solid fa-circle-check text-amber-400 mr-1"></i> Owner Sistem</p>
             </div>
             <div id="stat-card-subordinates" class="bg-slate-900/20 border border-slate-800/60 rounded-2xl p-5 hover:border-slate-700/80 transition duration-300">
               <div class="flex justify-between items-start">
@@ -436,7 +436,7 @@
                   <p class="text-slate-600 text-center py-6 text-[11px] uppercase tracking-wider font-mono">Memproses log sistem...</p>
                 </div>
               </div>
-              <button onclick="switchTab('logs')" class="mt-4 text-[10px] font-bold text-sky-400 hover:text-sky-300 hover:underline text-left block uppercase tracking-wider">
+              <button onclick="switchTab('logs')" class="mt-4 text-[10px] font-bold text-sky-400 hover:text-sky-300 hover:underline text-left block uppercase tracking-wider font-mono">
                 LIHAT LOGS LENGKAP <i class="fa-solid fa-arrow-right-long ml-1"></i>
               </button>
             </div>
@@ -458,7 +458,7 @@
             <div class="p-4 sm:p-6 border-b border-slate-800/60 flex flex-col md:flex-row gap-4 items-center justify-between">
               <div class="relative w-full md:w-80">
                 <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-600">
-                  <i class="fa-solid fa-search text-xs"></i>
+                  <i class="fa-solid fa-magnifying-glass text-xs"></i>
                 </span>
                 <input type="text" id="search-number-input" onkeyup="filterNumbers()" class="w-full bg-slate-950/80 border border-slate-800 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 text-slate-100 placeholder:text-slate-700 rounded-xl py-2.5 pl-10 pr-4 text-xs outline-none transition duration-200" placeholder="Cari nomor/nama...">
               </div>
@@ -629,12 +629,12 @@
 
             <div class="bg-slate-900/20 border border-slate-800/60 rounded-3xl p-6 space-y-4 lg:col-span-1">
               <div class="border-b border-slate-800/80 pb-3 mb-2 flex justify-between items-center">
-                <span class="text-[10px] font-black text-rose-400 uppercase tracking-widest block"><i class="fa-solid fa-users-slash"></i> DESTRUCTION PANEL</span>
+                <span class="text-[10px] font-black text-rose-400 uppercase tracking-widest block"><i class="fa-solid fa-user-xmark"></i> DESTRUCTION PANEL</span>
               </div>
               <p class="text-[10px] text-slate-500 font-sans">Pantau dan hapus permanen akun bawahan sesuai alur hierarki dalam struktur organisasi.</p>
               <div class="relative">
                 <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-600">
-                  <i class="fa-solid fa-search text-xs"></i>
+                  <i class="fa-solid fa-magnifying-glass text-xs"></i>
                 </span>
                 <input type="text" id="dev-account-search" onkeyup="filterDevAccounts()" class="w-full bg-slate-950/80 border border-slate-800 focus:border-rose-500 focus:ring-1 focus:ring-rose-500 text-slate-100 placeholder:text-slate-700 rounded-xl py-2 pl-9 text-xs outline-none transition duration-200 font-mono" placeholder="Cari akun bawahan...">
               </div>
@@ -665,6 +665,7 @@
     </main>
   </div>
 
+  <!-- MODAL: ADD NUMBER -->
   <div id="modal-add-number" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 font-mono">
     <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" onclick="closeAddNumberModal()"></div>
     <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-md p-6 relative z-10 glow-cyan">
@@ -692,6 +693,7 @@
     </div>
   </div>
 
+  <!-- MODAL: ADD USER -->
   <div id="modal-add-user" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
     <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" onclick="closeAddUserModal()"></div>
     <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-md p-6 relative z-10">
@@ -740,6 +742,7 @@
     </div>
   </div>
 
+  <!-- MODAL: EDIT ROLE -->
   <div id="modal-edit-role" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
     <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" onclick="closeEditRoleModal()"></div>
     <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-md p-6 relative z-10 font-mono">
@@ -771,6 +774,7 @@
     </div>
   </div>
 
+  <!-- MODAL: SETUP 2FA -->
   <div id="modal-setup-2fa" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
     <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" onclick="closeSetup2FAModal()"></div>
     <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-md p-6 relative z-10 glow-cyan font-mono text-xs">
@@ -824,56 +828,72 @@
     </div>
   </div>
 
+  <!-- MODAL: SEWA API (MOBILE RESPONSIVE FLEX LAYOUT & HIDDEN PHONE NUMBER FOR MODERN SECURITY) -->
   <div id="modal-sewa-api" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
     <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" onclick="closeSewaAPIModal()"></div>
-    <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-md p-6 relative z-10 glow-cyan font-mono text-xs space-y-4">
-      <div class="flex justify-between items-center mb-2 border-b border-slate-800 pb-3 font-mono">
-        <h3 class="text-xs font-black text-slate-100 flex items-center gap-2 uppercase tracking-wider"><i class="fa-solid fa-crown text-amber-400 animate-pulse"></i> SEWA AKSES INSTANT BOT API</h3>
-        <button onclick="closeSewaAPIModal()" class="text-slate-500 hover:text-slate-300"><i class="fa-solid fa-xmark"></i></button>
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-md max-h-[90vh] flex flex-col relative z-10 glow-cyan font-mono text-xs overflow-hidden">
+      <!-- Fixed Header -->
+      <div class="flex justify-between items-center p-5 border-b border-slate-800/80 shrink-0">
+        <h3 class="text-xs font-black text-slate-100 flex items-center gap-2 uppercase tracking-wider">
+          <i class="fa-solid fa-crown text-amber-400 animate-pulse text-sm"></i> SEWA AKSES INSTANT BOT API
+        </h3>
+        <button onclick="closeSewaAPIModal()" class="text-slate-400 hover:text-slate-200 p-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
       </div>
-      <div class="space-y-3 font-sans text-slate-300 leading-relaxed text-[11px]">
-        <p>Gelar <span class="font-bold text-amber-400 font-mono">Owner Premium</span> memberi Anda akses tak terbatas untuk mengintegrasikan 2 REST API ZetaGo-DB ke sistem bot WhatsApp kustom pribadi Anda!</p>
-        <div class="grid grid-cols-3 gap-2 text-center font-mono mt-2">
-          <div class="bg-slate-950/80 border border-slate-800 p-2.5 rounded-xl">
-            <span class="block text-[8px] text-slate-500 font-black uppercase">BULANAN</span>
-            <span class="block text-xs font-black text-white mt-1">Rp 65.000</span>
-            <span class="block text-[8px] text-slate-500 mt-1">~22 ACRON</span>
+
+      <!-- Scrollable Content Frame -->
+      <div class="p-5 overflow-y-auto space-y-4 flex-1">
+        <div class="space-y-3 font-sans text-slate-300 leading-relaxed text-[11px]">
+          <p>Gelar <span class="font-bold text-amber-400 font-mono text-xs">Owner Premium</span> memberi Anda akses tak terbatas untuk mengintegrasikan 2 REST API ZetaGo-DB ke sistem bot WhatsApp kustom pribadi Anda!</p>
+          
+          <div class="grid grid-cols-3 gap-2 text-center font-mono mt-2 text-[10px]">
+            <div class="bg-slate-950/80 border border-slate-800/80 p-2 rounded-xl">
+              <span class="block text-[8px] text-slate-500 font-black uppercase">BULANAN</span>
+              <span class="block text-[11px] font-black text-emerald-400 mt-1">Rp 65.000</span>
+              <span class="block text-[8px] text-slate-600 mt-0.5">~22 ACRON</span>
+            </div>
+            <div class="bg-slate-950/80 border border-slate-800/80 p-2 rounded-xl border-amber-500/20">
+              <span class="block text-[8px] text-amber-500 font-black uppercase">TAHUNAN</span>
+              <span class="block text-[11px] font-black text-amber-400 mt-1">Rp 700.000</span>
+              <span class="block text-[8px] text-slate-600 mt-0.5">~234 ACRON</span>
+            </div>
+            <div class="bg-slate-950/80 border border-slate-800/80 p-2 rounded-xl border-yellow-500/30">
+              <span class="block text-[8px] text-yellow-400 font-black uppercase">PERMANENT</span>
+              <span class="block text-[11px] font-black text-yellow-400 mt-1">Rp 1.500.000</span>
+              <span class="block text-[8px] text-slate-600 mt-0.5">~500 ACRON</span>
+            </div>
           </div>
-          <div class="bg-slate-950/80 border border-slate-800 p-2.5 rounded-xl border-amber-500/20">
-            <span class="block text-[8px] text-amber-500 font-black uppercase">TAHUNAN</span>
-            <span class="block text-xs font-black text-white mt-1">Rp 700.000</span>
-            <span class="block text-[8px] text-slate-500 mt-1">~234 ACRON</span>
+          
+          <div class="bg-slate-950 border border-slate-800 p-3.5 rounded-xl space-y-1.5 mt-4 font-mono text-[10px] text-slate-400">
+            <span class="block font-black text-amber-400 uppercase tracking-wider"><i class="fa-solid fa-circle-info"></i> TATACARA AKTIVASI OTOMATIS:</span>
+            <p>1. Silakan lakukan transaksi donasi/tip melalui tombol trakteer di bawah.</p>
+            <p>2. Kirim minimal <span class="text-amber-400 font-bold font-mono">22 ACRON</span> (Rp 66.000) untuk sewa 1 bulan, <span class="text-amber-400 font-bold font-mono">234 ACRON</span> (Rp 702.000) untuk sewa 1 tahun, atau <span class="text-yellow-400 font-bold font-mono">500 ACRON</span> (Rp 1.500.000) untuk akses Permanent!</p>
+            <p>3. <span class="text-white font-bold">Wajib menuliskan email akun ZetaGo-DB Anda</span> pada kolom pesan traktiran Anda saat membayar!</p>
+            <p>4. Sistem web socket kami akan mendeteksi traktiran secara instan dan mengaktifkan status premium Anda detik itu juga!</p>
+            <p class="text-[9px] text-slate-500 mt-2">5. Jika mengalami kendala pembayaran atau ingin melakukan klaim garansi, silakan klik tombol WhatsApp di bawah untuk menghubungi pengembang utama dengan menyertakan bukti pembayaran/traktiran yang valid, jelas, dan tanpa sensor.</p>
           </div>
-          <div class="bg-slate-950/80 border border-slate-800 p-2.5 rounded-xl border-yellow-500/30">
-            <span class="block text-[8px] text-yellow-400 font-black uppercase">PERMANENT</span>
-            <span class="block text-xs font-black text-white mt-1">Rp 1.500.000</span>
-            <span class="block text-[8px] text-slate-500 mt-1">~500 ACRON</span>
+          
+          <div class="space-y-1.5 font-mono">
+            <span class="block font-black text-slate-400 uppercase tracking-wider text-[9px]">Tutorial Pengisian Pesan Dukungan:</span>
+            <img src="https://img2.pixhost.to/images/8108/729747609_elaina-1779535786236.jpg" alt="Tutorial Trakteer" class="w-full rounded-xl border border-slate-800/80 object-cover h-32" onerror="this.src='https://placehold.co/400x150/0f172a/38bdf8?text=Tutorial+Trakteer'">
           </div>
-        </div>
-        <div class="bg-slate-950 border border-slate-800 p-4 rounded-2xl space-y-2 mt-4 font-mono text-[10px] text-slate-400">
-          <span class="block font-black text-amber-400 uppercase tracking-wider"><i class="fa-solid fa-circle-info"></i> TATACARA AKTIVASI OTOMATIS:</span>
-          <p>1. Silakan lakukan transaksi donasi/tip melalui tombol trakteer di bawah.</p>
-          <p>2. Kirim minimal <span class="text-amber-400 font-bold font-mono">22 ACRON</span> (Rp 66.000) untuk sewa 1 bulan, <span class="text-amber-400 font-bold font-mono">234 ACRON</span> (Rp 702.000) untuk sewa 1 tahun, atau <span class="text-yellow-400 font-bold font-mono">500 ACRON</span> (Rp 1.500.000) untuk akses Permanent!</p>
-          <p>3. <span class="text-white font-bold">Wajib menuliskan email akun ZetaGo-DB Anda</span> pada kolom pesan traktiran Anda saat membayar!</p>
-          <p>4. Sistem web socket kami akan mendeteksi traktiran secara instan dan mengaktifkan status premium Anda detik itu juga!</p>
-          <p class="text-[9px] text-slate-500 mt-2">5. Jika mengalami kendala pembayaran atau ingin melakukan klaim garansi, silakan klik tombol WhatsApp di bawah untuk menghubungi pengembang utama dengan menyertakan bukti pembayaran/traktiran yang valid, jelas, dan tanpa sensor.</p>
-        </div>
-        <div class="space-y-2 font-mono">
-          <span class="block font-black text-slate-400 uppercase tracking-wider text-[9px]">Tutorial Pengisian Pesan Dukungan:</span>
-          <img src="https://img2.pixhost.to/images/8108/729747609_elaina-1779535786236.jpg" alt="Tutorial Trakteer" class="w-full rounded-xl border border-slate-800/80 object-cover h-36">
         </div>
       </div>
-      <div class="pt-2 font-mono space-y-2">
-        <a href="https://trakteer.id/Aleocrophic/tip" target="_blank" class="w-full py-3 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-black rounded-xl flex items-center justify-center gap-2 uppercase tracking-wider text-xs transition duration-200 shadow-md">
+
+      <!-- Fixed Footer with Buttons -->
+      <div class="p-5 border-t border-slate-800/80 bg-slate-900 shrink-0 space-y-2">
+        <a href="https://trakteer.id/Aleocrophic/tip" target="_blank" class="w-full py-2.5 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-black rounded-xl flex items-center justify-center gap-2 uppercase tracking-wider text-[11px] transition duration-200 shadow-md">
           <i class="fa-solid fa-heart animate-pulse"></i> BAYAR SEWA VIA TRAKTEER
         </a>
-        <a href="https://wa.me/6285702711107" target="_blank" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black rounded-xl flex items-center justify-center gap-2 uppercase tracking-wider text-xs transition duration-200 shadow-md">
-          <i class="fa-brands fa-whatsapp text-sm"></i> HUBUNGI DEV / KLAIM GARANSI
+        <a href="https://wa.me/6285702711107" target="_blank" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black rounded-xl flex items-center justify-center gap-2 uppercase tracking-wider text-[11px] transition duration-200 shadow-md">
+          <i class="fa-brands fa-whatsapp text-sm"></i> HUBUNGI SUPPORT / KLAIM GARANSI
         </a>
       </div>
     </div>
   </div>
 
+  <!-- MODAL: SYSTEM CONFIRM DIALOG -->
   <div id="confirm-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
     <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"></div>
     <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-sm p-6 relative z-10">
@@ -976,6 +996,85 @@
       return null;
     }
 
+    /**
+     * SYSTEM-INTEGRITY COPIER FIX (IFRAME SAFE)
+     * binding functions directly to window object to prevent 'not defined' reference errors.
+     * uses selection range tracking to lock focus inside iframe body to avoid copying editor source code.
+     */
+    window.copyStringToClipboard = function(text, successMessage) {
+      if (!text) {
+        window.showToast('error', 'Gagal menyalin: Teks kosong!');
+        return;
+      }
+      const el = document.createElement('textarea');
+      el.value = text;
+      el.setAttribute('readonly', '');
+      el.style.position = 'fixed';
+      el.style.opacity = '0';
+      el.style.top = '0';
+      el.style.left = '0';
+      el.style.width = '2em';
+      el.style.height = '2em';
+      el.style.padding = '0';
+      el.style.border = 'none';
+      el.style.outline = 'none';
+      el.style.boxShadow = 'none';
+      el.style.background = 'transparent';
+      document.body.appendChild(el);
+      
+      // Select the input element and handle iOS/Iframe constraints
+      el.focus();
+      el.select();
+      el.setSelectionRange(0, 99999);
+      
+      // Strict selection range binding to prevent editor backup capture
+      const selection = window.getSelection();
+      const range = document.createRange();
+      range.selectNodeContents(el);
+      selection.removeAllRanges();
+      selection.addRange(range);
+
+      let successful = false;
+      try {
+        successful = document.execCommand('copy');
+      } catch (err) {
+        console.warn('execCommand failed, attempting modern navigator API: ', err);
+      }
+
+      document.body.removeChild(el);
+      selection.removeAllRanges();
+
+      if (successful) {
+        window.showToast('success', successMessage);
+      } else {
+        try {
+          navigator.clipboard.writeText(text).then(() => {
+            window.showToast('success', successMessage);
+          }).catch(() => {
+            window.showToast('error', 'Gagal menyalin teks ke Clipboard.');
+          });
+        } catch (err) {
+          window.showToast('error', 'Browser tidak mengizinkan bypass penyalinan.');
+        }
+      }
+    };
+
+    window.copyApiLink = function() {
+      const linkText = document.getElementById('api-link-display').innerText;
+      window.copyStringToClipboard(linkText, 'Link REST API Whitelist disalin ke clipboard! 📋');
+    };
+
+    window.copyStructureApiLink = function() {
+      const linkText = document.getElementById('api-structure-link-display').innerText;
+      window.copyStringToClipboard(linkText, 'Link REST API Struktur disalin ke clipboard! 📋');
+    };
+
+    window.copyCredentials = function(name, email, password, role) {
+      const loginUrl = window.location.origin;
+      const credsText = `🔑 DETAIL KREDENSIAL ZETAGO-DB 🔑\n\nNama : ${name}\nEmail: ${email}\nSandi: ${password}\nPeran: ${role.toUpperCase()}\nLink : ${loginUrl}\n\nHarap simpan kredensial ini baik-baik! 🛡️⚡`;
+      window.copyStringToClipboard(credsText, `Kredensial milik ${name} berhasil disalin! 📋`);
+    };
+
     async function initSecureAuth() {
       let config = await fetchConfig();
       if (!config) {
@@ -995,7 +1094,7 @@
           const result = await getRedirectResult(auth);
           if (result && result.user) {
             if (!isDevEmail(result.user.email)) {
-              showToast('error', 'Akses Pengembang Ditolak! Anda bukan pemilik ZetaGo-DB.');
+              window.showToast('error', 'Akses Pengembang Ditolak! Anda bukan pemilik ZetaGo-DB.');
               await signOut(auth);
             }
           }
@@ -1018,7 +1117,7 @@
       } catch (e) {
         console.error(e);
         document.getElementById('initial-loader').style.display = 'none';
-        showToast('error', 'Gagal memuat modul otorisasi database!');
+        window.showToast('error', 'Gagal memuat modul otorisasi database!');
       }
     }
 
@@ -1042,7 +1141,7 @@
           if (userData.disabled === true) {
             const cName = userData.createdByName || "Atasan";
             const cRole = userData.createdByRole || "Atasan";
-            showBannedModal(userData.name, cName, cRole);
+            window.showBannedModal(userData.name, cName, cRole);
             signOut(auth);
             return;
           }
@@ -1069,12 +1168,12 @@
             document.getElementById('owner-premium-widget').classList.add('hidden');
           }
         } else {
-          showToast('error', 'Akses ditolak! Kredensial tidak diizinkan di database.');
+          window.showToast('error', 'Akses ditolak! Kredensial tidak diizinkan di database.');
           signOut(auth);
         }
       } catch (e) {
         console.error(e);
-        showToast('error', 'Gagal memverifikasi modul otorisasi.');
+        window.showToast('error', 'Gagal memverifikasi modul otorisasi.');
         signOut(auth);
       }
     }
@@ -1193,7 +1292,7 @@
       }
 
       startRealtimeStreams();
-      showToast('success', `Akses Terbuka. Selamat Bekerja, ${name}!`);
+      window.showToast('success', `Akses Terbuka. Selamat Bekerja, ${name}!`);
     }
 
     function showLoginScreen() {
@@ -1224,7 +1323,7 @@
           document.getElementById('raw-json-viewer').innerText = JSON.stringify(numbers, null, 2);
         }
       }, (error) => {
-        showToast('error', `Gagal terhubung ke database nomor: ${error.message}`);
+        window.showToast('error', `Gagal terhubung ke database nomor: ${error.message}`);
       });
 
       const accountsRef = collection(db, 'artifacts', appId, 'public', 'data', 'accounts');
@@ -1251,7 +1350,7 @@
           }
         }
       }, (error) => {
-        showToast('error', `Gagal membaca list user: ${error.message}`);
+        window.showToast('error', `Gagal membaca list user: ${error.message}`);
       });
 
       const logsRef = collection(db, 'artifacts', appId, 'public', 'data', 'activity_logs');
@@ -1264,7 +1363,7 @@
         logs.sort((a, b) => b.timestamp - a.timestamp);
         renderLogs(logs);
       }, (error) => {
-        showToast('error', `Gagal sinkronisasi log keamanan: ${error.message}`);
+        window.showToast('error', `Gagal sinkronisasi log keamanan: ${error.message}`);
       });
     }
 
@@ -1532,10 +1631,10 @@
           }, { merge: true });
           
           await writeAuditLog(`mengubah durasi sewa API owner ${snap.data().name} sebanyak +${days} hari`);
-          showToast('success', `PREMIUM: Akun berhasil disesuaikan +${days} hari!`);
+          window.showToast('success', `PREMIUM: Akun berhasil disesuaikan +${days} hari!`);
         }
       } catch (err) {
-        showToast('error', `Gagal menyesuaikan sewa: ${err.message}`);
+        window.showToast('error', `Gagal menyesuaikan sewa: ${err.message}`);
       }
     };
 
@@ -1550,10 +1649,10 @@
           }, { merge: true });
           
           await writeAuditLog(`mengaktifkan status PERMANENT PREMIUM untuk owner ${snap.data().name}`);
-          showToast('success', `PREMIUM: Status ${snap.data().name} diubah menjadi PERMANENT! 👑`);
+          window.showToast('success', `PREMIUM: Status ${snap.data().name} diubah menjadi PERMANENT! 👑`);
         }
       } catch (err) {
-        showToast('error', `Gagal merubah status permanent: ${err.message}`);
+        window.showToast('error', `Gagal merubah status permanent: ${err.message}`);
       }
     };
 
@@ -1568,10 +1667,10 @@
           }, { merge: true });
           
           await writeAuditLog(`mencabut paksa akses sewa API owner ${snap.data().name}`);
-          showToast('success', `PREMIUM: Akses sewa API dicabut secara manual!`);
+          window.showToast('success', `PREMIUM: Akses sewa API dicabut secara manual!`);
         }
       } catch (err) {
-        showToast('error', `Gagal mencabut sewa: ${err.message}`);
+        window.showToast('error', `Gagal mencabut sewa: ${err.message}`);
       }
     };
 
@@ -1590,7 +1689,7 @@
         const displayStructure = showApiSensored ? '••••••••••••••••••••••••••••••••••••••••••••••••' : structureLink;
         
         container.innerHTML = `
-          <div class="bg-gradient-to-r from-slate-950 to-indigo-950 border border-amber-500/20 rounded-3xl p-6 glow-cyan space-y-4">
+          <div class="bg-gradient-to-r from-slate-950 to-indigo-950 border border-amber-500/20 rounded-3xl p-6 glow-cyan space-y-4 font-mono">
             <div class="flex justify-between items-center border-b border-slate-800 pb-3">
               <div class="flex items-center gap-2">
                 <i class="fa-solid fa-key text-amber-400 animate-pulse text-sm"></i>
@@ -1605,14 +1704,14 @@
                 <span class="text-[9px] text-slate-500 font-bold block mb-1 uppercase tracking-wider">Bot Whitelist API Link</span>
                 <div class="flex items-center gap-2 bg-slate-950 border border-slate-800/80 p-2.5 rounded-xl overflow-hidden">
                   <span class="text-[9px] text-emerald-400 truncate flex-1 font-mono">${displayWhitelist}</span>
-                  <button onclick="copyStringToClipboard('${whitelistLink}', 'Link API Whitelist disalin!')" class="px-2.5 py-1 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-[9px] rounded uppercase transition shrink-0 font-mono"><i class="fa-solid fa-copy font-mono"></i> Copy</button>
+                  <button onclick="window.copyStringToClipboard('${whitelistLink}', 'Link API Whitelist disalin!')" class="px-2.5 py-1 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-[9px] rounded uppercase transition shrink-0 font-mono"><i class="fa-solid fa-copy font-mono"></i> Copy</button>
                 </div>
               </div>
               <div>
                 <span class="text-[9px] text-slate-500 font-bold block mb-1 uppercase tracking-wider">Bot Structure API Link</span>
                 <div class="flex items-center gap-2 bg-slate-950 border border-slate-800/80 p-2.5 rounded-xl overflow-hidden">
                   <span class="text-[9px] text-emerald-400 truncate flex-1 font-mono">${displayStructure}</span>
-                  <button onclick="copyStringToClipboard('${structureLink}', 'Link API Structure disalin!')" class="px-2.5 py-1 bg-indigo-500 hover:bg-indigo-400 text-slate-950 font-black text-[9px] rounded uppercase transition shrink-0 font-mono"><i class="fa-solid fa-copy font-mono"></i> Copy</button>
+                  <button onclick="window.copyStringToClipboard('${structureLink}', 'Link API Structure disalin!')" class="px-2.5 py-1 bg-indigo-500 hover:bg-indigo-400 text-slate-950 font-black text-[9px] rounded uppercase transition shrink-0 font-mono"><i class="fa-solid fa-copy font-mono"></i> Copy</button>
                 </div>
               </div>
             </div>
@@ -1720,7 +1819,7 @@
 
     window.switchTab = function(tabName) {
       if (tabName === 'dev-console' && currentUserRole !== 'dev') {
-        showToast('error', 'Akses Terlarang! Anda bukan Developer ZetaGo-DB.');
+        window.showToast('error', 'Akses Terlarang! Anda bukan Developer ZetaGo-DB.');
         switchTab('dashboard');
         return;
       }
@@ -1822,7 +1921,7 @@
       try {
         await signInWithEmailAndPassword(auth, email, pass);
       } catch (err) {
-        showToast('error', 'Login ditolak! Kredensial tidak valid.');
+        window.showToast('error', 'Login ditolak! Kredensial tidak valid.');
       }
     });
 
@@ -1832,10 +1931,10 @@
         await signInWithPopup(auth, provider);
       } catch (err) {
         if (err.code === 'auth/popup-blocked') {
-          showToast('info', 'Popup diblokir browser! Mengalihkan ke metode redirect keamanan...');
+          window.showToast('info', 'Popup diblokir browser! Mengalihkan ke metode redirect keamanan...');
           await signInWithRedirect(auth, provider);
         } else {
-          showToast('error', `Gagal otentikasi Google: ${err.message}`);
+          window.showToast('error', `Gagal otentikasi Google: ${err.message}`);
         }
       }
     });
@@ -1855,7 +1954,7 @@
         logsUnsubscribe = null;
       }
       signOut(auth).then(() => {
-        showToast('success', 'Berhasil melakukan log-off sistem.');
+        window.showToast('success', 'Berhasil melakukan log-off sistem.');
       });
     });
 
@@ -1892,7 +1991,7 @@
       phone = phone.replace(/[^0-9]/g, '');
 
       if (phone.length < 9 || phone.length > 15) {
-        showToast('error', 'Format nomor salah.');
+        window.showToast('error', 'Format nomor salah.');
         return;
       }
 
@@ -1901,7 +2000,7 @@
         
         const exists = globalWAData.some(n => n.phoneNumber === phone);
         if (exists) {
-          showToast('error', `Nomor +${phone} sudah terdaftar.`);
+          window.showToast('error', `Nomor +${phone} sudah terdaftar.`);
           return;
         }
 
@@ -1917,15 +2016,15 @@
         });
 
         await writeAuditLog(`menambahkan whitelist nomor WhatsApp baru (+${phone})`);
-        showToast('success', 'Nomor Whitelisted disimpan ke server.');
+        window.showToast('success', 'Nomor Whitelisted disimpan ke server.');
         closeAddNumberModal();
       } catch (err) {
-        showToast('error', `Gagal menulis data: ${err.message}`);
+        window.showToast('error', `Gagal menulis data: ${err.message}`);
       }
     });
 
     window.confirmDeleteNumber = function(id, phone) {
-      showConfirmationModal(
+      window.showConfirmationModal(
         'fa-trash-can',
         'REVOKE AKSES NOMOR?',
         `Apakah Anda yakin mencabut hak akses nomor +${phone}? Akses bot WhatsApp akan langsung terhenti.`,
@@ -1934,9 +2033,9 @@
             const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'whatsapp_numbers', id);
             await deleteDoc(docRef);
             await writeAuditLog(`mencabut whitelist akses nomor (+${phone})`);
-            showToast('success', 'Akses berhasil dihapus.');
+            window.showToast('success', 'Akses berhasil dihapus.');
           } catch (err) {
-            showToast('error', `Gagal menghapus data: ${err.message}`);
+            window.showToast('error', `Gagal menghapus data: ${err.message}`);
           }
         }
       );
@@ -2024,7 +2123,7 @@
       const email = generateUniqueEmail(name, role);
 
       try {
-        showToast('info', 'Mengamankan kredensial...');
+        window.showToast('info', 'Mengamankan kredensial...');
 
         const secondaryApp = initializeApp(auth.app.options, "ZetaGoSecureAppReg");
         const secondaryAuth = getAuth(secondaryApp);
@@ -2052,10 +2151,10 @@
         await writeAuditLog(`membuat kredensial bawahan baru level ${role.toUpperCase()} (${name})`);
         
         const credsText = `🔑 DETAIL KREDENSIAL BARU ZETAGO-DB 🔑\n\nNama : ${name}\nEmail: ${email}\nSandi: ${pass}\nPeran: ${role.toUpperCase()}\nLink : ${window.location.origin}\n\nHarap simpan kredensial ini baik-baik! 🛡️⚡`;
-        copyStringToClipboard(credsText, `Akun ${name} terdaftar! Kredensial disalin ke clipboard 📋`);
+        window.copyStringToClipboard(credsText, `Akun ${name} terdaftar! Kredensial disalin ke clipboard 📋`);
         closeAddUserModal();
       } catch (err) {
-        showToast('error', `Gagal mendaftarkan: ${err.message}`);
+        window.showToast('error', `Gagal mendaftarkan: ${err.message}`);
       }
     });
 
@@ -2102,16 +2201,16 @@
             role: targetRole
           });
           await writeAuditLog(`mengubah pangkat jabatan role ${name} menjadi ${targetRole.toUpperCase()}`);
-          showToast('success', `Berhasil mutasi pangkat role ${name} ke ${targetRole.toUpperCase()}!`);
+          window.showToast('success', `Berhasil mutasi pangkat role ${name} ke ${targetRole.toUpperCase()}!`);
           closeEditRoleModal();
         }
       } catch (err) {
-        showToast('error', `Gagal melakukan mutasi role: ${err.message}`);
+        window.showToast('error', `Gagal melakukan mutasi role: ${err.message}`);
       }
     });
 
     window.confirmDeleteAccount = function(id, name) {
-      showConfirmationModal(
+      window.showConfirmationModal(
         'fa-user-slash',
         'PECAT/REVOKE AKSES BAWAHAN?',
         `Apakah Anda yakin mencabut izin masuk untuk "${name}"? Hak login diblokir, namun berkas tetap aman disimpan untuk kebutuhan audit.`,
@@ -2126,17 +2225,17 @@
                 disabled: true
               });
               await writeAuditLog(`mencabut izin masuk akun bawahan (${name})`);
-              showToast('success', 'Akses dinonaktifkan dari sistem utama.');
+              window.showToast('success', 'Akses dinonaktifkan dari sistem utama.');
             }
           } catch (err) {
-            showToast('error', `Gagal memecat bawahan: ${err.message}`);
+            window.showToast('error', `Gagal memecat bawahan: ${err.message}`);
           }
         }
       );
     };
 
     window.confirmHardDeleteAccount = function(id, name) {
-      showConfirmationModal(
+      window.showConfirmationModal(
         'fa-trash-can',
         'HAPUS AKUN TOTAL & BERSIH?',
         `Apakah Anda yakin menghapus total akun "${name}" secara permanen? Akun beserta seluruh whitelist nomor milik akun ini akan langsung lenyap tanpa sisa.`,
@@ -2172,16 +2271,16 @@
             await Promise.all(promises);
 
             await writeAuditLog(`menghapus total akun bawahan secara bersih (${name}) beserta seluruh whitelist nomornya`);
-            showToast('success', 'Akun & seluruh data nomor whitelisted berhasil dihapus total.');
+            window.showToast('success', 'Akun & seluruh data nomor whitelisted berhasil dihapus total.');
           } catch (err) {
-            showToast('error', `Gagal menghapus total: ${err.message}`);
+            window.showToast('error', `Gagal menghapus total: ${err.message}`);
           }
         }
       );
     };
 
     window.restoreAccount = function(id, name) {
-      showConfirmationModal(
+      window.showConfirmationModal(
         'fa-user-check',
         'PULIHKAN AKSES BAWAHAN?',
         `Apakah Anda yakin mengembalikan izin masuk untuk "${name}"? Mereka akan dapat login kembali ke dalam portal sistem.`,
@@ -2196,10 +2295,10 @@
                 disabled: false
               });
               await writeAuditLog(`memulihkan kembali akses akun bawahan (${name})`);
-              showToast('success', 'Akses berhasil dipulihkan.');
+              window.showToast('success', 'Akses berhasil dipulihkan.');
             }
           } catch (err) {
-            showToast('error', `Gagal memulihkan bawahan: ${err.message}`);
+            window.showToast('error', `Gagal memulihkan bawahan: ${err.message}`);
           }
         }
       );
@@ -2208,13 +2307,13 @@
     window.emergencyPurgeAccounts = function() {
       if (currentUserRole !== 'dev') return;
 
-      showConfirmationModal(
-        'fa-users-slash',
+      window.showConfirmationModal(
+        'fa-user-xmark',
         'PURGE SEMUA AKUN TOTAL?',
         'PERINGATAN KERAS! Seluruh akun bawahan beserta seluruh whitelist nomor milik mereka akan dihapus secara total dan permanen. Eksekusi?',
         async () => {
           try {
-            showToast('info', 'Melakukan pembersihan akun massal...');
+            window.showToast('info', 'Melakukan pembersihan akun massal...');
             const promises = globalAccountsData.map(async (acc) => {
               if (acc.id !== currentUser.uid && acc.email !== _zEmail) {
                 const dRef = doc(db, 'artifacts', appId, 'public', 'data', 'accounts', acc.id);
@@ -2227,9 +2326,9 @@
             });
             await Promise.all(promises);
             await writeAuditLog(`MELAKUKAN PURGE MASSAL SELURUH AKUN BAWAHAN BESERTA SELURUH WHITELIST NOMORNYA SECARA BERSIH!`);
-            showToast('success', 'Seluruh akun bawahan & data nomor whitelisted berhasil dibersihkan total!');
+            window.showToast('success', 'Seluruh akun bawahan & data nomor whitelisted berhasil dibersihkan total!');
           } catch (err) {
-            showToast('error', `Purge akun gagal: ${err.message}`);
+            window.showToast('error', `Purge akun gagal: ${err.message}`);
           }
         }
       );
@@ -2238,13 +2337,13 @@
     window.emergencyPurgeNumbers = function() {
       if (currentUserRole !== 'dev') return;
 
-      showConfirmationModal(
+      window.showConfirmationModal(
         'fa-radiation',
         'EMERGENCY DISASTER PURGE?',
         'PERINGATAN PROTOKOL KEAMANAN! Seluruh database nomor terdaftar akan dihapus secara massal dari server. Eksekusi?',
         async () => {
           try {
-            showToast('info', 'Melakukan pembersihan total...');
+            window.showToast('info', 'Melakukan pembersihan total...');
             
             const promises = globalWAData.map(async (num) => {
               const dRef = doc(db, 'artifacts', appId, 'public', 'data', 'whatsapp_numbers', num.id);
@@ -2253,9 +2352,9 @@
 
             await Promise.all(promises);
             await writeAuditLog(`MELAKUKAN PROTOKOL EMERGENY PURGE MASSAL DATABASE NOMOR WA!`);
-            showToast('success', 'Database berhasil dibersihkan!');
+            window.showToast('success', 'Database berhasil dibersihkan!');
           } catch (err) {
-            showToast('error', `Bypass gagal: ${err.message}`);
+            window.showToast('error', `Bypass gagal: ${err.message}`);
           }
         }
       );
@@ -2264,7 +2363,7 @@
     window.clearLogsIfDev = function() {
       if (currentUserRole !== 'dev') return;
       
-      showConfirmationModal(
+      window.showConfirmationModal(
         'fa-dumpster',
         'MUTASI LOGS KEAMANAN?',
         'Anda akan menghapus seluruh rekaman log firewall sistem. Lanjutkan?',
@@ -2279,39 +2378,13 @@
             });
 
             await Promise.all(promises);
-            showToast('success', 'System Logs dikosongkan.');
+            window.showToast('success', 'System Logs dikosongkan.');
           } catch (err) {
-            showToast('error', `Gagal membersihkan log: ${err.message}`);
+            window.showToast('error', `Gagal membersihkan log: ${err.message}`);
           }
         }
       );
     };
-
-    window.copyApiLink = function() {
-      const linkText = document.getElementById('api-link-display').innerText;
-      copyStringToClipboard(linkText, 'Link REST API Whitelist disalin ke clipboard! 📋');
-    };
-
-    window.copyStructureApiLink = function() {
-      const linkText = document.getElementById('api-structure-link-display').innerText;
-      copyStringToClipboard(linkText, 'Link REST API Struktur disalin ke clipboard! 📋');
-    };
-
-    window.copyCredentials = function(name, email, password, role) {
-      const loginUrl = window.location.origin;
-      const credsText = `🔑 DETAIL KREDENSIAL ZETAGO-DB 🔑\n\nNama : ${name}\nEmail: ${email}\nSandi: ${password}\nPeran: ${role.toUpperCase()}\nLink : ${loginUrl}\n\nHarap simpan kredensial ini baik-baik! 🛡️⚡`;
-      copyStringToClipboard(credsText, `Kredensial milik ${name} berhasil disalin! 📋`);
-    };
-
-    function copyStringToClipboard(text, successMessage) {
-      const el = document.createElement('textarea');
-      el.value = text;
-      document.body.appendChild(el);
-      el.select();
-      document.execCommand('copy');
-      document.body.removeChild(el);
-      showToast('success', successMessage);
-    }
 
     window.togglePasswordVisibility = function(inputId, button) {
       const input = document.getElementById(inputId);
@@ -2329,7 +2402,7 @@
       if (currentUserRole === 'dev') {
         switchTab('dev-console');
       } else {
-        showToast('error', 'Akses Terlarang! Hanya Developer yang memiliki otoritas mengakses Dev Terminal.');
+        window.showToast('error', 'Akses Terlarang! Hanya Developer yang memiliki otoritas mengakses Dev Terminal.');
       }
     };
 
@@ -2337,7 +2410,7 @@
       if (currentUserRole !== 'res') {
         switchTab('accounts');
       } else {
-        showToast('error', 'Akses Terlarang! Reseller tidak memiliki otoritas melihat atau mengelola Struktur Akun.');
+        window.showToast('error', 'Akses Terlarang! Reseller tidak memiliki otoritas melihat atau mengelola Struktur Akun.');
       }
     };
 
@@ -2506,13 +2579,13 @@
           }, { merge: true });
           
           await writeAuditLog('mengaktifkan pengamanan Google Authenticator 2FA');
-          showToast('success', 'Google Authenticator (2FA) Berhasil Diaktifkan!');
+          window.showToast('success', 'Google Authenticator (2FA) Berhasil Diaktifkan!');
           closeSetup2FAModal();
         } catch (err) {
-          showToast('error', `Gagal menyimpan pengaturan: ${err.message}`);
+          window.showToast('error', `Gagal menyimpan pengaturan: ${err.message}`);
         }
       } else {
-        showToast('error', 'Kode verifikasi salah atau kedaluwarsa!');
+        window.showToast('error', 'Kode verifikasi salah atau kedaluwarsa!');
       }
     });
 
@@ -2542,13 +2615,13 @@
             }, { merge: true });
             
             await writeAuditLog('menonaktifkan pengamanan Google Authenticator 2FA');
-            showToast('success', 'Google Authenticator (2FA) Berhasil Dinonaktifkan!');
+            window.showToast('success', 'Google Authenticator (2FA) Berhasil Dinonaktifkan!');
             closeSetup2FAModal();
           } catch (err) {
-            showToast('error', `Gagal mematikan 2FA: ${err.message}`);
+            window.showToast('error', `Gagal mematikan 2FA: ${err.message}`);
           }
         } else {
-          showToast('error', 'Kode verifikasi salah atau kedaluwarsa!');
+          window.showToast('error', 'Kode verifikasi salah atau kedaluwarsa!');
         }
       }
     });
@@ -2557,7 +2630,7 @@
       e.preventDefault();
       const code = document.getElementById('auth-2fa-code').value.trim();
       if (code.length !== 6) {
-        showToast('error', 'Kode harus 6 digit!');
+        window.showToast('error', 'Kode harus 6 digit!');
         return;
       }
       
@@ -2582,7 +2655,7 @@
         tempRole = "";
         tempSecret = "";
       } else {
-        showToast('error', 'Kode verifikasi 2FA salah atau kedaluwarsa!');
+        window.showToast('error', 'Kode verifikasi 2FA salah atau kedaluwarsa!');
       }
     });
 
@@ -2641,7 +2714,7 @@
               isPremium: true,
               premiumUntil: 9999999999999
             }, { merge: true });
-            showToast('success', `TRAKTEER: Akun ${targetEmail} berhasil diperpanjang PERMANENT! 👑`);
+            window.showToast('success', `TRAKTEER: Akun ${targetEmail} berhasil diperpanjang PERMANENT! 👑`);
           } else {
             const msToAdd = (priceNum / 65000) * 30 * 24 * 60 * 60 * 1000;
             const currentUntil = targetDoc.data().premiumUntil || 0;
@@ -2653,7 +2726,7 @@
               premiumUntil: Math.floor(newUntil)
             }, { merge: true });
             
-            showToast('success', `TRAKTEER: Akun ${targetEmail} berhasil diperpanjang +${Math.round(msToAdd/(24*60*60*1000))} Hari! 👑`);
+            window.showToast('success', `TRAKTEER: Akun ${targetEmail} berhasil diperpanjang +${Math.round(msToAdd/(24*60*60*1000))} Hari! 👑`);
           }
         }
       }
