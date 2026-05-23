@@ -7,6 +7,8 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/otpauth/9.1.2/otpauth.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
@@ -76,6 +78,31 @@
           SAYA MENGERTI
         </button>
       </div>
+    </div>
+  </div>
+
+  <div id="auth-2fa-screen" class="hidden min-h-screen flex items-center justify-center px-4 py-12 relative overflow-hidden">
+    <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-red-500/5 rounded-full blur-3xl animate-pulse"></div>
+    <div class="bg-slate-900/90 backdrop-blur-2xl border border-slate-800/80 p-8 rounded-3xl w-full max-w-md shadow-2xl relative z-10 glow-cyan">
+      <div class="text-center mb-8 font-mono">
+        <div class="inline-flex p-3 bg-red-500/10 text-red-400 rounded-2xl mb-4 border border-red-500/20">
+          <i class="fa-solid fa-shield-halved text-2xl animate-pulse"></i>
+        </div>
+        <h1 class="text-xl font-black tracking-wider text-slate-100">GOOGLE AUTHENTICATOR</h1>
+        <p class="text-[10px] text-red-400 mt-1 uppercase tracking-widest font-bold">Two-Factor Authentication (2FA) Required</p>
+      </div>
+      <form id="form-auth-2fa" class="space-y-4 font-mono">
+        <div>
+          <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Masukkan 6-Digit Kode OTP</label>
+          <input type="text" id="auth-2fa-code" required maxlength="6" class="w-full bg-slate-950/80 border border-slate-800 focus:border-red-500 focus:ring-1 focus:ring-red-500 text-slate-100 text-center text-xl tracking-[0.5em] font-bold rounded-xl py-3 outline-none transition duration-200" placeholder="000000">
+        </div>
+        <button type="submit" class="w-full py-3 bg-red-600 hover:bg-red-500 text-slate-950 font-extrabold rounded-xl transition duration-300 shadow-lg text-xs uppercase tracking-wider">
+          Verifikasi & Masuk
+        </button>
+        <button type="button" onclick="cancel2FA()" class="w-full py-2.5 bg-slate-950 hover:bg-slate-900 border border-slate-800/80 text-slate-400 hover:text-slate-300 font-bold rounded-xl text-xs uppercase tracking-wider transition duration-200">
+          Batal / Log Out
+        </button>
+      </form>
     </div>
   </div>
 
@@ -191,6 +218,9 @@
               <span id="user-display-role" class="inline-block mt-0.5 px-2 py-0.5 text-[8px] font-black tracking-widest text-sky-400 bg-sky-400/10 border border-sky-400/20 rounded uppercase font-mono">LOADING</span>
             </div>
           </div>
+          <button onclick="openSetup2FAModal()" class="w-full mt-3 py-1.5 bg-slate-950 hover:bg-slate-900 border border-slate-800/80 rounded-xl text-[9px] text-sky-400 font-bold uppercase tracking-wider transition duration-150 flex items-center justify-center gap-1.5 font-mono">
+            <i class="fa-solid fa-key text-[8px]"></i> Atur Google 2FA
+          </button>
         </div>
 
         <nav class="space-y-1.5 font-mono text-xs" id="sidebar-nav">
@@ -693,6 +723,59 @@
     </div>
   </div>
 
+  <div id="modal-setup-2fa" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" onclick="closeSetup2FAModal()"></div>
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-md p-6 relative z-10 glow-cyan">
+      <div class="flex justify-between items-center mb-6 border-b border-slate-800 pb-3 font-mono">
+        <h3 class="text-xs font-black text-slate-100 flex items-center gap-2 uppercase tracking-wider"><i class="fa-solid fa-key text-sky-400"></i> GOOGLE AUTHENTICATOR (2FA)</h3>
+        <button onclick="closeSetup2FAModal()" class="text-slate-500 hover:text-slate-300"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      
+      <div id="2fa-unconfigured" class="space-y-4 font-mono text-xs">
+        <p class="text-slate-400 text-[11px] leading-relaxed">Pindai kode QR di bawah menggunakan aplikasi **Google Authenticator** atau masukkan kunci rahasia secara manual secara mandiri.</p>
+        
+        <div class="flex justify-center p-3 bg-white rounded-2xl w-48 h-48 mx-auto border border-slate-800">
+          <div id="qrcode" class="w-full h-full flex items-center justify-center"></div>
+        </div>
+        
+        <div class="bg-slate-950/80 border border-slate-800 p-3 rounded-xl text-center">
+          <span class="text-[9px] text-slate-500 block uppercase tracking-wider font-bold mb-1">Kunci Rahasia (Manual)</span>
+          <span id="2fa-secret-text" class="text-xs text-sky-400 font-bold select-all tracking-wider"></span>
+        </div>
+        
+        <form id="form-verify-2fa" class="space-y-3">
+          <div>
+            <label class="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Kode Verifikasi 6-Digit</label>
+            <input type="text" id="setup-2fa-code" required maxlength="6" class="w-full bg-slate-950/80 border border-slate-800 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 text-slate-100 text-center text-lg tracking-[0.3em] font-bold rounded-xl py-2.5 outline-none transition duration-200" placeholder="000000">
+          </div>
+          <button type="submit" class="w-full py-3 bg-gradient-to-r from-sky-500 to-indigo-500 hover:from-sky-400 hover:to-indigo-400 text-slate-950 font-black rounded-xl uppercase tracking-wider transition duration-200">
+            Verifikasi & Aktifkan
+          </button>
+        </form>
+      </div>
+      
+      <div id="2fa-configured" class="hidden space-y-6 font-mono text-center">
+        <div class="inline-flex p-4 bg-emerald-500/10 text-emerald-400 rounded-full border border-emerald-500/20">
+          <i class="fa-solid fa-circle-check text-3xl"></i>
+        </div>
+        <div class="space-y-2">
+          <h4 class="text-sm font-black text-emerald-400 uppercase tracking-wider">Google Authenticator Aktif</h4>
+          <p class="text-xs text-slate-400 px-4 leading-relaxed font-sans">Akun Anda berhasil dilindungi oleh otentikasi dua faktor (2FA) Google Authenticator.</p>
+        </div>
+        
+        <form id="form-disable-2fa" class="space-y-4 text-left">
+          <div>
+            <label class="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Masukkan Kode 2FA Untuk Menonaktifkan</label>
+            <input type="text" id="disable-2fa-code" required maxlength="6" class="w-full bg-slate-950/80 border border-slate-800 focus:border-red-500 focus:ring-1 focus:ring-red-500 text-slate-100 text-center text-lg tracking-[0.3em] font-bold rounded-xl py-2.5 outline-none transition duration-200" placeholder="000000">
+          </div>
+          <button type="submit" class="w-full py-3 bg-red-600 hover:bg-red-500 text-slate-950 font-black rounded-xl uppercase tracking-wider transition duration-200">
+            Nonaktifkan 2FA
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <div id="confirm-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
     <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"></div>
     <div class="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-sm p-6 relative z-10">
@@ -751,6 +834,12 @@
     let currentUser = null;
     let currentUserRole = null; 
     let currentNumberFilter = 'all'; 
+
+    let tempUser = null;
+    let tempName = "";
+    let tempRole = "";
+    let tempSecret = "";
+    let isTwoFactorVerified = false;
 
     let globalWAData = [];
     let globalAccountsData = [];
@@ -852,6 +941,19 @@
             signOut(auth);
             return;
           }
+
+          if (userData.twoFactorEnabled === true && !isTwoFactorVerified) {
+            tempUser = user;
+            tempName = userData.name;
+            tempRole = userData.role;
+            tempSecret = userData.twoFactorSecret;
+            
+            document.getElementById('auth-screen').style.display = 'none';
+            document.getElementById('auth-2fa-screen').style.display = 'flex';
+            document.getElementById('initial-loader').style.display = 'none';
+            return;
+          }
+
           currentUserRole = userData.role;
           setupSession(user, userData.name, userData.role);
         } else {
@@ -1413,6 +1515,7 @@
     });
 
     document.getElementById('btn-logout').addEventListener('click', () => {
+      isTwoFactorVerified = false;
       if (numbersUnsubscribe) {
         numbersUnsubscribe();
         numbersUnsubscribe = null;
@@ -1986,6 +2089,166 @@
       if (!str) return '';
       return str.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"').replace(/\n/g, '\\n').replace(/\r/g, '\\r');
     }
+
+    window.openSetup2FAModal = async function() {
+      if (!currentUser) return;
+      const modal = document.getElementById('modal-setup-2fa');
+      modal.classList.remove('hidden');
+      
+      const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'accounts', currentUser.uid);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists() && docSnap.data().twoFactorEnabled === true) {
+        document.getElementById('2fa-unconfigured').classList.add('hidden');
+        document.getElementById('2fa-configured').classList.remove('hidden');
+      } else {
+        document.getElementById('2fa-unconfigured').classList.remove('hidden');
+        document.getElementById('2fa-configured').classList.add('hidden');
+        
+        const secret = OTPAuth.Secret.fromHex(Array.from({length: 20}, () => Math.floor(Math.random()*256).toString(16).padStart(2, '0')).join('')).base32;
+        document.getElementById('2fa-secret-text').innerText = secret;
+        
+        let totp = new OTPAuth.TOTP({
+          issuer: 'ZetaGo-DB',
+          label: currentUser.email,
+          algorithm: 'SHA1',
+          digits: 6,
+          period: 30,
+          secret: secret
+        });
+        
+        const uri = totp.toString();
+        const qrContainer = document.getElementById('qrcode');
+        qrContainer.innerHTML = '';
+        new QRCode(qrContainer, {
+          text: uri,
+          width: 180,
+          height: 180,
+          colorDark: "#020617",
+          colorLight: "#ffffff",
+          correctLevel: QRCode.CorrectLevel.H
+        });
+      }
+    };
+
+    window.closeSetup2FAModal = function() {
+      document.getElementById('modal-setup-2fa').classList.add('hidden');
+      document.getElementById('form-verify-2fa').reset();
+      document.getElementById('form-disable-2fa').reset();
+    };
+
+    document.getElementById('form-verify-2fa').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const code = document.getElementById('setup-2fa-code').value.trim();
+      const secret = document.getElementById('2fa-secret-text').innerText;
+      
+      let totp = new OTPAuth.TOTP({
+        issuer: 'ZetaGo-DB',
+        label: currentUser.email,
+        algorithm: 'SHA1',
+        digits: 6,
+        period: 30,
+        secret: secret
+      });
+      
+      let delta = totp.validate({ token: code, window: 1 });
+      if (delta !== null) {
+        try {
+          const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'accounts', currentUser.uid);
+          await setDoc(docRef, {
+            twoFactorEnabled: true,
+            twoFactorSecret: secret
+          }, { merge: true });
+          
+          await writeAuditLog('mengaktifkan pengamanan Google Authenticator 2FA');
+          showToast('success', 'Google Authenticator (2FA) Berhasil Diaktifkan!');
+          closeSetup2FAModal();
+        } catch (err) {
+          showToast('error', `Gagal menyimpan pengaturan: ${err.message}`);
+        }
+      } else {
+        showToast('error', 'Kode verifikasi salah atau kedaluwarsa!');
+      }
+    });
+
+    document.getElementById('form-disable-2fa').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const code = document.getElementById('disable-2fa-code').value.trim();
+      
+      const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'accounts', currentUser.uid);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists() && docSnap.data().twoFactorEnabled === true) {
+        const secret = docSnap.data().twoFactorSecret;
+        let totp = new OTPAuth.TOTP({
+          issuer: 'ZetaGo-DB',
+          label: currentUser.email,
+          algorithm: 'SHA1',
+          digits: 6,
+          period: 30,
+          secret: secret
+        });
+        
+        let delta = totp.validate({ token: code, window: 1 });
+        if (delta !== null) {
+          try {
+            await setDoc(docRef, {
+              twoFactorEnabled: false,
+              twoFactorSecret: ''
+            }, { merge: true });
+            
+            await writeAuditLog('menonaktifkan pengamanan Google Authenticator 2FA');
+            showToast('success', 'Google Authenticator (2FA) Berhasil Dinonaktifkan!');
+            closeSetup2FAModal();
+          } catch (err) {
+            showToast('error', `Gagal mematikan 2FA: ${err.message}`);
+          }
+        } else {
+          showToast('error', 'Kode verifikasi salah atau kedaluwarsa!');
+        }
+      }
+    });
+
+    document.getElementById('form-auth-2fa').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const code = document.getElementById('auth-2fa-code').value.trim();
+      if (code.length !== 6) {
+        showToast('error', 'Kode harus 6 digit!');
+        return;
+      }
+      
+      let totp = new OTPAuth.TOTP({
+        issuer: 'ZetaGo-DB',
+        label: tempUser.email,
+        algorithm: 'SHA1',
+        digits: 6,
+        period: 30,
+        secret: tempSecret
+      });
+      
+      let delta = totp.validate({ token: code, window: 1 });
+      if (delta !== null) {
+        isTwoFactorVerified = true;
+        currentUserRole = tempRole;
+        document.getElementById('auth-2fa-screen').style.display = 'none';
+        setupSession(tempUser, tempName, tempRole);
+        
+        tempUser = null;
+        tempName = "";
+        tempRole = "";
+        tempSecret = "";
+      } else {
+        showToast('error', 'Kode verifikasi 2FA salah atau kedaluwarsa!');
+      }
+    });
+
+    window.cancel2FA = function() {
+      isTwoFactorVerified = false;
+      tempUser = null;
+      tempName = "";
+      tempRole = "";
+      tempSecret = "";
+      document.getElementById('auth-2fa-screen').style.display = 'none';
+      signOut(auth);
+    };
   </script>
 </body>
 </html>
