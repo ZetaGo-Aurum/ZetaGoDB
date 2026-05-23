@@ -214,7 +214,7 @@
         <button id="btn-logout" class="w-full flex items-center justify-center gap-2 px-4 py-3 text-xs font-bold text-rose-400 hover:text-rose-300 bg-rose-500/5 hover:bg-rose-500/10 border border-rose-500/10 rounded-xl transition duration-200 font-mono">
           <i class="fa-solid fa-power-off"></i> KELUAR SYSTEM
         </button>
-        <p class="text-[9px] font-mono text-slate-600 text-center mt-4 uppercase tracking-wider">ZetaGo-DB v1.8.8</p>
+        <p class="text-[9px] font-mono text-slate-600 text-center mt-4 uppercase tracking-wider">ZetaGo-DB v1.8.9</p>
       </div>
     </aside>
 
@@ -229,7 +229,7 @@
         <div class="flex items-center gap-3 font-mono shrink-0">
           <div class="flex items-center gap-2 px-3 py-1.5 bg-slate-900/80 border border-slate-800/80 rounded-lg">
             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span class="text-[9px] sm:text-[10px] text-slate-400 font-black uppercase tracking-wider">ZetaShield v1.8.8</span>
+            <span class="text-[9px] sm:text-[10px] text-slate-400 font-black uppercase tracking-wider">ZetaShield v1.8.9</span>
           </div>
         </div>
       </header>
@@ -530,11 +530,16 @@
               </div>
 
               <div class="bg-slate-950/40 border border-slate-800/60 p-4 rounded-xl space-y-3">
-                <span class="text-[10px] font-black text-sky-400 uppercase tracking-widest block"><i class="fa-solid fa-link"></i> INSTANT BOT API LINK</span>
-                <p class="text-[10px] text-slate-500">Salin link endpoint API di bawah untuk diletakkan ke dalam konfigurasi bot WhatsApp kamu:</p>
+                <span class="text-[10px] font-black text-sky-400 uppercase tracking-widest block"><i class="fa-solid fa-link"></i> BOT WHITELIST API LINK</span>
                 <div class="flex items-center gap-2 bg-slate-950 border border-slate-800 p-2.5 rounded-lg overflow-hidden">
                   <span id="api-link-display" class="text-[9px] text-emerald-400 truncate flex-1 select-all">https://loading...</span>
                   <button onclick="copyApiLink()" class="px-2.5 py-1 bg-sky-500 hover:bg-sky-400 text-slate-950 font-black text-[9px] rounded uppercase transition duration-150 shrink-0"><i class="fa-solid fa-copy"></i> Copy</button>
+                </div>
+
+                <span class="text-[10px] font-black text-indigo-400 uppercase tracking-widest block mt-2"><i class="fa-solid fa-sitemap"></i> BOT STRUCTURE API LINK</span>
+                <div class="flex items-center gap-2 bg-slate-950 border border-slate-800 p-2.5 rounded-lg overflow-hidden">
+                  <span id="api-structure-link-display" class="text-[9px] text-emerald-400 truncate flex-1 select-all">https://loading...</span>
+                  <button onclick="copyStructureApiLink()" class="px-2.5 py-1 bg-indigo-500 hover:bg-indigo-400 text-slate-950 font-black text-[9px] rounded uppercase transition duration-150 shrink-0"><i class="fa-solid fa-copy"></i> Copy</button>
                 </div>
               </div>
 
@@ -553,7 +558,7 @@
 
             <div class="bg-slate-900/20 border border-slate-800/60 rounded-3xl p-6 space-y-4 lg:col-span-1">
               <span class="text-[10px] font-black text-rose-400 uppercase tracking-widest block"><i class="fa-solid fa-users-slash"></i> SUBACCOUNT MASTER DESTRUCTION PANEL</span>
-              <p class="text-[10px] text-slate-500">Hapus secara permanen dan bersih akun bawahan tertentu langsung dari konsol root.</p>
+              <p class="text-[10px] text-slate-500">Pantau dan hapus permanen akun bawahan sesuai alur hierarki dalam struktur organisasi.</p>
               <div class="relative">
                 <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-600">
                   <i class="fa-solid fa-search text-xs"></i>
@@ -884,6 +889,7 @@
         
         const origin = window.location.origin && window.location.origin !== 'null' ? window.location.origin : 'https://zetago-db.vercel.app';
         document.getElementById('api-link-display').innerText = `${origin}/api/whitelist?token=ZetaShield_ZTGrYHRdR424248484_9f8b2c7a1e0d3f4b5a6c7d8e9f0a1b2c_SecureGatewaySystemToken_df849302948201948201948201948202_AlphaX99_VercelProd_2026_dB_Auth_Key_Encrypt_CEEOCS_Complex_u83jdxn829103948_ZTGrYHRdR424248484_SecureAccessGatewayAuthenticationSystemKey_v928fks9201mshd82019shdbf639shdbfn`;
+        document.getElementById('api-structure-link-display').innerText = `${origin}/api/structure?token=ZetaShield_ZTGrYHRdR424248484_9f8b2c7a1e0d3f4b5a6c7d8e9f0a1b2c_SecureGatewaySystemToken_df849302948201948201948201948202_AlphaX99_VercelProd_2026_dB_Auth_Key_Encrypt_CEEOCS_Complex_u83jdxn829103948_ZTGrYHRdR424248484_SecureAccessGatewayAuthenticationSystemKey_v928fks9201mshd82019shdbf639shdbfn`;
       } else {
         devConsoleBtn.classList.add('opacity-40', 'grayscale', 'cursor-not-allowed');
         devConsoleBtn.classList.remove('text-rose-400', 'hover:text-rose-300');
@@ -1093,7 +1099,7 @@
       });
 
       if (displayableAccounts.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" class="p-8 text-center text-slate-500 font-mono uppercase tracking-widest text-[11px]">Tidak ada bawahan di bawah kendali Anda.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="4" class="p-8 text-center text-slate-500 font-mono uppercase tracking-wider text-[11px]">Tidak ada bawahan di bawah kendali Anda.</td></tr>`;
         return;
       }
 
@@ -1144,21 +1150,56 @@
         list.innerHTML = '<div class="text-slate-600 text-center py-4 text-xs uppercase font-mono">Tidak ada akun bawahan.</div>';
         return;
       }
+      
+      const accountMap = {};
       globalAccountsData.forEach(acc => {
-        const isFired = acc.disabled === true;
-        const statusLabel = isFired ? `<span class="text-red-500 font-bold ml-1 text-[8px] border border-red-500/20 bg-red-500/10 px-1 rounded uppercase">DI-PECAT</span>` : "";
-        const div = document.createElement('div');
-        div.className = "dev-account-item flex items-center justify-between p-2.5 bg-slate-950/60 border border-slate-800/80 rounded-xl text-[11px] font-mono";
-        div.innerHTML = `
-          <div class="truncate mr-2">
-            <span class="font-bold text-slate-300 flex items-center truncate">${escapeHTML(acc.name)} ${statusLabel}</span>
-            <span class="text-slate-500 block truncate text-[9px]">${escapeHTML(acc.email)}</span>
-            <span class="inline-block mt-0.5 px-1 py-0.2 text-[8px] font-black uppercase rounded ${getRoleBadgeClass(acc.role)}">${acc.role}</span>
-          </div>
-          <button onclick="confirmHardDeleteAccount('${acc.id}', '${acc.name}')" class="px-2.5 py-1 bg-red-600 hover:bg-red-500 text-slate-950 font-black rounded uppercase text-[9px] shrink-0"><i class="fa-solid fa-trash-can"></i></button>
-        `;
-        list.appendChild(div);
+        accountMap[acc.id] = { ...acc, children: [] };
       });
+      
+      const roots = [];
+      globalAccountsData.forEach(acc => {
+        const mapped = accountMap[acc.id];
+        const parent = accountMap[acc.createdByUid];
+        if (parent && acc.createdByUid !== acc.id) {
+          parent.children.push(mapped);
+        } else {
+          roots.push(mapped);
+        }
+      });
+      
+      let html = '';
+      roots.forEach(root => {
+        html += renderTreeNode(root, 0);
+      });
+      
+      list.innerHTML = html || '<div class="text-slate-600 text-center py-4 text-xs uppercase font-mono">Tidak ada akun bawahan.</div>';
+    }
+
+    function renderTreeNode(node, depth = 0) {
+      const indent = depth * 16;
+      const isFired = node.disabled === true;
+      const statusLabel = isFired ? `<span class="text-red-500 font-bold ml-1 text-[8px] border border-red-500/20 bg-red-500/10 px-1 rounded uppercase">DI-PECAT</span>` : "";
+      
+      let html = `
+        <div class="dev-account-item flex items-center justify-between p-2.5 bg-slate-950/60 border border-slate-800/80 rounded-xl text-[11px] font-mono mb-2" style="margin-left: ${indent}px">
+          <div class="truncate mr-2">
+            <span class="font-bold text-slate-300 flex items-center truncate">
+              <i class="fa-solid ${node.children.length > 0 ? 'fa-sitemap text-amber-500 animate-pulse' : 'fa-user text-sky-400'} mr-1.5 text-[10px]"></i>
+              ${escapeHTML(node.name)} ${statusLabel}
+            </span>
+            <span class="text-slate-500 block truncate text-[9px]">${escapeHTML(node.email)}</span>
+            <span class="inline-block mt-0.5 px-1 py-0.2 text-[8px] font-black uppercase rounded ${getRoleBadgeClass(node.role)}">${node.role}</span>
+          </div>
+          <button onclick="confirmHardDeleteAccount('${node.id}', '${escapeJS(node.name)}')" class="px-2.5 py-1 bg-red-600 hover:bg-red-500 text-slate-950 font-black rounded uppercase text-[9px] shrink-0"><i class="fa-solid fa-trash-can"></i></button>
+        </div>
+      `;
+      
+      if (node.children && node.children.length > 0) {
+        node.children.forEach(child => {
+          html += renderTreeNode(child, depth + 1);
+        });
+      }
+      return html;
     }
 
     window.filterDevAccounts = function() {
@@ -1798,6 +1839,11 @@
     window.copyApiLink = function() {
       const linkText = document.getElementById('api-link-display').innerText;
       copyStringToClipboard(linkText, 'Link REST API Whitelist disalin ke clipboard! 📋');
+    };
+
+    window.copyStructureApiLink = function() {
+      const linkText = document.getElementById('api-structure-link-display').innerText;
+      copyStringToClipboard(linkText, 'Link REST API Struktur disalin ke clipboard! 📋');
     };
 
     window.copyCredentials = function(name, email, password, role) {
