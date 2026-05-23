@@ -1,10 +1,12 @@
 const appId = 'server-media-75fdc';
 const SECURE_TOKEN = "ZetaShield_ZTGrYHRdR424248484_9f8b2c7a1e0d3f4b5a6c7d8e9f0a1b2c_SecureGatewaySystemToken_df849302948201948201948201948202_AlphaX99_VercelProd_2026_dB_Auth_Key_Encrypt_CEEOCS_Complex_u83jdxn829103948_ZTGrYHRdR424248484_SecureAccessGatewayAuthenticationSystemKey_v928fks9201mshd82019shdbf639shdbfn";
+const _zEmail = atob("ZGVsdGFhc3RyYTI0QGdtYWlsLmNvbQ==");
+const rolePower = { 'dev': 5, 'owner': 4, 'staff': 3, 'pt': 2, 'res': 1 };
 
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-api-key');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, x-api-key, x-auth-email, x-auth-password');
   res.setHeader('Content-Type', 'application/json');
 
   if (req.method === 'OPTIONS') {
@@ -20,6 +22,13 @@ module.exports = async (req, res) => {
     return res.status(401).json({ error: "UNAUTHORIZED: Token tidak valid!" });
   }
 
+  const email = req.headers['x-auth-email'] || req.body.email;
+  const password = req.headers['x-auth-password'] || req.body.password;
+
+  if (!email || !password) {
+    return res.status(400).json({ error: "BAD REQUEST: Kredensial email dan password wajib disertakan!" });
+  }
+
   const apiKey = process.env.FIREBASE_API_KEY;
   const projectId = process.env.FIREBASE_PROJECT_ID;
 
@@ -32,34 +41,42 @@ module.exports = async (req, res) => {
     const authResponse = await fetch(authUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        email: "bot-gateway@zetago.com",
-        password: "ZetaShieldBotGateway2026!",
-        returnSecureToken: true
-      })
+      body: JSON.stringify({ email, password, returnSecureToken: true })
     });
 
-    let idToken = "";
-    if (authResponse.ok) {
-      const authData = await authResponse.json();
-      idToken = authData.idToken;
-    } else {
-      const signUpUrl = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`;
-      const signUpResponse = await fetch(signUpUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ returnSecureToken: true })
-      });
-      if (signUpResponse.ok) {
-        const signUpData = await signUpResponse.json();
-        idToken = signUpData.idToken;
-      } else {
-        throw new Error("Gagal melakukan otentikasi ke Firebase.");
-      }
+    if (!authResponse.ok) {
+      return res.status(401).json({ error: "UNAUTHORIZED: Email atau password salah!" });
     }
 
+    const authData = await authResponse.json();
+    const idToken = authData.idToken;
+    const uid = authData.localId;
+
     const dbBaseUrl = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/artifacts/${appId}/public/data`;
-    const { action, name, role, email, password, targetUid } = req.body;
+
+    let userRole = 'res';
+    let userName = email;
+
+    if (email.toLowerCase() === _zEmail.toLowerCase()) {
+      userRole = 'dev';
+      userName = "ZetaGo-Aurum";
+    } else {
+      const userRes = await fetch(`${dbBaseUrl}/accounts/${uid}`, {
+        headers: { 'Authorization': `Bearer ${idToken}` }
+      });
+      if (!userRes.ok) {
+        return res.status(403).json({ error: "FORBIDDEN: Akun Anda tidak terdaftar di database!" });
+      }
+      const userData = await userRes.json();
+      if (userData.fields?.disabled?.booleanValue === true) {
+        return res.status(403).json({ error: "BANNED: Akun Anda dinonaktifkan!" });
+      }
+      userRole = userData.fields?.role?.stringValue || 'res';
+      userName = userData.fields?.name?.stringValue || email;
+    }
+
+    const loggedPower = rolePower[userRole] || 1;
+    const { action, name, role, email: targetEmail, password: targetPassword, targetUid } = req.body;
 
     if (action === 'get_accounts' || action === 'get_users') {
       const accRes = await fetch(`${dbBaseUrl}/accounts?pageSize=300`, {
@@ -74,14 +91,18 @@ module.exports = async (req, res) => {
         accData.documents.forEach(doc => {
           const fields = doc.fields;
           if (fields) {
-            accountsList.push({
-              id: doc.name.split('/').pop(),
-              name: fields.name?.stringValue || '',
-              email: fields.email?.stringValue || '',
-              role: fields.role?.stringValue || '',
-              disabled: fields.disabled?.booleanValue || false,
-              createdByUid: fields.createdByUid?.stringValue || ''
-            });
+            const accRole = fields.role?.stringValue || 'res';
+            const targetPower = rolePower[accRole] || 1;
+            if (userRole === 'dev' || targetPower < loggedPower) {
+              accountsList.push({
+                id: doc.name.split('/').pop(),
+                name: fields.name?.stringValue || '',
+                email: fields.email?.stringValue || '',
+                role: accRole,
+                disabled: fields.disabled?.booleanValue || false,
+                createdByUid: fields.createdByUid?.stringValue || ''
+              });
+            }
           }
         });
       }
@@ -94,12 +115,21 @@ module.exports = async (req, res) => {
     }
 
     if (action === 'add_user') {
+      if (userRole === 'res') {
+        return res.status(403).json({ error: "FORBIDDEN: Reseller tidak memiliki wewenang membuat akun baru!" });
+      }
+
       if (!name || !role) {
         return res.status(400).json({ error: "BAD REQUEST: name dan role wajib diisi!" });
       }
 
       if (role === 'dev') {
         return res.status(403).json({ error: "FORBIDDEN: Pangkat DEV adalah hak mutlak ZetaGo-Aurum dan tidak dapat dibuat melalui API!" });
+      }
+
+      const targetPower = rolePower[role] || 1;
+      if (userRole !== 'dev' && targetPower >= loggedPower) {
+        return res.status(403).json({ error: "FORBIDDEN: Anda hanya bisa mendaftarkan akun di bawah level role Anda!" });
       }
 
       let cleanedName = name.toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -124,7 +154,7 @@ module.exports = async (req, res) => {
         }
       }
 
-      let pass = password;
+      let pass = targetPassword;
       if (!pass) {
         const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%';
         pass = '';
@@ -161,9 +191,9 @@ module.exports = async (req, res) => {
             password: { stringValue: pass },
             role: { stringValue: role },
             disabled: { booleanValue: false },
-            createdByUid: { stringValue: "bot-gateway" },
-            createdByName: { stringValue: "Bot Gateway" },
-            createdByRole: { stringValue: "dev" },
+            createdByUid: { stringValue: uid },
+            createdByName: { stringValue: userName },
+            createdByRole: { stringValue: userRole },
             timestamp: { integerValue: Date.now() }
           }
         })
@@ -185,7 +215,24 @@ module.exports = async (req, res) => {
         return res.status(400).json({ error: "BAD REQUEST: targetUid wajib disertakan!" });
       }
 
-      const delAccRes = await fetch(`${dbBaseUrl}/accounts/${targetUid}`, {
+      const targetDocUrl = `${dbBaseUrl}/accounts/${targetUid}`;
+      const targetRes = await fetch(targetDocUrl, {
+        headers: { 'Authorization': `Bearer ${idToken}` }
+      });
+
+      if (!targetRes.ok) {
+        return res.status(444).json({ error: "NOT FOUND: Akun target tidak ditemukan!" });
+      }
+
+      const targetData = await targetRes.json();
+      const targetRole = targetData.fields?.role?.stringValue || 'res';
+      const targetPower = rolePower[targetRole] || 1;
+
+      if (userRole !== 'dev' && targetPower >= loggedPower) {
+        return res.status(403).json({ error: "FORBIDDEN: Anda tidak memiliki akses untuk menghapus akun ini!" });
+      }
+
+      const delAccRes = await fetch(targetDocUrl, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${idToken}` }
       });
