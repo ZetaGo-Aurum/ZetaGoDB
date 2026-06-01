@@ -61,7 +61,7 @@
         <p class="font-bold text-slate-200 uppercase font-mono text-[10px]">2. Aturan Penggunaan Database</p>
         <p>Anda bertanggung jawab penuh atas kerahasiaan kredensial akun dan nomor WhatsApp yang di-whitelist di bawah otoritas Anda.</p>
         <p class="font-bold text-red-400 uppercase font-mono text-[10px]">3. Larangan Keras & Sanksi</p>
-        <p>Dilarang keras menjual akses di bawah harga ketentuan, membagikannya secara gratis, atau menjual script bot ZetaGo di bawah harga standar! Pelanggaran berat akan berakibat pada pemblokiran akun dan penghapusan total seluruh data whitelist secara sepihak!</p>
+        <p class="text-red-400">Dilarang keras menjual akses di bawah harga ketentuan, membagikannya secara gratis, atau menjual script bot ZetaGo di bawah harga standar! Pelanggaran berat akan berakibat pada pemblokiran akun dan penghapusan total seluruh data whitelist secara sepihak!</p>
       </div>
       <button onclick="acceptToSCookies()" class="w-full py-3 bg-gradient-to-r from-sky-500 to-indigo-500 hover:from-sky-400 hover:to-indigo-500 text-slate-950 font-black rounded-xl uppercase tracking-wider transition duration-200">
         SAYA SETUJU & LANJUTKAN
@@ -435,7 +435,7 @@
                   <p class="text-slate-600 text-center py-6 text-[11px] uppercase tracking-wider font-mono">Memproses log sistem...</p>
                 </div>
               </div>
-              <button onclick="switchTab('logs')" class="mt-4 text-[10px] font-bold text-sky-400 hover:text-sky-300 hover:underline text-left block uppercase tracking-wider font-mono font-mono">
+              <button onclick="switchTab('logs')" class="mt-4 text-[10px] font-bold text-sky-400 hover:text-sky-300 hover:underline text-left block uppercase tracking-wider font-mono">
                 LIHAT LOGS LENGKAP <i class="fa-solid fa-arrow-right-long ml-1"></i>
               </button>
             </div>
@@ -602,7 +602,7 @@
               <div class="bg-slate-950/40 border border-slate-800/60 p-4 rounded-xl space-y-3">
                 <span class="text-[10px] font-black text-sky-400 uppercase tracking-widest block"><i class="fa-solid fa-link"></i> BOT WHITELIST API LINK</span>
                 <div class="flex items-center gap-2 bg-slate-950 border border-slate-800 p-2.5 rounded-lg overflow-hidden">
-                  <span id="api-link-display" class="text-[9px] text-emerald-400 truncate flex-1 select-all font-mono">https://loading...</span>
+                  <span id="api-link-display" class="text-[9px] text-emerald-400 truncate flex-1 select-all font-mono font-mono">https://loading...</span>
                   <button onclick="copyApiLink()" class="px-2.5 py-1 bg-sky-500 hover:bg-sky-400 text-slate-950 font-black text-[9px] rounded uppercase transition duration-150 shrink-0 font-mono"><i class="fa-solid fa-copy"></i> Copy</button>
                 </div>
 
@@ -635,7 +635,7 @@
                 <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-600">
                   <i class="fa-solid fa-magnifying-glass text-xs"></i>
                 </span>
-                <input type="text" id="dev-account-search" onkeyup="filterDevAccounts()" class="w-full bg-slate-950/80 border border-slate-800 focus:border-rose-500 focus:ring-1 focus:ring-rose-500 text-slate-100 placeholder:text-slate-700 rounded-xl py-2 pl-9 text-xs outline-none transition duration-200 font-mono" placeholder="Cari akun bawahan...">
+                <input type="text" id="dev-account-search" onkeyup="filterDevAccounts()" class="w-full bg-slate-950/80 border border-rose-500 focus:border-rose-500 focus:ring-1 focus:ring-rose-500 text-slate-100 placeholder:text-slate-700 rounded-xl py-2 pl-9 text-xs outline-none transition duration-200 font-mono" placeholder="Cari akun bawahan...">
               </div>
               <div class="max-h-56 overflow-y-auto space-y-2 pr-1" id="dev-accounts-list">
               </div>
@@ -793,7 +793,7 @@
         <form id="form-verify-2fa" class="space-y-3 font-mono">
           <div>
             <label class="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5 font-mono">Kode Verifikasi 6-Digit</label>
-            <input type="text" id="setup-2fa-code" required maxlength="6" class="w-full bg-slate-950/80 border border-sky-500/20 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 text-slate-100 text-center text-lg tracking-[0.3em] font-bold rounded-xl py-2.5 outline-none transition duration-200">
+            <input type="text" id="setup-2fa-code" required maxlength="6" class="w-full bg-slate-950/80 border border-sky-500/20 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 text-slate-100 text-center text-lg tracking-[0.3em] font-bold rounded-xl py-2.5 outline-none transition duration-200" placeholder="000000">
           </div>
           <button type="submit" class="w-full py-3 bg-gradient-to-r from-sky-500 to-indigo-500 hover:from-sky-400 hover:to-indigo-400 text-slate-950 font-black rounded-xl uppercase tracking-wider transition duration-200">
             Verifikasi & Aktifkan
@@ -812,7 +812,7 @@
         
         <form id="form-disable-2fa" class="space-y-4 text-left">
           <div>
-            <label class="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5">Masukkan Kode 2FA Untuk Menonaktifkan</label>
+            <label class="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1.5 font-mono">Masukkan Kode 2FA Untuk Menonaktifkan</label>
             <input type="text" id="disable-2fa-code" required maxlength="6" class="w-full bg-slate-950/80 border border-red-500/30 focus:border-red-500 focus:ring-1 focus:ring-red-500 text-slate-100 text-center text-lg tracking-[0.3em] font-bold rounded-xl py-2.5 outline-none transition duration-200 font-mono" placeholder="000000">
           </div>
           <button type="submit" class="w-full py-3 bg-red-600 hover:bg-red-500 text-slate-950 font-black rounded-xl uppercase tracking-wider transition duration-200 font-mono">
@@ -967,9 +967,9 @@
     function showBannedModal(name, creatorName, creatorRole) {
       const modal = document.getElementById('banned-modal');
       if (!modal) return;
-      document.getElementById('banned-user-name').innerText = name;
-      document.getElementById('banned-creator-name').innerText = creatorName;
-      document.getElementById('banned-creator-role').innerText = creatorRole.toUpperCase();
+      document.getElementById('banned-user-name').innerText = name || 'User';
+      document.getElementById('banned-creator-name').innerText = creatorName || 'Atasan';
+      document.getElementById('banned-creator-role').innerText = (creatorRole || 'res').toUpperCase();
       modal.classList.remove('hidden');
     }
     window.showBannedModal = showBannedModal;
@@ -1273,15 +1273,15 @@
       document.getElementById('auth-screen').style.display = 'none';
       document.getElementById('main-app').style.display = 'flex';
 
-      document.getElementById('welcome-name').innerText = name;
-      document.getElementById('user-display-name').innerText = name;
+      document.getElementById('welcome-name').innerText = name || 'User';
+      document.getElementById('user-display-name').innerText = name || 'User';
       
       const roleBadge = document.getElementById('user-display-role');
       roleBadge.innerText = roleLabels[role] || 'UNKNOWN';
       roleBadge.className = `inline-block mt-0.5 px-2 py-0.5 text-[8px] font-black tracking-widest rounded ${getRoleBadgeClass(role)} font-mono`;
 
-      document.getElementById('stat-my-role').innerText = roleLabels[role];
-      document.getElementById('stat-my-permissions').innerHTML = `<i class="fa-solid fa-shield text-sky-400 mr-1"></i> Otoritas: ${role.toUpperCase()}`;
+      document.getElementById('stat-my-role').innerText = roleLabels[role] || 'UNKNOWN';
+      document.getElementById('stat-my-permissions').innerHTML = `<i class="fa-solid fa-shield text-sky-400 mr-1"></i> Otoritas: ${(role || 'res').toUpperCase()}`;
 
       const devConsoleBtn = document.getElementById('nav-dev-console');
       const clearLogsBtn = document.getElementById('btn-clear-logs');
@@ -1352,7 +1352,7 @@
       }
 
       startRealtimeStreams();
-      showToast('success', `Akses Terbuka. Selamat Bekerja, ${name}!`);
+      showToast('success', `Akses Terbuka. Selamat Bekerja, ${name || 'User'}!`);
     }
 
     function showLoginScreen() {
@@ -1489,8 +1489,8 @@
         let creatorInfo = "";
         if (currentUserRole === 'dev') {
           creatorInfo = `
-            <span class="block text-slate-300 font-medium">${escapeHTML(item.addedByName)}</span>
-            <span class="inline-block mt-1 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider rounded ${getRoleBadgeClass(item.addedByRole)}">${item.addedByRole}</span>
+            <span class="block text-slate-300 font-medium">${escapeHTML(item.addedByName || 'Unknown')}</span>
+            <span class="inline-block mt-1 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider rounded ${getRoleBadgeClass(item.addedByRole || 'res')}">${item.addedByRole || 'res'}</span>
           `;
         } else {
           creatorInfo = `
@@ -1502,7 +1502,7 @@
         tr.innerHTML = `
           <td class="p-4 text-slate-600 font-bold">${index + 1}</td>
           <td class="p-4 font-bold text-sky-400"><i class="fa-brands fa-whatsapp text-sm mr-1"></i>+${item.phoneNumber}</td>
-          <td class="p-4 text-slate-300 font-semibold">${escapeHTML(item.name)}</td>
+          <td class="p-4 text-slate-300 font-semibold">${escapeHTML(item.name || 'No Name')}</td>
           <td class="p-4">${creatorInfo}</td>
           <td class="p-4 text-slate-500 text-[11px]">${formatDate(item.timestamp)}</td>
           <td class="p-4 text-center">${deleteButton}</td>
@@ -1517,7 +1517,7 @@
 
       const loggedPower = rolePower[currentUserRole] || 0;
       let displayableAccounts = globalAccountsData.filter(acc => {
-        const targetPower = rolePower[acc.role] || 0;
+        const targetPower = rolePower[acc.role || 'res'] || 0;
         return targetPower < loggedPower;
       });
 
@@ -1534,30 +1534,33 @@
         const statusBadge = isFired ? ` <span class="text-red-500 text-[9px] border border-red-500/20 bg-red-500/10 px-1.5 py-0.2 rounded font-black uppercase tracking-wider ml-1">DI-PECAT</span>` : '';
 
         const deleteBtn = isFired
-          ? `<button onclick="restoreAccount('${acc.id}', '${escapeJS(acc.name)}')" class="px-2.5 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 rounded-lg text-[10px] transition duration-200 uppercase tracking-widest font-black"><i class="fa-solid fa-user-check mr-1"></i> PULIHKAN</button>`
-          : `<button onclick="confirmDeleteAccount('${acc.id}', '${escapeJS(acc.name)}')" class="px-2.5 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-lg text-[10px] transition duration-200 uppercase tracking-widest font-black"><i class="fa-solid fa-user-xmark mr-1"></i> PECAT</button>`;
+          ? `<button onclick="restoreAccount('${acc.id}', '${escapeJS(acc.name || '')}')" class="px-2.5 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 rounded-lg text-[10px] transition duration-200 uppercase tracking-widest font-black"><i class="fa-solid fa-user-check mr-1"></i> PULIHKAN</button>`
+          : `<button onclick="confirmDeleteAccount('${acc.id}', '${escapeJS(acc.name || '')}')" class="px-2.5 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-lg text-[10px] transition duration-200 uppercase tracking-widest font-black"><i class="fa-solid fa-user-xmark mr-1"></i> PECAT</button>`;
         
-        const editRoleBtn = `<button onclick="openEditRoleModal('${acc.id}', '${escapeJS(acc.name)}', '${escapeJS(acc.email)}', '${acc.role}')" class="px-2.5 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/20 rounded-lg text-[10px] transition duration-200 uppercase tracking-widest font-black mr-2"><i class="fa-solid fa-user-gear mr-1"></i> MUTASI</button>`;
+        const editRoleBtn = `<button onclick="openEditRoleModal('${acc.id}', '${escapeJS(acc.name || '')}', '${escapeJS(acc.email || '')}', '${acc.role || 'res'}')" class="px-2.5 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/20 rounded-lg text-[10px] transition duration-200 uppercase tracking-widest font-black mr-2"><i class="fa-solid fa-user-gear mr-1"></i> MUTASI</button>`;
         
         let actionHtml = '';
         if (currentUserRole === 'dev') {
-          const hardDeleteBtn = `<button onclick="confirmHardDeleteAccount('${acc.id}', '${acc.name}')" class="px-2.5 py-1.5 bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-500/30 rounded-lg text-[10px] transition duration-200 uppercase tracking-widest font-black mr-2"><i class="fa-solid fa-trash-can mr-1"></i> HAPUS BERSIH</button>`;
+          const hardDeleteBtn = `<button onclick="confirmHardDeleteAccount('${acc.id}', '${escapeJS(acc.name || 'Bawahan')}')" class="px-2.5 py-1.5 bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-500/30 rounded-lg text-[10px] transition duration-200 uppercase tracking-widest font-black mr-2"><i class="fa-solid fa-trash-can mr-1"></i> HAPUS BERSIH</button>`;
           actionHtml = `${editRoleBtn} ${hardDeleteBtn} ${deleteBtn}`;
         } else {
           actionHtml = `${editRoleBtn} ${deleteBtn}`;
         }
 
         const passwordPlain = acc.password || 'Tidak tersedia';
-        const copyCredBtn = `<button onclick="copyCredentials('${escapeJS(acc.name)}', '${escapeJS(acc.email)}', '${escapeJS(passwordPlain)}', '${escapeJS(acc.role)}')" class="px-2.5 py-1.5 bg-sky-500/10 hover:bg-sky-500/20 text-sky-400 border border-sky-400/20 rounded-lg text-[10px] transition duration-200 uppercase tracking-widest font-black mr-2"><i class="fa-solid fa-copy mr-1"></i> COPY AKSES</button>`;
+        const copyCredBtn = `<button onclick="copyCredentials('${escapeJS(acc.name || '')}', '${escapeJS(acc.email || '')}', '${escapeJS(passwordPlain)}', '${escapeJS(acc.role || 'res')}')" class="px-2.5 py-1.5 bg-sky-500/10 hover:bg-sky-500/20 text-sky-400 border border-sky-400/20 rounded-lg text-[10px] transition duration-200 uppercase tracking-widest font-black mr-2"><i class="fa-solid fa-copy mr-1"></i> COPY AKSES</button>`;
+
+        const rawName = acc.name || 'No Name';
+        const initialChar = (typeof rawName === 'string' && rawName.trim() !== '' ? rawName.trim() : 'U').charAt(0).toUpperCase();
 
         tr.innerHTML = `
           <td class="p-4 font-bold text-slate-300 flex items-center gap-2">
-            <div class="w-7 h-7 bg-slate-800 text-sky-400 border border-slate-700/60 flex items-center justify-center font-black rounded-lg text-xs">${acc.name.charAt(0).toUpperCase()}</div>
-            ${escapeHTML(acc.name)}${statusBadge}
+            <div class="w-7 h-7 bg-slate-800 text-sky-400 border border-slate-700/60 flex items-center justify-center font-black rounded-lg text-xs">${initialChar}</div>
+            ${escapeHTML(rawName)}${statusBadge}
           </td>
-          <td class="p-4 text-slate-500 text-[11px]">${escapeHTML(acc.email)}</td>
+          <td class="p-4 text-slate-500 text-[11px]">${escapeHTML(acc.email || 'No Email')}</td>
           <td class="p-4">
-            <span class="inline-block px-2 py-0.5 text-[8px] font-black tracking-widest rounded ${getRoleBadgeClass(acc.role)}">${roleLabels[acc.role]}</span>
+            <span class="inline-block px-2 py-0.5 text-[8px] font-black tracking-widest rounded ${getRoleBadgeClass(acc.role || 'res')}">${roleLabels[acc.role || 'res'] || 'RESELLER'}</span>
           </td>
           <td class="p-4 text-center flex items-center justify-center">${copyCredBtn} ${actionHtml}</td>
         `;
@@ -1599,25 +1602,27 @@
     }
 
     function renderTreeNode(node, depth = 0) {
+      if (!node) return '';
       const indent = depth * 16;
       const isFired = node.disabled === true;
       const statusLabel = isFired ? `<span class="text-red-500 font-bold ml-1 text-[8px] border border-red-500/20 bg-red-500/10 px-1 rounded uppercase font-mono">DI-PECAT</span>` : "";
+      const hasChildren = node.children && node.children.length > 0;
       
       let html = `
         <div class="dev-account-item flex items-center justify-between p-2.5 bg-slate-950/60 border border-slate-800/80 rounded-xl text-[11px] font-mono mb-2" style="margin-left: ${indent}px">
           <div class="truncate mr-2">
             <span class="font-bold text-slate-300 flex items-center truncate">
-              <i class="fa-solid ${node.children.length > 0 ? 'fa-sitemap text-amber-500 animate-pulse' : 'fa-user text-sky-400'} mr-1.5 text-[10px]"></i>
-              ${node.role === 'dev' ? 'ZetaGo-Aurum' : escapeHTML(node.name)} ${statusLabel}
+              <i class="fa-solid ${hasChildren ? 'fa-sitemap text-amber-500 animate-pulse' : 'fa-user text-sky-400'} mr-1.5 text-[10px]"></i>
+              ${node.role === 'dev' ? 'ZetaGo-Aurum' : escapeHTML(node.name || 'No Name')} ${statusLabel}
             </span>
-            <span class="text-slate-500 block truncate text-[9px]">${node.role === 'dev' ? 'Secret Mail' : escapeHTML(node.email)}</span>
-            <span class="inline-block mt-0.5 px-1 py-0.2 text-[8px] font-black uppercase rounded ${getRoleBadgeClass(node.role)}">${node.role}</span>
+            <span class="text-slate-500 block truncate text-[9px]">${node.role === 'dev' ? 'Secret Mail' : escapeHTML(node.email || 'No Email')}</span>
+            <span class="inline-block mt-0.5 px-1 py-0.2 text-[8px] font-black uppercase rounded ${getRoleBadgeClass(node.role || 'res')}">${node.role || 'res'}</span>
           </div>
-          <button onclick="confirmHardDeleteAccount('${node.id}', '${escapeJS(node.name)}')" class="px-2.5 py-1 bg-red-600 hover:bg-red-500 text-slate-950 font-black rounded uppercase text-[9px] shrink-0"><i class="fa-solid fa-trash-can"></i></button>
+          <button onclick="confirmHardDeleteAccount('${node.id}', '${escapeJS(node.name || 'Bawahan')}')" class="px-2.5 py-1 bg-red-600 hover:bg-red-500 text-slate-950 font-black rounded uppercase text-[9px] shrink-0"><i class="fa-solid fa-trash-can"></i></button>
         </div>
       `;
       
-      if (node.children && node.children.length > 0) {
+      if (hasChildren) {
         node.children.forEach(child => {
           html += renderTreeNode(child, depth + 1);
         });
@@ -1629,7 +1634,7 @@
       const list = document.getElementById('dev-premium-owners-list');
       if (!list) return;
       
-      const owners = globalAccountsData.filter(acc => acc.role === 'owner');
+      const owners = globalAccountsData.filter(acc => (acc.role || '') === 'owner');
       if (owners.length === 0) {
         list.innerHTML = '<div class="text-slate-600 text-center py-4 text-[10px] uppercase font-mono">Tidak ada owner terdaftar.</div>';
         return;
@@ -1657,8 +1662,8 @@
         div.className = "flex items-center justify-between p-2 bg-slate-950/60 border border-slate-800/80 rounded-xl text-[10px] font-mono mb-2";
         div.innerHTML = `
           <div class="truncate mr-1 flex-1">
-            <span class="font-black text-slate-200 block truncate">${escapeHTML(owner.name)}</span>
-            <span class="text-slate-500 block truncate text-[9px]">${escapeHTML(owner.email)}</span>
+            <span class="font-black text-slate-200 block truncate">${escapeHTML(owner.name || 'No Name')}</span>
+            <span class="text-slate-500 block truncate text-[9px]">${escapeHTML(owner.email || 'No Email')}</span>
             ${statusHtml}
           </div>
           <div class="flex gap-1">
@@ -1690,7 +1695,7 @@
             premiumUntil: Math.floor(newUntil)
           }, { merge: true });
           
-          await writeAuditLog(`mengubah durasi sewa API owner ${snap.data().name} sebanyak +${days} hari`);
+          await writeAuditLog(`mengubah durasi sewa API owner ${snap.data().name || 'No Name'} sebanyak +${days} hari`);
           showToast('success', `PREMIUM: Akun berhasil disesuaikan +${days} hari!`);
         }
       } catch (err) {
@@ -1708,8 +1713,8 @@
             premiumUntil: 9999999999999
           }, { merge: true });
           
-          await writeAuditLog(`mengaktifkan status PERMANENT PREMIUM untuk owner ${snap.data().name}`);
-          showToast('success', `PREMIUM: Status ${snap.data().name} diubah menjadi PERMANENT! 👑`);
+          await writeAuditLog(`mengaktifkan status PERMANENT PREMIUM untuk owner ${snap.data().name || 'No Name'}`);
+          showToast('success', `PREMIUM: Status ${snap.data().name || 'No Name'} diubah menjadi PERMANENT! 👑`);
         }
       } catch (err) {
         showToast('error', `Gagal merubah status permanent: ${err.message}`);
@@ -1726,7 +1731,7 @@
             premiumUntil: 0
           }, { merge: true });
           
-          await writeAuditLog(`mencabut paksa akses sewa API owner ${snap.data().name}`);
+          await writeAuditLog(`mencabut paksa akses sewa API owner ${snap.data().name || 'No Name'}`);
           showToast('success', `PREMIUM: Akses sewa API dicabut secara manual!`);
         }
       } catch (err) {
@@ -1824,7 +1829,7 @@
         div.className = "flex gap-2 items-start border-l-2 border-slate-700 pl-3.5 py-0.5 font-mono text-[11px]";
         div.innerHTML = `
           <div>
-            <p class="text-slate-400"><span class="font-bold text-slate-200">${escapeHTML(log.userName)}</span>${emailSpan} ${escapeHTML(log.action)}</p>
+            <p class="text-slate-400"><span class="font-bold text-slate-200">${escapeHTML(log.userName || 'System')}</span>${emailSpan} ${escapeHTML(log.action || '')}</p>
             <span class="text-[8px] text-slate-600 block mt-0.5 font-black uppercase">${formatDate(log.timestamp)}</span>
           </div>
         `;
@@ -1842,8 +1847,8 @@
               <i class="fa-solid fa-clock-rotate-left"></i>
             </div>
             <div>
-              <p class="text-slate-300 font-semibold"><span class="text-sky-400 font-extrabold">${escapeHTML(log.userName)}</span>${emailSpanFull} (${log.userRole.toUpperCase()}) ${escapeHTML(log.action)}</p>
-              <p class="text-[9px] text-slate-600 mt-1 uppercase">UID: ${log.userUid}</p>
+              <p class="text-slate-300 font-semibold"><span class="text-sky-400 font-extrabold">${escapeHTML(log.userName || 'System')}</span>${emailSpanFull} (${(log.userRole || 'res').toUpperCase()}) ${escapeHTML(log.action || '')}</p>
+              <p class="text-[9px] text-slate-600 mt-1 uppercase">UID: ${log.userUid || 'Unknown'}</p>
             </div>
           </div>
           <span class="text-[9px] text-slate-500 font-black shrink-0 bg-slate-950/40 px-2.5 py-1 rounded-lg border border-slate-800">${formatDate(log.timestamp)}</span>
@@ -2727,7 +2732,7 @@
             const snap = await getDocs(accsRef);
             let targetDoc = null;
             snap.forEach(doc => {
-              if (doc.data().email.toLowerCase().trim() === targetEmail) {
+              if (doc.data().email && doc.data().email.toLowerCase().trim() === targetEmail) {
                 targetDoc = doc;
               }
             });
