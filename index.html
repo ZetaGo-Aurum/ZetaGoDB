@@ -61,7 +61,7 @@
         <p class="font-bold text-slate-200 uppercase font-mono text-[10px]">2. Aturan Penggunaan Database</p>
         <p>Anda bertanggung jawab penuh atas kerahasiaan kredensial akun dan nomor WhatsApp yang di-whitelist di bawah otoritas Anda.</p>
         <p class="font-bold text-red-400 uppercase font-mono text-[10px]">3. Larangan Keras & Sanksi</p>
-        <p class="text-red-400">Dilarang keras menjual akses di bawah harga ketentuan, membagikannya secara gratis, atau menjual script bot ZetaGo di bawah harga standar! Pelanggaran berat akan berakibat pada pemblokiran akun dan penghapusan total seluruh data whitelist secara sepihak!</p>
+        <p>Dilarang keras menjual akses di bawah harga ketentuan, membagikannya secara gratis, atau menjual script bot ZetaGo di bawah harga standar! Pelanggaran berat akan berakibat pada pemblokiran akun dan penghapusan total seluruh data whitelist secara sepihak!</p>
       </div>
       <button onclick="acceptToSCookies()" class="w-full py-3 bg-gradient-to-r from-sky-500 to-indigo-500 hover:from-sky-400 hover:to-indigo-500 text-slate-950 font-black rounded-xl uppercase tracking-wider transition duration-200">
         SAYA SETUJU & LANJUTKAN
@@ -1690,7 +1690,7 @@
             premiumUntil: Math.floor(newUntil)
           }, { merge: true });
           
-          await writeAuditLog nudge = `mengubah durasi sewa API owner ${snap.data().name} sebanyak +${days} hari`;
+          await writeAuditLog(`mengubah durasi sewa API owner ${snap.data().name} sebanyak +${days} hari`);
           showToast('success', `PREMIUM: Akun berhasil disesuaikan +${days} hari!`);
         }
       } catch (err) {
