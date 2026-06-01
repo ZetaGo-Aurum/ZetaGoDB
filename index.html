@@ -329,7 +329,7 @@
             </div>
           </div>
 
-          <div id="stats-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 font-mono">
+          <div id="stats-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 font-mono">
             <div id="stat-card-numbers" class="bg-slate-900/20 border border-slate-800/60 rounded-2xl p-5 hover:border-slate-700/80 transition duration-300">
               <div class="flex justify-between items-start">
                 <div>
@@ -494,7 +494,7 @@
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/10 p-4 border border-slate-800/60 rounded-2xl font-mono">
             <div>
               <h1 class="text-sm font-black text-slate-100 uppercase tracking-widest">MANAJEMEN STRUKTUR AKUN</h1>
-              <p class="text-xs text-slate-400 font-sans">Pengaturan akses level bawahan, pembagian peran, and pencabutan hak akses.</p>
+              <p class="text-xs text-slate-400 font-sans">Pengaturan akses level bawahan, pembagian peran, dan pencabutan hak akses.</p>
             </div>
             <button id="btn-open-add-user" onclick="openAddUserModal()" class="w-full sm:w-auto px-4 py-2.5 bg-gradient-to-r from-indigo-500 to-sky-500 hover:from-indigo-400 hover:to-sky-400 text-slate-950 font-black rounded-xl text-xs transition duration-200 flex items-center justify-center gap-1.5 shadow-lg shadow-indigo-500/10 uppercase tracking-wider">
               <i class="fa-solid fa-user-plus text-[10px]"></i> BUAT AKUN BAWAHAN
@@ -1026,16 +1026,119 @@
       return emailStr.toLowerCase().trim() === target;
     }
 
-    async function initSecureAuth() {
-      let config = getFallbackConfig();
+    async function fetchConfig() {
+      const isBlob = window.location.protocol === 'blob:';
+      const isSandbox = window.location.hostname.includes('usercontent.goog') || window.location.hostname.includes('github.dev');
 
-      // Utamakan parsing dari environment config jika di-inject (misalnya untuk sandbox preview Canvas)
-      if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+      if (!isBlob && !isSandbox) {
         try {
-          config = JSON.parse(__firebase_config);
+          const response = await fetch('/api/config');
+          if (response.ok) {
+            return await response.json();
+          }
         } catch (e) {
-          console.warn("Injected config parsing failed, running fallback:", e);
+          console.warn("Fallback active:", e);
         }
+      }
+      return null;
+    }
+
+    function getOrCreateApp(config, name) {
+      const apps = getApps();
+      const existing = apps.find(a => a.name === name);
+      if (existing) return existing;
+      return initializeApp(config, name);
+    }
+
+    window.copyStringToClipboard = function(text, successMessage) {
+      if (!text) {
+        showToast('error', 'Gagal menyalin: Teks kosong!');
+        return;
+      }
+
+      const fallbackCopy = (str) => {
+        const textarea = document.createElement('textarea');
+        textarea.value = str;
+        textarea.style.fontSize = '12pt';
+        textarea.setAttribute('readonly', '');
+        textarea.style.position = 'fixed';
+        textarea.style.top = '0';
+        textarea.style.left = '-9999px';
+        textarea.style.width = '2em';
+        textarea.style.height = '2em';
+        textarea.style.padding = '0';
+        textarea.style.border = 'none';
+        textarea.style.outline = 'none';
+        textarea.style.boxShadow = 'none';
+        textarea.style.background = 'transparent';
+        
+        document.body.appendChild(textarea);
+        
+        textarea.focus();
+        textarea.select();
+        textarea.setSelectionRange(0, 99999);
+        
+        const range = document.createRange();
+        range.selectNodeContents(textarea);
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+        
+        let success = false;
+        try {
+          success = document.execCommand('copy');
+        } catch (err) {
+          console.error('Fallback copy operation failed:', err);
+        }
+        
+        document.body.removeChild(textarea);
+        selection.removeAllRanges();
+        return success;
+      };
+
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text)
+          .then(() => {
+            showToast('success', successMessage);
+          })
+          .catch(() => {
+            if (fallbackCopy(text)) {
+              showToast('success', successMessage);
+            } else {
+              showToast('error', 'Gagal menyalin otomatis secara internal.');
+            }
+          });
+      } else {
+        if (fallbackCopy(text)) {
+          showToast('success', successMessage);
+        } else {
+          showToast('error', 'Akses salin otomatis terhalang oleh browser.');
+        }
+      }
+    };
+
+    window.copyApiLink = function() {
+      window.copyStringToClipboard(window.whitelistLinkVal, 'Link REST API Whitelist disalin ke clipboard! 📋');
+    };
+
+    window.copyStructureApiLink = function() {
+      window.copyStringToClipboard(window.structureLinkVal, 'Link REST API Struktur disalin ke clipboard! 📋');
+    };
+
+    window.copyCredentials = function(name, email, password, role) {
+      const loginUrl = window.location.origin;
+      const credsText = `🔑 DETAIL KREDENSIAL ZETAGO-DB 🔑\n\nNama : ${name}\nEmail: ${email}\nSandi: ${password}\nPeran: ${role.toUpperCase()}\nLink : ${loginUrl}\n\nHarap simpan kredensial ini baik-baik! 🛡️⚡`;
+      window.copyStringToClipboard(credsText, `Kredensial milik ${name} berhasil disalin! 📋`);
+    };
+
+    async function initSecureAuth() {
+      let config = await fetchConfig();
+      if (!config) {
+        config = getFallbackConfig();
+      }
+
+      if (!config.devEmail) {
+        config.devEmail = _zEmail;
       }
 
       try {
@@ -1043,23 +1146,16 @@
         auth = getAuth(appInstance);
         db = getFirestore(appInstance);
 
-        // Amankan getRedirectResult biar ga crash di Firefox/Brave sandboxed iframes!
         try {
-          const isIframe = window.self !== window.top;
-          if (!isIframe) {
-            const result = await getRedirectResult(auth);
-            if (result && result.user) {
-              if (!isDevEmail(result.user.email)) {
-                showToast('error', 'Akses Pengembang Ditolak! Anda bukan pemilik ZetaGo-DB.');
-                await signOut(auth);
-              }
+          const result = await getRedirectResult(auth);
+          if (result && result.user) {
+            if (!isDevEmail(result.user.email)) {
+              showToast('error', 'Akses Pengembang Ditolak! Anda bukan pemilik ZetaGo-DB.');
+              await signOut(auth);
             }
           }
-        } catch (redirectErr) {
-          console.warn("Bypassed Redirect Auth safely:", redirectErr);
-          if (redirectErr.message && redirectErr.message.includes("api-key-not-valid")) {
-            showToast('error', 'API Key tidak valid! Pastikan domain Anda di-whitelist di Google Cloud Console.');
-          }
+        } catch (err) {
+          console.error(err);
         }
 
         onAuthStateChanged(auth, async (user) => {
@@ -1075,13 +1171,9 @@
         });
 
       } catch (e) {
-        console.error("Initialization Failed:", e);
+        console.error(e);
         document.getElementById('initial-loader').style.display = 'none';
-        if (e.message && e.message.includes("api-key-not-valid")) {
-          showToast('error', 'API Key tidak valid! Pastikan domain Anda di-whitelist di Google Cloud Console.');
-        } else {
-          showToast('error', 'Gagal memuat modul otorisasi database!');
-        }
+        showToast('error', 'Gagal memuat modul otorisasi database!');
       }
     }
 
@@ -1229,8 +1321,7 @@
       const statOwners = document.getElementById('stat-card-owners');
       const statsGridContainer = document.getElementById('stats-grid');
       
-      // FIX BUG: Tampilkan card metrik "Owner" untuk role Dev dan Owner agar terhitung & tampil di Dashboard
-      if (role === 'dev' || role === 'owner') {
+      if (role === 'dev') {
         statOwners.classList.remove('hidden');
         statSubordinates.classList.remove('hidden');
         statResellers.classList.remove('hidden');
@@ -1893,12 +1984,7 @@
       try {
         await signInWithEmailAndPassword(auth, email, pass);
       } catch (err) {
-        console.error("Login Error:", err);
-        if (err.code === 'auth/api-key-not-valid' || (err.message && err.message.includes("api-key-not-valid"))) {
-          showToast('error', 'Gagal: API Key tidak valid. Whitelist domain zetago-db.kyoko.biz.id di Google Cloud!');
-        } else {
-          showToast('error', 'Login ditolak! Kredensial tidak valid.');
-        }
+        showToast('error', 'Login ditolak! Kredensial tidak valid.');
       }
     });
 
@@ -1907,17 +1993,9 @@
       try {
         await signInWithPopup(auth, provider);
       } catch (err) {
-        console.error("Google Login Error:", err);
-        if (err.code === 'auth/api-key-not-valid' || (err.message && err.message.includes("api-key-not-valid"))) {
-          showToast('error', 'Gagal: API Key tidak valid. Whitelist domain zetago-db.kyoko.biz.id di Google Cloud Console!');
-        } else if (err.code === 'auth/popup-blocked') {
+        if (err.code === 'auth/popup-blocked') {
           showToast('info', 'Popup diblokir browser! Mengalihkan ke metode redirect keamanan...');
-          try {
-            await signInWithRedirect(auth, provider);
-          } catch (redirErr) {
-            console.error(redirErr);
-            showToast('error', 'Gagal mengalihkan login.');
-          }
+          await signInWithRedirect(auth, provider);
         } else {
           showToast('error', `Gagal otentikasi Google: ${err.message}`);
         }
