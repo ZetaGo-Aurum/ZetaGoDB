@@ -494,7 +494,7 @@
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/10 p-4 border border-slate-800/60 rounded-2xl font-mono">
             <div>
               <h1 class="text-sm font-black text-slate-100 uppercase tracking-widest">MANAJEMEN STRUKTUR AKUN</h1>
-              <p class="text-xs text-slate-400 font-sans">Pengaturan akses level bawahan, pembagian peran, dan pencabutan hak akses.</p>
+              <p class="text-xs text-slate-400 font-sans">Pengaturan akses level bawahan, pembagian peran, and pencabutan hak akses.</p>
             </div>
             <button id="btn-open-add-user" onclick="openAddUserModal()" class="w-full sm:w-auto px-4 py-2.5 bg-gradient-to-r from-indigo-500 to-sky-500 hover:from-indigo-400 hover:to-sky-400 text-slate-950 font-black rounded-xl text-xs transition duration-200 flex items-center justify-center gap-1.5 shadow-lg shadow-indigo-500/10 uppercase tracking-wider">
               <i class="fa-solid fa-user-plus text-[10px]"></i> BUAT AKUN BAWAHAN
@@ -1026,120 +1026,8 @@
       return emailStr.toLowerCase().trim() === target;
     }
 
-    async function fetchConfig() {
-      const isBlob = window.location.protocol === 'blob:';
-      const isSandbox = window.location.hostname.includes('usercontent.goog') || window.location.hostname.includes('github.dev');
-
-      if (!isBlob && !isSandbox) {
-        try {
-          const response = await fetch('/api/config');
-          if (response.ok) {
-            return await response.json();
-          }
-        } catch (e) {
-          console.warn("Fallback active:", e);
-        }
-      }
-      return null;
-    }
-
-    function getOrCreateApp(config, name) {
-      const apps = getApps();
-      const existing = apps.find(a => a.name === name);
-      if (existing) return existing;
-      return initializeApp(config, name);
-    }
-
-    window.copyStringToClipboard = function(text, successMessage) {
-      if (!text) {
-        showToast('error', 'Gagal menyalin: Teks kosong!');
-        return;
-      }
-
-      const fallbackCopy = (str) => {
-        const textarea = document.createElement('textarea');
-        textarea.value = str;
-        textarea.style.fontSize = '12pt';
-        textarea.setAttribute('readonly', '');
-        textarea.style.position = 'fixed';
-        textarea.style.top = '0';
-        textarea.style.left = '-9999px';
-        textarea.style.width = '2em';
-        textarea.style.height = '2em';
-        textarea.style.padding = '0';
-        textarea.style.border = 'none';
-        textarea.style.outline = 'none';
-        textarea.style.boxShadow = 'none';
-        textarea.style.background = 'transparent';
-        
-        document.body.appendChild(textarea);
-        
-        textarea.focus();
-        textarea.select();
-        textarea.setSelectionRange(0, 99999);
-        
-        const range = document.createRange();
-        range.selectNodeContents(textarea);
-        const selection = window.getSelection();
-        selection.removeAllRanges();
-        selection.addRange(range);
-        
-        let success = false;
-        try {
-          success = document.execCommand('copy');
-        } catch (err) {
-          console.error('Fallback copy operation failed:', err);
-        }
-        
-        document.body.removeChild(textarea);
-        selection.removeAllRanges();
-        return success;
-      };
-
-      if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(text)
-          .then(() => {
-            showToast('success', successMessage);
-          })
-          .catch(() => {
-            if (fallbackCopy(text)) {
-              showToast('success', successMessage);
-            } else {
-              showToast('error', 'Gagal menyalin otomatis secara internal.');
-            }
-          });
-      } else {
-        if (fallbackCopy(text)) {
-          showToast('success', successMessage);
-        } else {
-          showToast('error', 'Akses salin otomatis terhalang oleh browser.');
-        }
-      }
-    };
-
-    window.copyApiLink = function() {
-      window.copyStringToClipboard(window.whitelistLinkVal, 'Link REST API Whitelist disalin ke clipboard! 📋');
-    };
-
-    window.copyStructureApiLink = function() {
-      window.copyStringToClipboard(window.structureLinkVal, 'Link REST API Struktur disalin ke clipboard! 📋');
-    };
-
-    window.copyCredentials = function(name, email, password, role) {
-      const loginUrl = window.location.origin;
-      const credsText = `🔑 DETAIL KREDENSIAL ZETAGO-DB 🔑\n\nNama : ${name}\nEmail: ${email}\nSandi: ${password}\nPeran: ${role.toUpperCase()}\nLink : ${loginUrl}\n\nHarap simpan kredensial ini baik-baik! 🛡️⚡`;
-      window.copyStringToClipboard(credsText, `Kredensial milik ${name} berhasil disalin! 📋`);
-    };
-
     async function initSecureAuth() {
-      let config = await fetchConfig();
-      if (!config) {
-        config = getFallbackConfig();
-      }
-
-      if (!config.devEmail) {
-        config.devEmail = _zEmail;
-      }
+      let config = getFallbackConfig();
 
       try {
         const appInstance = initializeApp(config);
@@ -1321,7 +1209,8 @@
       const statOwners = document.getElementById('stat-card-owners');
       const statsGridContainer = document.getElementById('stats-grid');
       
-      if (role === 'dev') {
+      // FIX BUG: Tampilkan card metrik "Owner" untuk role Dev dan Owner agar terhitung & tampil di Dashboard
+      if (role === 'dev' || role === 'owner') {
         statOwners.classList.remove('hidden');
         statSubordinates.classList.remove('hidden');
         statResellers.classList.remove('hidden');
