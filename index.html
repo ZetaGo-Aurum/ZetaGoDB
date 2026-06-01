@@ -329,7 +329,7 @@
             </div>
           </div>
 
-          <div id="stats-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 font-mono">
+          <div id="stats-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 font-mono">
             <div id="stat-card-numbers" class="bg-slate-900/20 border border-slate-800/60 rounded-2xl p-5 hover:border-slate-700/80 transition duration-300">
               <div class="flex justify-between items-start">
                 <div>
@@ -1029,21 +1029,37 @@
     async function initSecureAuth() {
       let config = getFallbackConfig();
 
+      // Utamakan parsing dari environment config jika di-inject (misalnya untuk sandbox preview Canvas)
+      if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+        try {
+          config = JSON.parse(__firebase_config);
+        } catch (e) {
+          console.warn("Injected config parsing failed, running fallback:", e);
+        }
+      }
+
       try {
         const appInstance = initializeApp(config);
         auth = getAuth(appInstance);
         db = getFirestore(appInstance);
 
+        // Amankan getRedirectResult biar ga crash di Firefox/Brave sandboxed iframes!
         try {
-          const result = await getRedirectResult(auth);
-          if (result && result.user) {
-            if (!isDevEmail(result.user.email)) {
-              showToast('error', 'Akses Pengembang Ditolak! Anda bukan pemilik ZetaGo-DB.');
-              await signOut(auth);
+          const isIframe = window.self !== window.top;
+          if (!isIframe) {
+            const result = await getRedirectResult(auth);
+            if (result && result.user) {
+              if (!isDevEmail(result.user.email)) {
+                showToast('error', 'Akses Pengembang Ditolak! Anda bukan pemilik ZetaGo-DB.');
+                await signOut(auth);
+              }
             }
           }
-        } catch (err) {
-          console.error(err);
+        } catch (redirectErr) {
+          console.warn("Bypassed Redirect Auth safely:", redirectErr);
+          if (redirectErr.message && redirectErr.message.includes("api-key-not-valid")) {
+            showToast('error', 'API Key tidak valid! Pastikan domain Anda di-whitelist di Google Cloud Console.');
+          }
         }
 
         onAuthStateChanged(auth, async (user) => {
@@ -1059,9 +1075,13 @@
         });
 
       } catch (e) {
-        console.error(e);
+        console.error("Initialization Failed:", e);
         document.getElementById('initial-loader').style.display = 'none';
-        showToast('error', 'Gagal memuat modul otorisasi database!');
+        if (e.message && e.message.includes("api-key-not-valid")) {
+          showToast('error', 'API Key tidak valid! Pastikan domain Anda di-whitelist di Google Cloud Console.');
+        } else {
+          showToast('error', 'Gagal memuat modul otorisasi database!');
+        }
       }
     }
 
@@ -1873,7 +1893,12 @@
       try {
         await signInWithEmailAndPassword(auth, email, pass);
       } catch (err) {
-        showToast('error', 'Login ditolak! Kredensial tidak valid.');
+        console.error("Login Error:", err);
+        if (err.code === 'auth/api-key-not-valid' || (err.message && err.message.includes("api-key-not-valid"))) {
+          showToast('error', 'Gagal: API Key tidak valid. Whitelist domain zetago-db.kyoko.biz.id di Google Cloud!');
+        } else {
+          showToast('error', 'Login ditolak! Kredensial tidak valid.');
+        }
       }
     });
 
@@ -1882,9 +1907,17 @@
       try {
         await signInWithPopup(auth, provider);
       } catch (err) {
-        if (err.code === 'auth/popup-blocked') {
+        console.error("Google Login Error:", err);
+        if (err.code === 'auth/api-key-not-valid' || (err.message && err.message.includes("api-key-not-valid"))) {
+          showToast('error', 'Gagal: API Key tidak valid. Whitelist domain zetago-db.kyoko.biz.id di Google Cloud Console!');
+        } else if (err.code === 'auth/popup-blocked') {
           showToast('info', 'Popup diblokir browser! Mengalihkan ke metode redirect keamanan...');
-          await signInWithRedirect(auth, provider);
+          try {
+            await signInWithRedirect(auth, provider);
+          } catch (redirErr) {
+            console.error(redirErr);
+            showToast('error', 'Gagal mengalihkan login.');
+          }
         } else {
           showToast('error', `Gagal otentikasi Google: ${err.message}`);
         }
