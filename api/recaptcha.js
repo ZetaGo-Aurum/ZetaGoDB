@@ -1,4 +1,6 @@
-const RECAPTCHA_VERIFY_URL = 'https://www.google.com/recaptcha/api/siteverify';
+const PROJECT_ID = 'server-media-75fdc';
+const SITE_KEY = '6LdozU8tAAAAAANPGLIzY2s0YIfN8agJXMfP0o2c';
+const ASSESSMENT_URL = `https://recaptchaenterprise.googleapis.com/v1/projects/${PROJECT_ID}/assessments`;
 
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -14,48 +16,50 @@ module.exports = async (req, res) => {
     return res.status(405).json({ success: false, error: "METHOD NOT ALLOWED: Hanya menerima metode POST!" });
   }
 
-  const secret = process.env.RECAPTCHA_SECRET_KEY;
-  if (!secret) {
-    return res.status(500).json({ success: false, error: "SERVER ERROR: RECAPTCHA_SECRET_KEY environment variable belum dikonfigurasi di Vercel!" });
+  const apiKey = process.env.RECAPTCHA_API_KEY;
+  if (!apiKey) {
+    return res.status(500).json({ success: false, error: "SERVER ERROR: RECAPTCHA_API_KEY environment variable belum dikonfigurasi di Vercel!" });
   }
 
   const token = (req.body && req.body.token) || req.query.token;
-  const expectedAction = (req.body && req.body.action) || req.query.action || 'login';
+  const expectedAction = (req.body && req.body.action) || req.query.action || 'LOGIN';
   if (!token) {
     return res.status(400).json({ success: false, error: "BAD REQUEST: Token reCAPTCHA wajib disertakan!" });
   }
 
   try {
-    const params = new URLSearchParams();
-    params.append('secret', secret);
-    params.append('response', token);
-
-    const verifyResponse = await fetch(RECAPTCHA_VERIFY_URL, {
+    const assessmentResponse = await fetch(`${ASSESSMENT_URL}?key=${apiKey}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: params.toString()
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        event: {
+          token: token,
+          siteKey: SITE_KEY,
+          expectedAction: expectedAction
+        }
+      })
     });
 
-    const verifyData = await verifyResponse.json();
+    const data = await assessmentResponse.json();
 
-    if (!verifyData.success) {
-      return res.status(400).json({
-        success: false,
-        error: "reCAPTCHA tidak valid!",
-        details: verifyData['error-codes'] || []
-      });
+    if (!assessmentResponse.ok) {
+      return res.status(400).json({ success: false, error: "reCAPTCHA assessment gagal!", details: data.error || data });
     }
 
-    // Validasi tambahan untuk reCAPTCHA v3 (action & skor)
-    if (verifyData.action && verifyData.action !== expectedAction) {
+    const props = data.tokenProperties || {};
+    if (props.valid !== true) {
+      return res.status(400).json({ success: false, error: "Token reCAPTCHA tidak valid!", details: props.invalidReason || null });
+    }
+    if (props.action && props.action !== expectedAction) {
       return res.status(400).json({ success: false, error: "reCAPTCHA action tidak cocok!" });
     }
 
-    if (typeof verifyData.score === 'number' && verifyData.score < 0.3) {
+    const score = (data.riskAnalysis && data.riskAnalysis.score) || 0;
+    if (typeof score === 'number' && score < 0.3) {
       return res.status(400).json({ success: false, error: "Skor reCAPTCHA terlalu rendah, akses ditolak!" });
     }
 
-    return res.status(200).json({ success: true, score: verifyData.score });
+    return res.status(200).json({ success: true, score: score });
   } catch (err) {
     return res.status(500).json({ success: false, error: "INTERNAL SERVER ERROR: " + err.message });
   }
