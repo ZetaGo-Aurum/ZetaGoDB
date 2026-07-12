@@ -10,7 +10,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/otpauth/9.1.2/otpauth.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="https://assets.trakteer.id/js/trws.min.js"></script>
-  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  <script src="https://www.google.com/recaptcha/api.js?render=6LdS608tAAAAAAHCGzeIFYvw3xUljBpLwe4Bd80Q" async defer></script>
   <style>
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
@@ -194,7 +194,6 @@
               </button>
             </div>
           </div>
-          <div class="g-recaptcha" data-sitekey="6LdS608tAAAAAAHCGzeIFYvw3xUljBpLwe4Bd80Q" data-theme="dark"></div>
           <button type="submit" class="w-full py-3 px-4 bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-slate-950 font-extrabold rounded-xl transition duration-300 shadow-lg shadow-sky-500/20 glow-btn-cyan flex justify-center items-center gap-2 text-xs uppercase tracking-wider">
             Masuk Portal <i class="fa-solid fa-chevron-right text-[10px]"></i>
           </button>
@@ -1986,14 +1985,24 @@
     safeAddListener('form-login-email', 'submit', async (e) => {
       e.preventDefault();
 
-      // 1. Validasi tantangan reCAPTCHA terlebih dahulu
-      if (typeof grecaptcha === 'undefined' || typeof grecaptcha.getResponse !== 'function') {
+      // 1. Ambil token reCAPTCHA v3 (invisible) secara dinamis
+      const RECAPTCHA_SITE_KEY = '6LdS608tAAAAAAHCGzeIFYvw3xUljBpLwe4Bd80Q';
+      if (typeof grecaptcha === 'undefined' || typeof grecaptcha.execute !== 'function' || typeof grecaptcha.ready !== 'function') {
         showToast('error', 'Layanan reCAPTCHA belum dimuat. Muat ulang halaman!');
         return;
       }
-      const captchaResponse = grecaptcha.getResponse();
-      if (!captchaResponse) {
-        showToast('error', 'Harap selesaikan tantangan reCAPTCHA terlebih dahulu!');
+
+      let captchaResponse;
+      try {
+        captchaResponse = await new Promise((resolve, reject) => {
+          grecaptcha.ready(() => {
+            grecaptcha.execute(RECAPTCHA_SITE_KEY, { action: 'login' })
+              .then(resolve)
+              .catch(reject);
+          });
+        });
+      } catch (err) {
+        showToast('error', 'Gagal memuat tantangan reCAPTCHA!');
         return;
       }
 
@@ -2002,17 +2011,15 @@
         const verifyRes = await fetch('/api/recaptcha', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token: captchaResponse })
+          body: JSON.stringify({ token: captchaResponse, action: 'login' })
         });
         const verifyData = await verifyRes.json();
         if (!verifyData.success) {
           showToast('error', verifyData.error || 'Verifikasi reCAPTCHA gagal!');
-          if (typeof grecaptcha.reset === 'function') grecaptcha.reset();
           return;
         }
       } catch (err) {
         showToast('error', 'Gagal menghubungi layanan reCAPTCHA!');
-        if (typeof grecaptcha.reset === 'function') grecaptcha.reset();
         return;
       }
 
@@ -2023,7 +2030,6 @@
         await signInWithEmailAndPassword(auth, email, pass);
       } catch (err) {
         showToast('error', 'Login ditolak! Kredensial tidak valid.');
-        if (typeof grecaptcha.reset === 'function') grecaptcha.reset();
       }
     });
 

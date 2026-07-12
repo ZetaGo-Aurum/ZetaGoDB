@@ -20,6 +20,7 @@ module.exports = async (req, res) => {
   }
 
   const token = (req.body && req.body.token) || req.query.token;
+  const expectedAction = (req.body && req.body.action) || req.query.action || 'login';
   if (!token) {
     return res.status(400).json({ success: false, error: "BAD REQUEST: Token reCAPTCHA wajib disertakan!" });
   }
@@ -37,15 +38,24 @@ module.exports = async (req, res) => {
 
     const verifyData = await verifyResponse.json();
 
-    if (verifyData.success) {
-      return res.status(200).json({ success: true });
+    if (!verifyData.success) {
+      return res.status(400).json({
+        success: false,
+        error: "reCAPTCHA tidak valid!",
+        details: verifyData['error-codes'] || []
+      });
     }
 
-    return res.status(400).json({
-      success: false,
-      error: "reCAPTCHA tidak valid!",
-      details: verifyData['error-codes'] || []
-    });
+    // Validasi tambahan untuk reCAPTCHA v3 (action & skor)
+    if (verifyData.action && verifyData.action !== expectedAction) {
+      return res.status(400).json({ success: false, error: "reCAPTCHA action tidak cocok!" });
+    }
+
+    if (typeof verifyData.score === 'number' && verifyData.score < 0.3) {
+      return res.status(400).json({ success: false, error: "Skor reCAPTCHA terlalu rendah, akses ditolak!" });
+    }
+
+    return res.status(200).json({ success: true, score: verifyData.score });
   } catch (err) {
     return res.status(500).json({ success: false, error: "INTERNAL SERVER ERROR: " + err.message });
   }
